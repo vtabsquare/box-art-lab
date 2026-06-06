@@ -1,0 +1,110 @@
+productId	productName	category	basePrice	designPremium	sizeVariationPct
+popcorn-box	Popcorn Box	Food	20	12	0.0100
+pizza-box	Pizza Box	Food	40	20	0.0005
+cake-box	Cake Box	Food	28	16	0.0125
+bakery-box	Bakery Box	Food	24	12	0.0100
+biriyani-box	Biriyani Box	Food	32	14	0.0100
+burger-box	Burger Box	Food	20	10	0.0083
+cheese-box	Cheese Box	Food	16	8	0.0020
+chicken-box	Chicken Box	Food	36	18	0.0111
+chocolate-box	Chocolate Box	Food	32	20	0.0091
+cup-cake-box	Cup Cake Box	Food	28	16	0.0100
+cookies-box	Cookies Box	Food	24	12	0.0083
+dosa-box	Dosa Box	Food	32	14	0.0083
+dip-tea-box	Dip Tea Box	Food	20	10	0.0071
+dates-box	Dates Box	Food	28	16	0.0083
+fried-chicken-box	Fried Chicken Box	Food	40	20	0.0143
+fancy-cake-box	Fancy Cake Box	Food	48	28	0.0167
+fancy-tea-box	Fancy Tea Box	Food	28	16	0.0083
+food-grade-box	Food Grade Box	Food	32	18	0.0091
+french-fries-box	French Fries Box	Food	16	8	0.0067
+fresh-cream-cake-box	Fresh Cream Cake Box	Food	40	22	0.0111
+hotdog-box	Hotdog Box	Food	20	10	0.0071
+instant-food-box	Instant Food Box	Food	18	9	0.0067
+meal-box	Meal Box	Food	32	16	0.0091
+meat-box	Meat Box	Food	40	20	0.0100
+nuts-spices-box	Nuts & Spices Box	Food	24	12	0.0077
+nuggets-box	Nuggets Box	Food	18	9	0.0067
+pastries-box	Pastries Box	Food	28	14	0.0083
+plum-cake-box	Plum Cake Box	Food	32	16	0.0083
+sandwich-box	Sandwich Box	Food	20	10	0.0067
+savouries-box	Savouries Box	Food	24	12	0.0083
+sea-foods-box	Sea Foods Box	Food	44	22	0.0111
+shawarma-box	Shawarma Box	Food	24	12	0.0077
+sweet-box	Sweet Box	Food	28	14	0.0083
+tea-box	Tea Box	Food	22	11	0.0071
+triangular-cake-slice-box	Triangular Cake Slice Box	Food	20	10	0.0067
+garment-box	Garment Box	Garment	48	24	0.0143
+shirt-box	Shirt Box	Garment	52	26	0.0143
+shoe-box	Shoe Box	Garment	56	28	0.0167
+saree-box	Saree Box	Garment	64	32	0.0154
+jacket-box	Jacket Box	Garment	72	36	0.0167
+trouser-box	Trouser Box	Garment	52	26	0.0143
+lingerie-box	Lingerie Box	Garment	56	28	0.0125
+sports-box	Sports Wear Box	Garment	48	24	0.0133
+accessories-box	Accessories Box	Garment	40	20	0.0111
+hat-box	Hat Box	Garment	60	30	0.0154
+carrier-bag	Carrier Bag	Carriable	40	20	0.0125
+gift-box	Gift Box	Carriable	60	32	0.0167
+tote-bag	Tote Bag Box	Carriable	36	18	0.0118
+window-box	Window Display Box	Carriable	48	24	0.0133
+hamper-box	Hamper Box	Carriable	96	48	0.0200
+festival-box	Festival Gift Box	Carriable	68	34	0.0154
+luxury-bag	Luxury Bag	Carriable	64	32	0.0143
+wedding-box	Wedding Gift Box	Carriable	80	40	0.0182
+phone-box	Phone Box	Electronics	64	32	0.0100
+gadget-box	Gadget Box	Electronics	80	40	0.0125
+laptop-box	Laptop Box	Electronics	120	60	0.0200
+earbuds-box	Earbuds Box	Electronics	56	28	0.0091
+smartwatch-box	Smartwatch Box	Electronics	68	34	0.0100
+charger-box	Charger Box	Electronics	32	16	0.0067
+camera-box	Camera Box	Electronics	88	44	0.0133
+tablet-box	Tablet Box	Electronics	96	48	0.0154
+router-box	Router / IoT Box	Electronics	72	36	0.0125
+gaming-box	Gaming Peripheral Box	Electronics	80	40	0.0133
+stand-pouch	Stand-Up Pouch	Pouches	12	6	0.0067
+flat-pouch	Flat Pouch	Pouches	8	4	0.0050
+zip-pouch	Zip-Lock Pouch	Pouches	14	7	0.0063
+spout-pouch	Spout Pouch	Pouches	18	9	0.0071
+gusset-pouch	Side Gusset Pouch	Pouches	16	8	0.0067
+retort-pouch	Retort Pouch	Pouches	20	10	0.0077
+sachet-pouch	Sachet / Strip Pouch	Pouches	4	2	0.0040
+kraft-pouch	Kraft Paper Pouch	Pouches	14	7	0.0063
+mailer-box	Mailer Box	Ecommerce	44	22	0.0111
+shipping-box	Shipping Box	Ecommerce	68	34	0.0143
+subscription-box	Subscription Box	Ecommerce	56	28	0.0125
+poly-mailer	Poly Mailer Bag	Ecommerce	10	5	0.0050
+bubble-mailer	Bubble Mailer	Ecommerce	16	8	0.0059
+return-box	Easy-Return Box	Ecommerce	48	24	0.0111
+fragile-box	Fragile Item Box	Ecommerce	72	36	0.0133
+book-mailer	Book Mailer	Ecommerce	32	16	0.0077
+tube-mailer	Tube / Cylinder Mailer	Ecommerce	28	14	0.0083
+medicine-box	Medicine Box	Pharma	40	24	0.0067
+supplement-box	Supplement Box	Pharma	36	20	0.0071
+syrup-box	Syrup / Drop Box	Pharma	32	18	0.0063
+tablet-strip-box	Tablet Strip Box	Pharma	24	14	0.0056
+injection-box	Injection Vial Box	Pharma	44	24	0.0071
+ointment-box	Ointment / Cream Box	Pharma	28	16	0.0063
+surgical-box	Surgical Kit Box	Pharma	56	30	0.0083
+vitamin-box	Vitamin & Nutraceutical Box	Pharma	40	22	0.0071
+device-box	Medical Device Box	Pharma	72	38	0.0100
+perfume-box	Perfume Box	Cosmetic	80	40	0.0100
+cosmetic-box	Cosmetic Box	Cosmetic	60	32	0.0091
+serum-box	Serum Box	Cosmetic	64	34	0.0083
+foundation-box	Foundation Box	Cosmetic	56	29	0.0077
+eye-shadow-box	Eye Shadow Palette Box	Cosmetic	52	26	0.0083
+nail-box	Nail Polish Box	Cosmetic	32	18	0.0063
+hair-care-box	Hair Care Box	Cosmetic	48	26	0.0083
+skincare-set-box	Skincare Set Box	Cosmetic	80	42	0.0125
+lipstick-box	Lipstick Box	Cosmetic	28	14	0.0059
+body-lotion-box	Body Lotion Box	Cosmetic	44	22	0.0077
+luxury-rigid	Luxury Rigid Box	Luxury	120	60	0.0143
+watch-box	Watch Box	Luxury	144	72	0.0125
+jewellery-box	Jewellery Box	Luxury	128	64	0.0118
+ring-box	Ring Box	Luxury	96	48	0.0100
+spirits-box	Spirits / Wine Box	Luxury	112	56	0.0133
+cigar-box	Cigar Humidor Box	Luxury	120	60	0.0125
+pen-box	Luxury Pen Box	Luxury	80	40	0.0091
+scarf-box	Luxury Scarf Box	Luxury	96	48	0.0111
+chocolate-luxury-box	Luxury Chocolate Box	Luxury	104	52	0.0105
+trophy-box	Trophy / Award Box	Luxury	160	80	0.0167
