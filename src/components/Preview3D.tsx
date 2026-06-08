@@ -1,9 +1,10 @@
 import { useRef, useMemo, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows, Float } from '@react-three/drei';
+import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
-import { BoxDimensions, productTypes } from '@/lib/designRules';
-import { RotateCcw, Maximize2, Lightbulb, LightbulbOff, Axis3d } from 'lucide-react';
+import { BoxDimensions, ProductType, productTypes } from '@/lib/designRules';
+import { RotateCcw, Lightbulb, Axis3d } from 'lucide-react';
 
 import { PopcornBox } from './models/PopcornBox';
 import { PizzaBox } from './models/PizzaBox';
@@ -56,6 +57,29 @@ import {
   LuxuryRigidBox,
   MedicineBox,
 } from './models/SecondaryModels';
+import { WatchBox } from './models/WatchBox';
+import { JewelleryBox } from './models/JewelleryBox';
+import { RingBox } from './models/RingBox';
+import { SpiritsBox } from './models/SpiritsBox';
+import { CigarBox } from './models/CigarBox';
+import { LuxuryPenBox } from './models/LuxuryPenBox';
+import { LuxuryScarfBox } from './models/LuxuryScarfBox';
+import { LuxuryChocolateBox } from './models/LuxuryChocolateBox';
+import { TrophyBox } from './models/TrophyBox';
+import { InjectionBox } from './models/InjectionBox';
+import { SurgicalBox } from './models/SurgicalBox';
+import { BubbleMailer } from './models/BubbleMailer';
+import { PolyMailer } from './models/PolyMailer';
+import { ZipLockPouch } from './models/ZipLockPouch';
+import { SpoutPouch } from './models/SpoutPouch';
+import { SideGussetPouch } from './models/SideGussetPouch';
+import { RetortPouch } from './models/RetortPouch';
+import { SachetPouch } from './models/SachetPouch';
+import { ToteBag } from './models/ToteBag';
+import { WindowBox } from './models/WindowBox';
+import { HamperBox } from './models/HamperBox';
+import { LuxuryBag } from './models/LuxuryBag';
+import { WeddingBox } from './models/WeddingBox';
 
 interface ProductModelProps {
   productId: string | null;
@@ -74,7 +98,7 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
   // Find the default dimensions for this product to compute scale ratios
   const defaultDims = useMemo(() => {
     if (!productId) return { length: 10, width: 10, height: 10 };
-    const product = productTypes.find((p: any) => p.id === productId);
+    const product = productTypes.find((p: ProductType) => p.id === productId);
     return product?.defaultDimensions || { length: 10, width: 10, height: 10 };
   }, [productId]);
 
@@ -94,108 +118,159 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
   }, [dimensions]);
 
   const model = useMemo(() => {
+    const p = { color, autoRotate, textureUrl, bgTextureUrl, activeFaces };
     switch (productId) {
       case 'popcorn-box':
-        return <PopcornBox {...props} />;
+        return <PopcornBox {...p} />;
       case 'pizza-box':
-        return <PizzaBox {...props} />;
+        return <PizzaBox {...p} />;
       case 'burger-box':
-        return <BurgerBox {...props} />;
+        return <BurgerBox {...p} />;
       case 'biriyani-box':
-        return <BiriyaniBox {...props} />;
+        return <BiriyaniBox {...p} />;
       case 'bakery-box':
-        return <BakeryBox {...props} />;
+        return <BakeryBox {...p} />;
       case 'fancy-cake-box':
-        return <FancyCakeBox {...props} />;
+        return <FancyCakeBox {...p} />;
       case 'cake-box':
       case 'fresh-cream-cake-box':
       case 'pastries-box':
-        return <PastriesBox {...props} />;
+        return <PastriesBox {...p} />;
       case 'plum-cake-box':
-        return <PlumCakeBox {...props} />;
+        return <PlumCakeBox {...p} />;
       case 'cup-cake-box':
-        return <CupCakeBox {...props} />;
+        return <CupCakeBox {...p} />;
       case 'cheese-box':
-        return <CheeseBox {...props} />;
+        return <CheeseBox {...p} />;
       case 'chicken-box':
-        return <ChickenBox {...props} />;
+        return <ChickenBox {...p} />;
       case 'fried-chicken-box':
-        return <FriedChickenBox {...props} />;
+        return <FriedChickenBox {...p} />;
+      case 'chocolate-luxury-box':
+        return <LuxuryChocolateBox {...p} />;
       case 'chocolate-box':
-        return <ChocolateBox {...props} />;
+        return <ChocolateBox {...p} />;
       case 'cookies-box':
-        return <CookiesBox {...props} />;
+        return <CookiesBox {...p} />;
       case 'dosa-box':
-        return <DosaBox {...props} />;
+        return <DosaBox {...p} />;
       case 'french-fries-box':
-        return <FrenchFriesBox {...props} />;
+        return <FrenchFriesBox {...p} />;
       case 'hotdog-box':
-        return <HotdogBox {...props} />;
+        return <HotdogBox {...p} />;
       case 'meal-box':
-        return <MealBox {...props} />;
+        return <MealBox {...p} />;
       case 'nuts-spices-box':
-        return <NutsSpicesBox {...props} />;
+        return <NutsSpicesBox {...p} />;
+      case 'poly-mailer':
+        return <PolyMailer {...p} />;
+      case 'bubble-mailer':
+        return <BubbleMailer {...p} />;
       case 'nuggets-box':
       case 'instant-food-box':
       case 'meat-box':
       case 'sweet-box':
-        return <NuggetsBox {...props} />;
+        return <NuggetsBox {...p} />;
       case 'sea-foods-box':
-        return <SeaFoodBox {...props} />;
+        return <SeaFoodBox {...p} />;
       case 'sandwich-box':
-        return <SandwichBox {...props} />;
+        return <SandwichBox {...p} />;
       case 'savouries-box':
-        return <SavouriesBox {...props} />;
+        return <SavouriesBox {...p} />;
       case 'dip-tea-box':
       case 'fancy-tea-box':
-        return <DipTeaBox {...props} />;
+        return <DipTeaBox {...p} />;
       case 'tea-box':
-        return <TeaBox {...props} />;
+        return <TeaBox {...p} />;
       case 'shawarma-box':
-        return <ShawarmaBox {...props} />;
+        return <ShawarmaBox {...p} />;
       case 'triangular-cake-slice-box':
-        return <TriangularCakeBox {...props} />;
+        return <TriangularCakeBox {...p} />;
       case 'dates-box':
-        return <DatesBox {...props} />;
+        return <DatesBox {...p} />;
       case 'carrier-bag':
-        return <CarrierBoxPremium {...props} />;
+        return <CarrierBoxPremium {...p} />;
       case 'gift-box':
-        return <GiftBoxPremium {...props} />;
+        return <GiftBoxPremium {...p} />;
       case 'garment-box':
-        return <GarmentBox {...props} />;
+        return <GarmentBox {...p} />;
       case 'shirt-box':
-        return <ShirtBox {...props} />;
+        return <ShirtBox {...p} />;
       case 'shoe-box':
-        return <ShoeBoxPremium {...props} />;
+        return <ShoeBoxPremium {...p} />;
       case 'phone-box':
-        return <PhoneBoxPremium {...props} />;
+        return <PhoneBoxPremium {...p} />;
       case 'gadget-box':
-        return <GadgetBoxPremium {...props} />;
+        return <GadgetBoxPremium {...p} />;
       case 'laptop-box':
-        return <LaptopBoxPremium {...props} />;
+        return <LaptopBoxPremium {...p} />;
       case 'stand-pouch':
-        return <StandUpPouchPremium {...props} />;
+        return <StandUpPouchPremium {...p} />;
       case 'flat-pouch':
-        return <FlatPouchPremium {...props} />;
+        return <FlatPouchPremium {...p} />;
       case 'mailer-box':
-        return <MailerBoxPremium {...props} />;
+        return <MailerBoxPremium {...p} />;
       case 'shipping-box':
-        return <ShippingBoxPremium {...props} />;
+        return <ShippingBoxPremium {...p} />;
       case 'subscription-box':
-        return <SubscriptionBoxPremium {...props} />;
+        return <SubscriptionBoxPremium {...p} />;
       case 'medicine-box':
-        return <MedicineBox {...props} />;
+        return <MedicineBox {...p} />;
+      case 'injection-box':
+        return <InjectionBox {...p} />;
+      case 'surgical-box':
+        return <SurgicalBox {...p} />;
       case 'supplement-box':
-        return <StandardBox {...props} dimensions={[0.7, 1.1, 0.7]} />;
+        return <StandardBox {...p} dimensions={[0.7, 1.1, 0.7]} />;
       case 'perfume-box':
-        return <PerfumeBox {...props} />;
+        return <PerfumeBox {...p} />;
+      case 'book-mailer':
+      case 'tube-mailer':
+        return <MailerBox {...p} dimensions={[25, 35, 5]} />;
       case 'cosmetic-box':
-        return <StandardBox {...props} dimensions={[0.9, 0.55, 0.75]} />;
+        return <StandardBox {...p} dimensions={[0.9, 0.55, 0.75]} />;
       case 'luxury-rigid':
-        return <LuxuryRigidBox {...props} />;
+        return <LuxuryRigidBox {...p} />;
+      case 'watch-box':
+      case 'smartwatch-box':
+        return <WatchBox {...p} />;
+      case 'jewellery-box':
+        return <JewelleryBox {...p} />;
+      case 'ring-box':
+        return <RingBox {...p} />;
+      case 'spirits-box':
+        return <SpiritsBox {...p} />;
+      case 'cigar-box':
+        return <CigarBox {...p} />;
+      case 'pen-box':
+        return <LuxuryPenBox {...p} />;
+      case 'scarf-box':
+        return <LuxuryScarfBox {...p} />;
+      case 'trophy-box':
+        return <TrophyBox {...p} />;
+      case 'zip-pouch':
+        return <ZipLockPouch {...p} />;
+      case 'spout-pouch':
+        return <SpoutPouch {...p} />;
+      case 'gusset-pouch':
+        return <SideGussetPouch {...p} />;
+      case 'retort-pouch':
+        return <RetortPouch {...p} />;
+      case 'sachet-pouch':
+        return <SachetPouch {...p} />;
+      case 'tote-bag':
+        return <ToteBag {...p} />;
+      case 'window-box':
+        return <WindowBox {...p} />;
+      case 'hamper-box':
+        return <HamperBox {...p} />;
+      case 'luxury-bag':
+        return <LuxuryBag {...p} />;
+      case 'wedding-box':
+        return <WeddingBox {...p} />;
       default:
         // Fallback: dimension-based generic box
-        return <StandardBox {...props} dimensions={[
+        return <StandardBox {...p} dimensions={[
           dimensions.length * 0.07,
           dimensions.height * 0.07,
           dimensions.width * 0.07,
@@ -236,7 +311,7 @@ const Preview3D = ({
   const [autoRotate, setAutoRotate] = useState(false);
   const [lightsOn, setLightsOn] = useState(true);
   const [showAxis, setShowAxis] = useState(false);
-  const controlsRef = useRef<any>(null);
+  const controlsRef = useRef<OrbitControlsImpl>(null);
 
   return (
     <div className="premium-card p-4 flex flex-col h-full bg-secondary/20">
@@ -271,7 +346,7 @@ const Preview3D = ({
         <Canvas camera={{ position: [5, 4, 6], fov: 45 }} gl={{ preserveDrawingBuffer: true }}>
           {lightsOn ? (
             <>
-              <Environment preset="city" intensity={0.5} />
+              <Environment preset="city" environmentIntensity={0.5} />
               <ambientLight intensity={0.85} />
               <directionalLight position={[8, 10, 5]} intensity={0.4} castShadow />
               <directionalLight position={[-8, 5, -5]} intensity={0.2} />

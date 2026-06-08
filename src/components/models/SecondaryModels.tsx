@@ -49,7 +49,7 @@ export const StandardBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activ
 };
 
 // Mailer box: two-part (base + lid that wraps over)
-export const MailerBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFaces }: Props) => {
+export const MailerBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFaces, dimensions = [1.4, 0.42, 1.0] }: Props & { dimensions?: [number, number, number] }) => {
   const groupRef = useRef<THREE.Group>(null!);
   const texture = useTexture(textureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
   const bgTex = useTexture(bgTextureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');

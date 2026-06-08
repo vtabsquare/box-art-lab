@@ -229,7 +229,14 @@ function drawSportStrike(accent: string): fabric.Object[] {
 
 // ─── Main Dispatcher ─────────────────────────────────────────────────────────
 
-export function buildTemplateObjects(canvas: fabric.Canvas, tmpl: DesignTemplate): fabric.Object[] {
+export function buildTemplateObjects(
+  canvas: fabric.Canvas,
+  tmpl: DesignTemplate,
+  /** When the user has chosen a custom color, pass it here so vertical-stripe
+   *  templates blend the user's color with the template's accent instead of
+   *  completely overriding both stripe colours with the template's own palette. */
+  bgColorOverride?: string
+): fabric.Object[] {
   // Remove old template layer objects
   const toRemove = canvas.getObjects().filter((o: any) => o.tmplLayer === true);
   toRemove.forEach((o) => canvas.remove(o));
@@ -237,9 +244,14 @@ export function buildTemplateObjects(canvas: fabric.Canvas, tmpl: DesignTemplate
   let objs: fabric.Object[] = [];
 
   switch (tmpl.style) {
-    case 'vertical-stripes':
-      objs = drawVerticalStripes(tmpl.colors, tmpl.stripeColor ?? tmpl.accent);
+    case 'vertical-stripes': {
+      // Use the user's colour as the even-stripe base when provided
+      const stripeColors: [string, string] = bgColorOverride
+        ? [bgColorOverride, tmpl.colors[1]]
+        : tmpl.colors;
+      objs = drawVerticalStripes(stripeColors, tmpl.stripeColor ?? tmpl.accent);
       break;
+    }
     case 'diagonal-stripes':
       objs = drawDiagonalStripes(tmpl.accent);
       break;

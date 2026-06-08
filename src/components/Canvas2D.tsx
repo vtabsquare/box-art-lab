@@ -125,13 +125,16 @@ const Canvas2D = ({ design, productName, logoUrl, colorPreference, onTextureRead
     };
   }, []); // Run once
 
-  // 2a. Template pattern layer — runs independently whenever templateOverride changes
+  // 2a. Template pattern layer — re-runs whenever templateOverride OR colorPreference changes
+  //     so that picking a color while a template is active (or vice-versa) always produces
+  //     the correct combined result without one control silently overriding the other.
   useEffect(() => {
     const canvas = fabricRef.current;
     if (!canvas) return;
 
     if (templateOverride) {
-      buildTemplateObjects(canvas, templateOverride);
+      // Pass the current user color so vertical-stripe templates can blend it in
+      buildTemplateObjects(canvas, templateOverride, colorPreference || undefined);
     } else {
       clearTemplateObjects(canvas);
     }
@@ -148,7 +151,7 @@ const Canvas2D = ({ design, productName, logoUrl, colorPreference, onTextureRead
 
     canvas.renderAll();
     setTimeout(() => updateTexture(), 50);
-  }, [templateOverride]);
+  }, [templateOverride, colorPreference]);
 
   // 2. Sync Props to Canvas Objects
   useEffect(() => {
@@ -162,9 +165,13 @@ const Canvas2D = ({ design, productName, logoUrl, colorPreference, onTextureRead
     const subtitle = objs.find(o => o.id === 'subtitle') as fabric.Textbox;
     
     // Update Background Color / Gradient
-    // Priority: colorPreference > template > design colors
+    // Color and template are fully independent — both can be active simultaneously:
+    // • Selecting a color sets the background base (works with or without a template)
+    // • Selecting a template adds its pattern/style layer on top (works with or without a color)
+    // • When both are active: color fills the bg, template pattern overlays it
     let colors: string[];
     if (colorPreference) {
+      // User-chosen color always drives the background, even when a template is active
       colors = [colorPreference, colorPreference];
     } else if (templateOverride) {
       colors = [templateOverride.colors[0], templateOverride.colors[1]];
