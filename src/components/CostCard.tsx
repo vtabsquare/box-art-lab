@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { TrendingUp, Package, Settings, Zap, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { TrendingUp, Package, Settings, Zap, RefreshCw, Wifi, WifiOff, Mail } from 'lucide-react';
 import { MinimumCost } from '@/lib/utils';
 
 interface CostCardProps {
@@ -13,9 +13,10 @@ interface CostCardProps {
   pricingLoading?: boolean;
   onRefresh?: () => void;
   lastUpdated?: Date | null;
+  onGetQuote?: () => void;
 }
 
-const CostCard = ({ cost, productName, dimensions, pricingLoading, onRefresh, lastUpdated }: CostCardProps) => {
+const CostCard = ({ cost, productName, dimensions, pricingLoading, onRefresh, lastUpdated, onGetQuote }: CostCardProps) => {
   const lastUpdatedStr = lastUpdated
     ? lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     : null;
@@ -164,6 +165,19 @@ const CostCard = ({ cost, productName, dimensions, pricingLoading, onRefresh, la
           </p>
         </div>
       </div>
+
+      {/* Get a Quote Button */}
+      {onGetQuote && (
+        <div className="mt-4 pt-4 border-t border-white/[0.06]">
+          <button
+            onClick={onGetQuote}
+            className="w-full py-3 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-body font-semibold rounded-xl transition-all duration-300 shadow-md hover:shadow-lg flex items-center justify-center gap-2 hover:shadow-amber-500/20 border border-amber-400/20"
+          >
+            <Mail className="w-4 h-4" />
+            <span>Get a Quote</span>
+          </button>
+        </div>
+      )}
 
       {/* Footer Note */}
       <div className="mt-auto pt-6">

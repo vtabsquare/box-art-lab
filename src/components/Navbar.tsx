@@ -70,7 +70,7 @@ const Navbar = () => {
           {/* Right Section: Nav, Toggle, CTA, Mobile Menu */}
           <div className="flex items-center gap-2 md:gap-4">
             {/* Desktop nav */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="flex max-lg:hidden items-center gap-1">
               {navLinks.map((link) => (
                 <button
                   key={link.path}
@@ -97,15 +97,6 @@ const Navbar = () => {
               )}
             </button>
 
-            {/* Desktop CTA */}
-            <div className="hidden lg:block">
-              <button
-                onClick={() => handleNav('/studio')}
-                className="btn-primary text-sm px-6 py-2.5 whitespace-nowrap"
-              >
-                Get a Quote
-              </button>
-            </div>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -140,12 +131,7 @@ const Navbar = () => {
                   {link.label}
                 </button>
               ))}
-              <button
-                onClick={() => handleNav('/studio')}
-                className="btn-primary text-sm mt-3 w-full"
-              >
-                Get a Quote
-              </button>
+
             </div>
           </motion.div>
         )}

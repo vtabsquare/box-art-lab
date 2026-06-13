@@ -118,6 +118,12 @@ const RegisterPage = () => {
     try {
       const isValid = verifyOTP(formData.email, code);
       if (isValid) {
+        // Store details in localStorage for quote flow
+        localStorage.setItem('user_name', formData.name);
+        localStorage.setItem('user_email', formData.email);
+        localStorage.setItem('user_mobile', formData.mobile);
+        localStorage.setItem('user_location', formData.location);
+
         // Store data in Google Sheets
         await storeVisitorData(formData);
         setStep('success');

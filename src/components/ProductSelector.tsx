@@ -235,8 +235,7 @@ const ProductSelector = ({ selectedProduct, onSelect }: ProductSelectorProps) =>
                     style={{ backgroundImage: `url(${getBackgroundImage(product.name)})` }}
                   />
                   
-                  {/* Overlay gradient to ensure text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/70 to-black/20 group-hover:via-black/60 transition-colors duration-500" />
+                  {/* Overlay gradient removed for better view of product images */}
                   
                   {/* Decorative hover tint */}
                   <div className="absolute inset-0 bg-amber-500/0 group-hover:bg-amber-500/10 transition-colors duration-500 mix-blend-overlay" />

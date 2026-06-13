@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+// mode: 'editor' | 'preview' | 'both' (default 'both' for backward compat)
 import { fabric } from 'fabric';
 import { DesignConfig } from '@/lib/designRules';
 import { DesignTemplate } from '@/lib/designTemplates';
@@ -9,18 +10,20 @@ interface Canvas2DProps {
   design: DesignConfig | null;
   productName: string;
   logoUrl: string | null;
+  /** URL of the uploaded design/artwork file — applied as a full-bleed background */
+  designFileUrl?: string | null;
   colorPreference: string;
   onTextureReady?: (dataUrl: string, bgDataUrl: string) => void;
   templateOverride?: DesignTemplate | null;
+  mode?: 'editor' | 'preview' | 'both';
 }
 
-const Canvas2D = ({ design, productName, logoUrl, colorPreference, onTextureReady, templateOverride }: Canvas2DProps) => {
+const Canvas2D = ({ design, productName, logoUrl, designFileUrl, colorPreference, onTextureReady, templateOverride, mode = 'both' }: Canvas2DProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<fabric.Canvas | null>(null);
   
   // Track alignment tools state
   const [activeObj, setActiveObj] = useState<fabric.Object | null>(null);
-  const [activeTab, setActiveTab] = useState<'editor'|'preview'>('editor');
 
   // 1. Initialize Canvas & Static Elements
   useEffect(() => {
@@ -112,6 +115,8 @@ const Canvas2D = ({ design, productName, logoUrl, colorPreference, onTextureRead
     canvas.on('object:moving', onModify);
     canvas.on('object:scaling', onModify);
     canvas.on('object:rotating', onModify);
+    // Live update on every keystroke inside a textbox
+    canvas.on('text:changed', onModify);
     
     canvas.on('selection:created', (e) => setActiveObj(e.selected?.[0] || null));
     canvas.on('selection:updated', (e) => setActiveObj(e.selected?.[0] || null));
@@ -206,8 +211,41 @@ const Canvas2D = ({ design, productName, logoUrl, colorPreference, onTextureRead
       subtitle.set('fill', templateOverride?.textColor ? `${templateOverride.textColor}BB` : 'rgba(255,255,255,0.7)');
     }
 
-    // Handle Logo
-    const existingLogo = objs.find(o => o.id === 'logo') as fabric.Image;
+    // ── Handle uploaded design/artwork as full-bleed background ──
+    const existingDesignBg = objs.find(o => (o as any).id === 'design-bg') as fabric.Image | undefined;
+    if (designFileUrl) {
+      // Only reload when the URL actually changes
+      if (!existingDesignBg || (existingDesignBg as any).getSrc() !== designFileUrl) {
+        fabric.Image.fromURL(designFileUrl, (img: any) => {
+          // Scale to fill the full 512×512 canvas
+          const scaleX = 512 / (img.width  || 512);
+          const scaleY = 512 / (img.height || 512);
+          const scale  = Math.max(scaleX, scaleY); // cover mode
+          img.set({
+            id: 'design-bg',
+            left: 256, top: 256,
+            originX: 'center', originY: 'center',
+            scaleX: scale, scaleY: scale,
+            selectable: false, evented: false,
+          });
+          if (existingDesignBg) canvas.remove(existingDesignBg);
+          canvas.add(img);
+          // Place just above the solid bg rect but below everything else
+          canvas.sendToBack(img);
+          canvas.sendToBack(canvas.getObjects().find((o: any) => o.id === 'bg')!);
+          canvas.renderAll();
+          updateTexture();
+        }, { crossOrigin: 'anonymous' });
+      }
+    } else {
+      // Design removed — delete the layer
+      if (existingDesignBg) {
+        canvas.remove(existingDesignBg);
+      }
+    }
+
+    // ── Handle Logo ──
+    const existingLogo = objs.find(o => (o as any).id === 'logo') as fabric.Image;
     if (logoUrl) {
       if (!existingLogo || (existingLogo as any).getSrc() !== logoUrl) {
         // Need to load new logo
@@ -242,7 +280,7 @@ const Canvas2D = ({ design, productName, logoUrl, colorPreference, onTextureRead
     // Render & export
     canvas.renderAll();
     updateTexture();
-  }, [design, productName, logoUrl, colorPreference, templateOverride]);
+  }, [design, productName, logoUrl, designFileUrl, colorPreference, templateOverride]);
 
   // Texture updater
   const updateTexture = () => {
@@ -300,67 +338,98 @@ const Canvas2D = ({ design, productName, logoUrl, colorPreference, onTextureRead
     updateTexture();
   };
 
-  return (
-    <div className="premium-card p-4 flex flex-col h-full bg-secondary/20">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex bg-black/20 p-1 rounded-lg">
-          <button 
-            onClick={() => setActiveTab('editor')} 
-            className={`text-[10px] px-3 py-1.5 rounded-md font-body transition-colors ${activeTab === 'editor' ? 'bg-amber-500 text-black font-semibold' : 'text-muted-foreground hover:text-white'}`}
-          >
-            Editor
-          </button>
-          <button 
-            onClick={() => setActiveTab('preview')} 
-            className={`text-[10px] px-3 py-1.5 rounded-md font-body transition-colors ${activeTab === 'preview' ? 'bg-amber-500 text-black font-semibold' : 'text-muted-foreground hover:text-white'}`}
-          >
-            2D Preview
-          </button>
-        </div>
-        
-        {/* Toolbar */}
-        {activeTab === 'editor' && (
+  // --- EDITOR-ONLY render ---
+  if (mode === 'editor') {
+    return (
+      <div className="premium-card p-4 flex flex-col h-full bg-secondary/20">
+        <div className="flex items-center justify-between mb-3">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-body">Text Editor</p>
           <div className="flex gap-1 bg-black/20 p-1 rounded-lg border border-white/5">
-            <button 
+            <button
               onClick={() => alignActiveObject('left')}
               disabled={!activeObj}
               className="p-1.5 rounded-md text-muted-foreground hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all"
               title="Align Left"
             ><AlignLeft size={14} /></button>
-            <button 
+            <button
               onClick={() => alignActiveObject('center')}
               disabled={!activeObj}
               className="p-1.5 rounded-md text-muted-foreground hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all"
               title="Center Horizontally"
             ><AlignCenter size={14} /></button>
-            <button 
+            <button
               onClick={() => alignActiveObject('right')}
               disabled={!activeObj}
               className="p-1.5 rounded-md text-muted-foreground hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all"
               title="Align Right"
             ><AlignRight size={14} /></button>
           </div>
-        )}
+        </div>
+        <div className="relative flex-1 flex justify-center items-center rounded-xl overflow-hidden min-h-[300px]">
+          <div className="w-full max-w-[512px] aspect-square shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-white/10 rounded overflow-hidden">
+            <canvas ref={canvasRef} id="fabric-canvas-2d" />
+            <div className="absolute bottom-3 left-3 right-3 text-center pointer-events-none">
+              <span className="bg-black/60 backdrop-blur-sm px-3 py-2 rounded-full text-[10px] text-white/90 font-body shadow-lg">
+                Drag, resize, or rotate elements to instantly update the 3D model
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
-      
+    );
+  }
+
+  // --- PREVIEW-ONLY render ---
+  if (mode === 'preview') {
+    return (
+      <div className="premium-card p-4 flex flex-col h-full bg-secondary/20">
+        <p className="text-xs text-muted-foreground uppercase tracking-wider font-body mb-3">2D Preview</p>
+        <div className="flex-1 flex justify-center items-center rounded-xl overflow-hidden min-h-[300px]">
+          <div className="w-full max-w-[512px] aspect-square rounded shadow-xl bg-black/40 border border-white/5 flex items-center justify-center overflow-hidden">
+            <img id="texture-preview-img" alt="2D Final Preview" className="w-full h-full object-cover" />
+          </div>
+        </div>
+        {/* Hidden canvas to keep Fabric.js logic alive */}
+        <canvas ref={canvasRef} id="fabric-canvas-2d" className="hidden" />
+      </div>
+    );
+  }
+
+  // --- BOTH (legacy fallback) ---
+  return (
+    <div className="premium-card p-4 flex flex-col h-full bg-secondary/20">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs text-muted-foreground uppercase tracking-wider font-body">2D Design Studio</p>
+        <div className="flex gap-1 bg-black/20 p-1 rounded-lg border border-white/5">
+          <button
+            onClick={() => alignActiveObject('left')}
+            disabled={!activeObj}
+            className="p-1.5 rounded-md text-muted-foreground hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all"
+            title="Align Left"
+          ><AlignLeft size={14} /></button>
+          <button
+            onClick={() => alignActiveObject('center')}
+            disabled={!activeObj}
+            className="p-1.5 rounded-md text-muted-foreground hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all"
+            title="Center Horizontally"
+          ><AlignCenter size={14} /></button>
+          <button
+            onClick={() => alignActiveObject('right')}
+            disabled={!activeObj}
+            className="p-1.5 rounded-md text-muted-foreground hover:bg-white/10 hover:text-white disabled:opacity-30 disabled:pointer-events-none transition-all"
+            title="Align Right"
+          ><AlignRight size={14} /></button>
+        </div>
+      </div>
       <div className="relative flex-1 flex justify-center items-center rounded-xl overflow-hidden min-h-[380px]">
-        
-        {/* Editor Tab */}
-        <div className={`w-full max-w-[512px] aspect-square shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-white/10 rounded overflow-hidden transition-opacity duration-300 ${activeTab === 'editor' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none absolute'}`}>
+        <div className="w-full max-w-[512px] aspect-square shadow-[0_0_40px_rgba(0,0,0,0.5)] border border-white/10 rounded overflow-hidden">
           <canvas ref={canvasRef} id="fabric-canvas-2d" />
-          {/* Helper tooltip */}
           <div className="absolute bottom-3 left-3 right-3 text-center pointer-events-none">
             <span className="bg-black/60 backdrop-blur-sm px-3 py-2 rounded-full text-[10px] text-white/90 font-body shadow-lg">
               Drag, resize, or rotate elements to instantly update the 3D model
             </span>
           </div>
         </div>
-        
-        {/* Preview Tab */}
-        <div className={`w-full max-w-[512px] aspect-square rounded shadow-xl bg-black/40 border border-white/5 flex items-center justify-center overflow-hidden transition-opacity duration-300 ${activeTab === 'preview' ? 'opacity-100 z-10' : 'opacity-0 pointer-events-none absolute'}`}>
-          <img id="texture-preview-img" alt="2D Final Preview" className="w-full h-full object-cover" />
-        </div>
-
       </div>
     </div>
   );
