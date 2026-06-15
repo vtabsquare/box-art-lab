@@ -349,11 +349,13 @@ export async function generatePDFInstance(config: PDFGenerateConfig): Promise<js
     currentY = addNotes(pdf, pageWidth, currentY, config.notes);
   }
 
-  // --- PAGE 2: Visual Previews ---
+  // --- PAGE 2: Visual Previews & Artworks ---
   const preview3DEl = document.getElementById('preview-3d-container');
+  const scaleViewEl = document.getElementById('scale-view-2d-container');
   const canvas2DEl = document.getElementById('fabric-canvas-2d') as HTMLCanvasElement;
   
-  if (preview3DEl || canvas2DEl) {
+  if (preview3DEl || scaleViewEl || canvas2DEl) {
+    // We force this onto Page 2
     pdf.addPage();
     currentY = 0;
     pageNumber++;
@@ -363,13 +365,20 @@ export async function generatePDFInstance(config: PDFGenerateConfig): Promise<js
     pdf.setFont('helvetica', 'bold');
     pdf.setFontSize(FONTS.subheading.size);
     setColor(pdf, 'Text', COLORS.primaryDark);
-    pdf.text('04. VISUAL RENDERS', 20, currentY);
+    pdf.text('04. PRODUCT VISUALS & DIELINE', 20, currentY);
     currentY += 15;
 
-    const contentWidth = pageWidth - 40; // 20mm padding each side
+    // Grid layout: 2 columns
+    // Left column: x = 20, Right column: x = 110
+    // Width per column = 80
+    const colWidth = (pageWidth - 50) / 2;
+    const leftColX = 20;
+    const rightColX = 20 + colWidth + 10;
     
-    // We will place images vertically centered beautifully
-    // 1. 3D Preview (Hero shot)
+    let leftY = currentY;
+    let rightY = currentY;
+
+    // --- LEFT COLUMN ITEM 1: 3D Preview ---
     if (preview3DEl) {
       try {
         const threeCanvas = preview3DEl.querySelector('canvas') as HTMLCanvasElement;
@@ -393,8 +402,8 @@ export async function generatePDFInstance(config: PDFGenerateConfig): Promise<js
           imgData = processCanvasToJPEG(threeCanvas);
         } else {
           const capturedCanvas = await html2canvas(preview3DEl, {
-            backgroundColor: '#ffffff', // Force white background for JPEG
-            scale: 1.5, // Reduced scale for smaller file size
+            backgroundColor: '#ffffff',
+            scale: 1.5,
             useCORS: true,
             logging: false,
           });
@@ -402,52 +411,62 @@ export async function generatePDFInstance(config: PDFGenerateConfig): Promise<js
         }
 
         if (imgData) {
-          // Hero image takes full width, elegant crop
-          const imgWidth = contentWidth;
-          const imgHeight = imgWidth * 0.75; // 4:3 aspect
+          const imgWidth = colWidth;
+          const imgHeight = imgWidth * 0.8; // 5:4 aspect for column
           
-          // Subtle frame
           setColor(pdf, 'Fill', COLORS.surfaceLight);
           setColor(pdf, 'Draw', COLORS.borderLight);
           pdf.setLineWidth(0.1);
-          pdf.rect(20, currentY, imgWidth, imgHeight, 'FD');
+          pdf.rect(leftColX, leftY, imgWidth, imgHeight, 'FD');
           
-          pdf.addImage(imgData, 'JPEG', 20, currentY, imgWidth, imgHeight);
+          pdf.addImage(imgData, 'JPEG', leftColX, leftY, imgWidth, imgHeight);
           
-          // Label
           pdf.setFont('helvetica', 'bold');
           pdf.setFontSize(FONTS.small.size);
           setColor(pdf, 'Text', COLORS.textMuted);
-          pdf.text('3D STRUCTURAL RENDER', 20, currentY + imgHeight + 6);
+          pdf.text('VISUAL RENDER', leftColX, leftY + imgHeight + 6);
           
-          currentY += imgHeight + 25;
+          leftY += imgHeight + 15;
         }
       } catch (err) {
         console.warn('Could not capture 3D preview:', err);
       }
     }
 
-    // Check if we need a new page for 2D design
-    if (canvas2DEl && currentY > pageHeight - 120) {
-      pdf.addPage();
-      currentY = 0;
-      pageNumber++;
-      currentY = addHeader(pdf, pageWidth, config);
-      
-      pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(FONTS.subheading.size);
-      setColor(pdf, 'Text', COLORS.primaryDark);
-      pdf.text('05. FLAT ARTWORK / DIELINE', 20, currentY);
-      currentY += 15;
-    } else if (canvas2DEl && currentY <= pageHeight - 120) {
-      // If on same page, add subtitle
-      pdf.setFont('helvetica', 'bold');
-      pdf.setFontSize(FONTS.small.size);
-      setColor(pdf, 'Text', COLORS.primaryDark);
-      pdf.text('FLAT ARTWORK / DIELINE', 20, currentY - 5);
+    // --- RIGHT COLUMN ITEM 1: 2D Scale View ---
+    if (scaleViewEl) {
+      try {
+        const capturedCanvas = await html2canvas(scaleViewEl, {
+          backgroundColor: '#ffffff',
+          scale: 1.5,
+          useCORS: true,
+          logging: false,
+        });
+        const imgData = capturedCanvas.toDataURL('image/jpeg', 0.8);
+        
+        const aspect = capturedCanvas.height / capturedCanvas.width;
+        const imgWidth = colWidth;
+        const imgHeight = imgWidth * aspect;
+        
+        setColor(pdf, 'Draw', COLORS.borderLight);
+        pdf.setLineWidth(0.1);
+        pdf.rect(rightColX - 1, rightY - 1, imgWidth + 2, imgHeight + 2, 'D');
+
+        pdf.addImage(imgData, 'JPEG', rightColX, rightY, imgWidth, imgHeight);
+        
+        pdf.setFont('helvetica', 'bold');
+        pdf.setFontSize(FONTS.small.size);
+        setColor(pdf, 'Text', COLORS.textMuted);
+        pdf.text('2D SCALE VIEW', rightColX, rightY + imgHeight + 6);
+        
+        rightY += imgHeight + 15;
+      } catch (err) {
+        console.warn('Could not capture 2D scale view:', err);
+      }
     }
 
-    // 2. 2D Design Texture
+    // --- NEXT ITEM: Flat Artwork / Dieline ---
+    // Place it in the shorter column (masonry layout)
     if (canvas2DEl) {
       try {
         const fabricCanvas = (window as unknown as Record<string, unknown>).__fabricCanvas as { getObjects: () => { id: string; visible: boolean }[]; renderAll: () => void; toDataURL: (options: Record<string, unknown>) => string };
@@ -472,32 +491,38 @@ export async function generatePDFInstance(config: PDFGenerateConfig): Promise<js
         }
 
         if (imgData) {
-          // Keep aspect ratio
           const aspect = canvas2DEl.height / canvas2DEl.width;
-          let imgWidth = contentWidth;
+          let imgWidth = colWidth;
           let imgHeight = imgWidth * aspect;
+          
+          // Determine which column is shorter
+          const isLeftShorter = leftY <= rightY;
+          const targetX = isLeftShorter ? leftColX : rightColX;
+          const targetY = isLeftShorter ? leftY : rightY;
 
-          // Constrain height if too tall
-          const maxAllowedHeight = pageHeight - currentY - 30;
+          // Constrain height if too tall for the remaining page
+          const maxAllowedHeight = pageHeight - targetY - 25;
           if (imgHeight > maxAllowedHeight) {
             imgHeight = maxAllowedHeight;
             imgWidth = imgHeight / aspect;
           }
 
-          const xOffset = 20 + (contentWidth - imgWidth) / 2; // Center it
-
-          // Shadow / Frame
           setColor(pdf, 'Draw', COLORS.borderLight);
           pdf.setLineWidth(0.1);
-          pdf.rect(xOffset - 1, currentY - 1, imgWidth + 2, imgHeight + 2, 'D');
+          pdf.rect(targetX - 1, targetY - 1, imgWidth + 2, imgHeight + 2, 'D');
 
-          pdf.addImage(imgData, 'JPEG', xOffset, currentY, imgWidth, imgHeight);
+          pdf.addImage(imgData, 'JPEG', targetX, targetY, imgWidth, imgHeight);
           
-          // Label
           pdf.setFont('helvetica', 'bold');
           pdf.setFontSize(FONTS.small.size);
           setColor(pdf, 'Text', COLORS.textMuted);
-          pdf.text('TEXTURE MAP LAYOUT', xOffset, currentY + imgHeight + 6);
+          pdf.text('FLAT ARTWORK / DIELINE', targetX, targetY + imgHeight + 6);
+          
+          if (isLeftShorter) {
+            leftY += imgHeight + 15;
+          } else {
+            rightY += imgHeight + 15;
+          }
         }
       } catch (err) {
         console.warn('Could not capture 2D design:', err);

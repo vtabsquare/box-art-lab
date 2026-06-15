@@ -58,15 +58,19 @@ export const ChocolateBox = ({ color, autoRotate, textureUrl }: Props) => {
         const x = -W/2 + 0.1 + spacingX/2 + c * spacingX;
         const z = -D/2 + 0.1 + spacingZ/2 + r * spacingZ;
         
+        const isRound = (r + c) % 2 === 0;
+        const trayY = -H/2 + bt + 0.01;
+        const yPos = isRound ? trayY + 0.08 : trayY + 0.06;
+        
         items.push({
-          pos: [x, -H/2 + 0.05, z] as [number, number, number],
+          pos: [x, yPos, z] as [number, number, number],
           color: colors[(r * cols + c) % colors.length],
-          isRound: (r + c) % 2 === 0
+          isRound
         });
       }
     }
     return items;
-  }, [W, D, H]);
+  }, [W, D, H, bt]);
 
   return (
     <group ref={groupRef}>

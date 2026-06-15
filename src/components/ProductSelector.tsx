@@ -140,7 +140,21 @@ interface ProductSelectorProps {
 }
 
 const ProductSelector = ({ selectedProduct, onSelect }: ProductSelectorProps) => {
-  const [activeCategory, setActiveCategory] = useState<ProductCategory>('food');
+  const [activeCategory, setActiveCategory] = useState<ProductCategory>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = sessionStorage.getItem('activeCategory');
+      if (saved) return saved as ProductCategory;
+    }
+    return 'food';
+  });
+
+  const handleCategoryChange = (category: ProductCategory) => {
+    setActiveCategory(category);
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('activeCategory', category);
+    }
+  };
+
   const products = getProductsByCategory(activeCategory);
 
   return (
@@ -177,7 +191,7 @@ const ProductSelector = ({ selectedProduct, onSelect }: ProductSelectorProps) =>
               return (
                 <button
                   key={cat.category}
-                  onClick={() => setActiveCategory(cat.category)}
+                  onClick={() => handleCategoryChange(cat.category)}
                   className={`relative flex items-center gap-2.5 px-6 py-3 rounded-xl text-sm font-body transition-colors duration-300 z-10 outline-none ${
                     isActive
                       ? 'text-white font-semibold'
@@ -205,15 +219,16 @@ const ProductSelector = ({ selectedProduct, onSelect }: ProductSelectorProps) =>
         </motion.div>
 
         {/* Products Grid */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeCategory}
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.3 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
-          >
+        <div className="grid">
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={activeCategory}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+            >
             {products.map((product, i) => {
               const isSelected = selectedProduct?.id === product.id;
               return (
@@ -235,10 +250,11 @@ const ProductSelector = ({ selectedProduct, onSelect }: ProductSelectorProps) =>
                     style={{ backgroundImage: `url(${getBackgroundImage(product.name)})` }}
                   />
                   
-                  {/* Overlay gradient removed for better view of product images */}
+                  {/* Gradient Overlay for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10 transition-opacity duration-500 group-hover:opacity-0" />
                   
                   {/* Decorative hover tint */}
-                  <div className="absolute inset-0 bg-amber-500/0 group-hover:bg-amber-500/10 transition-colors duration-500 mix-blend-overlay" />
+                  <div className="absolute inset-0 bg-amber-500/0 group-hover:bg-amber-500/20 transition-colors duration-500 mix-blend-overlay" />
                   
                   {/* Selected indicator */}
                   {isSelected && (
@@ -286,7 +302,8 @@ const ProductSelector = ({ selectedProduct, onSelect }: ProductSelectorProps) =>
               );
             })}
           </motion.div>
-        </AnimatePresence>
+          </AnimatePresence>
+        </div>
       </div>
     </section>
   );

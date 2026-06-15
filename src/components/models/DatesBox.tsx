@@ -47,30 +47,7 @@ export const DatesBox = ({ color, autoRotate, textureUrl }: Props) => {
   const bt = 0.02; // border thickness
   const wBorder = 0.2; // window border size
 
-  // Generate 3D Dates
-  const dates = useMemo(() => {
-    const items = [];
-    const cols = 5;
-    const rows = 3;
-    const spacingX = (W - wBorder*2) / cols;
-    const spacingZ = (D - wBorder*2) / rows;
-    
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        // slight random offset and rotation
-        const x = -W/2 + wBorder + spacingX/2 + c * spacingX + (Math.random() - 0.5) * 0.05;
-        const z = -D/2 + wBorder + spacingZ/2 + r * spacingZ + (Math.random() - 0.5) * 0.05;
-        const rotY = Math.random() * Math.PI;
-        const rotZ = (Math.random() - 0.5) * 0.2;
-        
-        items.push({
-          pos: [x, -H/2 + 0.08, z] as [number, number, number],
-          rot: [0, rotY, rotZ] as [number, number, number],
-        });
-      }
-    }
-    return items;
-  }, [W, D]);
+
 
   return (
     <group ref={groupRef} position={[0, -H/2, 0]}>
@@ -102,19 +79,7 @@ export const DatesBox = ({ color, autoRotate, textureUrl }: Props) => {
         <meshStandardMaterial color="#f5f5f5" roughness={0.8} />
       </mesh>
 
-      {/* ════════ DATES ════════ */}
-      {dates.map((date, i) => (
-        <mesh key={i} castShadow position={date.pos} rotation={date.rot}>
-          <capsuleGeometry args={[0.06, 0.12, 16, 16]} />
-          {/* Glossy dark reddish-brown for dates */}
-          <meshPhysicalMaterial 
-            color="#3e1a0d" 
-            roughness={0.15} 
-            metalness={0.1}
-            clearcoat={0.3}
-          />
-        </mesh>
-      ))}
+
 
       {/* ════════ TOP LID FRAME & WINDOW ════════ */}
       <group position={[0, H - bt/2, 0]}>

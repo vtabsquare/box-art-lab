@@ -1,6 +1,6 @@
-import { useRef, useMemo, useState } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { OrbitControls, Environment, ContactShadows, Float } from '@react-three/drei';
+import { OrbitControls, Environment, ContactShadows, Float, Bounds, useBounds } from '@react-three/drei';
 import { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import { BoxDimensions, ProductType, productTypes } from '@/lib/designRules';
@@ -289,6 +289,15 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
   );
 };
 
+const FitBounds = ({ dimensions }: { dimensions: BoxDimensions }) => {
+  const bounds = useBounds();
+  useEffect(() => {
+    // Refresh bounds calculation and fit to screen
+    bounds.refresh().clip().fit();
+  }, [dimensions, bounds]);
+  return null;
+};
+
 interface Preview3DProps {
   dimensions: BoxDimensions;
   textureUrl: string | null;
@@ -362,21 +371,25 @@ const Preview3D = ({
             rotationIntensity={0}
             floatIntensity={autoRotate ? 0 : 0.3}
           >
-            <ProductModel
-              productId={productId}
-              dimensions={dimensions}
-              textureUrl={textureUrl}
-              bgTextureUrl={bgTextureUrl}
-              activeFaces={activeFaces}
-              colorPreference={colorPreference}
-              autoRotate={autoRotate}
-            />
+            <Bounds fit clip margin={1.2}>
+              <ProductModel
+                productId={productId}
+                dimensions={dimensions}
+                textureUrl={textureUrl}
+                bgTextureUrl={bgTextureUrl}
+                activeFaces={activeFaces}
+                colorPreference={colorPreference}
+                autoRotate={autoRotate}
+              />
+              <FitBounds dimensions={dimensions} />
+            </Bounds>
           </Float>
 
           <OrbitControls
             ref={controlsRef}
+            makeDefault
             enablePan={false}
-            maxDistance={12}
+            maxDistance={15}
             autoRotate={false}
             enableDamping
             dampingFactor={0.05}

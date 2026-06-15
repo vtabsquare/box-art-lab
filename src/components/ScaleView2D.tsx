@@ -550,7 +550,7 @@ const ScaleView2D: React.FC<ScaleView2DProps> = ({
   }
 
   return (
-    <div className="premium-card p-4 flex flex-col bg-secondary/20 h-full min-h-[440px]">
+    <div id="scale-view-2d-container" className="premium-card p-4 flex flex-col bg-secondary/20 h-full min-h-[440px]">
 
       {/* ── Header ── */}
       <div className="flex items-center justify-between mb-3 shrink-0">
