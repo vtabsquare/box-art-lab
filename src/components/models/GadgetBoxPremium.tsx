@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -34,8 +36,6 @@ export const GadgetBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, 
   // Hanger tab details
   const tabH = 0.25;
   const holeRadius = 0.04;
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const materials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
@@ -52,18 +52,18 @@ export const GadgetBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, 
   return (
     <group ref={groupRef} position={[0, -H / 2, 0]}>
       {/* ── Main Box Body (Closed) ── */}
-      <mesh castShadow receiveShadow material={materials} position={[0, H / 2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, H / 2, 0]}>
         <boxGeometry args={[W, H, D]} />
       </mesh>
 
       {/* ── Hanger Tab (Extends from the back panel) ── */}
       <group position={[0, H, -D / 2 + wall / 2]}>
         {/* Solid part of tab */}
-        <mesh castShadow material={materials} position={[0, tabH / 2, 0]}>
+        <mesh scale={0.999} castShadow material={materials} position={[0, tabH / 2, 0]}>
           <boxGeometry args={[W, tabH, wall]} />
         </mesh>
         {/* Simulate Euro Hole (Cutout) with a contrasting black cylinder */}
-        <mesh position={[0, tabH * 0.6, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} position={[0, tabH * 0.6, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <cylinderGeometry args={[holeRadius, holeRadius, wall + 0.002, 16]} />
           <meshBasicMaterial color="#000000" />
         </mesh>

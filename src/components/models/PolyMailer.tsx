@@ -56,22 +56,22 @@ export const PolyMailer = ({ color, autoRotate, textureUrl, bgTextureUrl, active
 
       {/* Front Face Logo Plane */}
       {frontTex && (
-        <mesh position={[0, 0, BD / 2 + 0.001]}>
+        <mesh scale={0.999} position={[0, 0, BD / 2 + 0.001]}>
           <planeGeometry args={[BW * 0.8, BH * 0.8]} />
           <meshPhysicalMaterial color="#fff" map={frontTex} roughness={0.4} clearcoat={0.7} clearcoatRoughness={0.3} transparent />
         </mesh>
       )}
 
       {/* ── SEAM LINES (plastic bags have very distinct sealed edge seams) ──── */}
-      <mesh position={[BW / 2, 0, 0]}>
+      <mesh scale={0.999} position={[BW / 2, 0, 0]}>
         <boxGeometry args={[0.02, BH, 0.005]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-BW / 2, 0, 0]}>
+      <mesh scale={0.999} position={[-BW / 2, 0, 0]}>
         <boxGeometry args={[0.02, BH, 0.005]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0, -BH / 2, 0]}>
+      <mesh scale={0.999} position={[0, -BH / 2, 0]}>
         <boxGeometry args={[BW, 0.02, 0.005]} />
         <primitive object={mOuter} />
       </mesh>
@@ -79,7 +79,7 @@ export const PolyMailer = ({ color, autoRotate, textureUrl, bgTextureUrl, active
       {/* ── TOP FLAP (Folded over to the back) ───────────────────────────────── */}
       <group position={[0, BH / 2 - 0.01, 0]} rotation={[Math.PI * 0.98, 0, 0]}>
         {/* The flap is essentially a thin plastic plane folded tight */}
-        <mesh position={[0, 0.25, 0]} castShadow>
+        <mesh scale={0.999} position={[0, 0.25, 0]} castShadow>
           <boxGeometry args={[BW, 0.5, 0.01]} />
           <primitive object={mOuter} />
         </mesh>

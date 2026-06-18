@@ -149,13 +149,13 @@ export const FrenchFriesBox = ({ color, autoRotate, textureUrl, bgTextureUrl, ac
       
       {/* Front Panel */}
       <group position={[0, 0, D_bot/2]} rotation={[angleX, 0, 0, 'YXZ']}>
-        <mesh castShadow receiveShadow geometry={frontGeo}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={frontGeo}>
           {baseMat}
         </mesh>
         
         {/* Logo / Text Plane */}
         {frontTex && (
-          <mesh position={[0, H_fb / 2, thickness + 0.005]}>
+          <mesh scale={0.999} position={[0, H_fb / 2, thickness + 0.005]}>
             <planeGeometry args={[W_bot * 0.9, H_fb * 0.6]} />
             <meshPhysicalMaterial map={frontTex} transparent depthWrite={false} roughness={0.7} />
           </mesh>
@@ -163,31 +163,31 @@ export const FrenchFriesBox = ({ color, autoRotate, textureUrl, bgTextureUrl, ac
       </group>
       
       {/* Back Panel */}
-      <mesh castShadow receiveShadow geometry={backGeo} position={[0, 0, -D_bot/2]} rotation={[angleX, Math.PI, 0, 'YXZ']}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={backGeo} position={[0, 0, -D_bot/2]} rotation={[angleX, Math.PI, 0, 'YXZ']}>
         {baseMat}
       </mesh>
 
       {/* Left Side */}
-      <mesh castShadow receiveShadow geometry={sideGeoLeft} position={[-W_bot/2, 0, 0]} rotation={[angleZ, -Math.PI/2, 0, 'YXZ']}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={sideGeoLeft} position={[-W_bot/2, 0, 0]} rotation={[angleZ, -Math.PI/2, 0, 'YXZ']}>
         {baseMat}
       </mesh>
 
       {/* Right Side */}
-      <mesh castShadow receiveShadow geometry={sideGeoRight} position={[W_bot/2, 0, 0]} rotation={[angleZ, Math.PI/2, 0, 'YXZ']}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={sideGeoRight} position={[W_bot/2, 0, 0]} rotation={[angleZ, Math.PI/2, 0, 'YXZ']}>
         {baseMat}
       </mesh>
 
       {/* Bottom */}
-      <mesh castShadow receiveShadow geometry={bottomGeo} position={[0, 0, 0]} rotation={[-Math.PI/2, 0, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={bottomGeo} position={[0, 0, 0]} rotation={[-Math.PI/2, 0, 0]}>
         {insideMat}
       </mesh>
       
       {/* Inner white liner to represent the inside of the box */}
       <group scale={[0.98, 0.98, 0.98]} position={[0, 0.01, 0]}>
-        <mesh geometry={frontGeo} position={[0, 0, D_bot/2]} rotation={[angleX, 0, 0, 'YXZ']}>{insideMat}</mesh>
-        <mesh geometry={backGeo} position={[0, 0, -D_bot/2]} rotation={[angleX, Math.PI, 0, 'YXZ']}>{insideMat}</mesh>
-        <mesh geometry={sideGeoLeft} position={[-W_bot/2, 0, 0]} rotation={[angleZ, -Math.PI/2, 0, 'YXZ']}>{insideMat}</mesh>
-        <mesh geometry={sideGeoRight} position={[W_bot/2, 0, 0]} rotation={[angleZ, Math.PI/2, 0, 'YXZ']}>{insideMat}</mesh>
+        <mesh scale={0.999} geometry={frontGeo} position={[0, 0, D_bot/2]} rotation={[angleX, 0, 0, 'YXZ']}>{insideMat}</mesh>
+        <mesh scale={0.999} geometry={backGeo} position={[0, 0, -D_bot/2]} rotation={[angleX, Math.PI, 0, 'YXZ']}>{insideMat}</mesh>
+        <mesh scale={0.999} geometry={sideGeoLeft} position={[-W_bot/2, 0, 0]} rotation={[angleZ, -Math.PI/2, 0, 'YXZ']}>{insideMat}</mesh>
+        <mesh scale={0.999} geometry={sideGeoRight} position={[W_bot/2, 0, 0]} rotation={[angleZ, Math.PI/2, 0, 'YXZ']}>{insideMat}</mesh>
       </group>
 
     </group>

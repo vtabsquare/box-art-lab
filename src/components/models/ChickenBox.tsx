@@ -66,25 +66,25 @@ export const ChickenBox = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef} position={[0, -(baseH + roofH)/2, 0]}>
       {/* Base Box */}
-      <mesh castShadow receiveShadow position={[0, baseH/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, baseH/2, 0]}>
         <boxGeometry args={[W, baseH, D]} />
         {mat}
       </mesh>
 
       <group position={[0, baseH, 0]}>
         {/* Front Roof Slope */}
-        <mesh castShadow receiveShadow position={[0, roofH/2, D/4]} rotation={[-roofAngle, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, roofH/2, D/4]} rotation={[-roofAngle, 0, 0]}>
           <planeGeometry args={[W, slopeLength]} />
           {mat}
         </mesh>
         {/* Back Roof Slope */}
-        <mesh castShadow receiveShadow position={[0, roofH/2, -D/4]} rotation={[roofAngle, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, roofH/2, -D/4]} rotation={[roofAngle, 0, 0]}>
           <planeGeometry args={[W, slopeLength]} />
           {mat}
         </mesh>
 
         {/* Left Gable Triangle */}
-        <mesh castShadow receiveShadow position={[-W/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[-W/2, 0, 0]}>
           <bufferGeometry>
             <float32BufferAttribute 
               attach="attributes-position" 
@@ -99,7 +99,7 @@ export const ChickenBox = ({ color, autoRotate, textureUrl }: Props) => {
         </mesh>
         
         {/* Right Gable Triangle */}
-        <mesh castShadow receiveShadow position={[W/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[W/2, 0, 0]}>
           <bufferGeometry>
             <float32BufferAttribute 
               attach="attributes-position" 
@@ -114,7 +114,7 @@ export const ChickenBox = ({ color, autoRotate, textureUrl }: Props) => {
         </mesh>
 
         {/* Top Handle */}
-        <mesh castShadow receiveShadow geometry={handleGeo} position={[0, roofH, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={handleGeo} position={[0, roofH, 0]}>
           {mat}
         </mesh>
       </group>

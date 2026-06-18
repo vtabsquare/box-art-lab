@@ -42,35 +42,35 @@ export const TrophyBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeF
   return (
     <group ref={groupRef} position={[0, BH / 2, 0]} scale={[0.8, 0.8, 0.8]}>
       {/* ── BASE TRAY ─────────────────────────────────────────────────────────── */}
-      <mesh position={[0, -BH / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2, 0]} castShadow>
         <boxGeometry args={[BW, wallT, BD]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0, 0, BD / 2 - wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, 0, BD / 2 - wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0, 0, -BD / 2 + wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, 0, -BD / 2 + wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-BW / 2 + wallT / 2, 0, 0]} castShadow>
+      <mesh scale={0.999} position={[-BW / 2 + wallT / 2, 0, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[BW / 2 - wallT / 2, 0, 0]} castShadow>
+      <mesh scale={0.999} position={[BW / 2 - wallT / 2, 0, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* ── INNER PADDING ────────────────────────────────────────────────────── */}
       {/* Soft thick padding filling the lower half of the box */}
-      <mesh position={[0, -BH / 2 + 0.15, 0]}>
+      <mesh scale={0.999} position={[0, -BH / 2 + 0.15, 0]}>
         <boxGeometry args={[BW - wallT * 2 - 0.02, 0.3, BD - wallT * 2 - 0.02]} />
         <primitive object={mInner} />
       </mesh>
       {/* Indentation for the trophy/award */}
-      <mesh position={[0, -BH / 2 + 0.28, 0]}>
+      <mesh scale={0.999} position={[0, -BH / 2 + 0.28, 0]}>
         <cylinderGeometry args={[0.3, 0.3, 0.06, 32]} />
         <meshBasicMaterial color="#e0e0e0" />
       </mesh>
@@ -78,14 +78,14 @@ export const TrophyBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeF
       {/* ── LID (Hinged at back top edge) ────────────────────────────────────── */}
       <group position={[0, BH / 2, -BD / 2 + wallT / 2]} rotation={[-Math.PI * 0.65, 0, 0]}>
         {/* Main top cover */}
-        <mesh position={[0, wallT / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[0, wallT / 2, BD / 2]} castShadow>
           <boxGeometry args={[BW, wallT, BD]} />
           <primitive object={mLidFace} />
         </mesh>
 
         {/* Inner lid logo */}
         {lidTex && (
-          <mesh position={[0, -0.01, BD / 2]} rotation={[Math.PI / 2, 0, 0]}>
+          <mesh scale={0.999} position={[0, -0.01, BD / 2]} rotation={[Math.PI / 2, 0, 0]}>
             <planeGeometry args={[1.2, 1.2]} />
             <meshPhysicalMaterial color="#fff" map={logoTex} roughness={0.9} transparent />
           </mesh>
@@ -93,7 +93,7 @@ export const TrophyBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeF
 
         {/* Front magnetic flap */}
         <group position={[0, wallT / 2, BD]} rotation={[-Math.PI * 0.3, 0, 0]}>
-          <mesh position={[0, 0, 0.15]} castShadow>
+          <mesh scale={0.999} position={[0, 0, 0.15]} castShadow>
             <boxGeometry args={[BW, wallT, 0.3]} />
             <primitive object={mOuter} />
           </mesh>

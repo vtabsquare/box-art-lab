@@ -33,22 +33,22 @@ export const PhoneBox = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef}>
       {/* Outer sleeve bottom half */}
-      <mesh castShadow position={[0, -0.3, 0]}>
+      <mesh scale={0.999} castShadow position={[0, -0.3, 0]}>
         <boxGeometry args={[0.72, 0.72, 0.72]} />
         {mat}
       </mesh>
       {/* Outer sleeve top half (raised like opening box) */}
-      <mesh castShadow position={[0, 0.52, 0]}>
+      <mesh scale={0.999} castShadow position={[0, 0.52, 0]}>
         <boxGeometry args={[0.72, 0.5, 0.72]} />
         {mat}
       </mesh>
       {/* Inner tray (showing phone silhouette inside) */}
-      <mesh position={[0, 0.05, 0.34]}>
+      <mesh scale={0.999} position={[0, 0.05, 0.34]}>
         <boxGeometry args={[0.55, 0.95, 0.04]} />
         <meshStandardMaterial color="#111111" roughness={0.05} metalness={0.9} />
       </mesh>
       {/* Phone screen visible on top face */}
-      <mesh position={[0, 0.78, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, 0.78, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.6, 0.6]} />
         <meshStandardMaterial
           color={texture ? '#ffffff' : boxColor}
@@ -58,7 +58,7 @@ export const PhoneBox = ({ color, autoRotate, textureUrl }: Props) => {
         />
       </mesh>
       {/* Top face brand label area */}
-      <mesh position={[0, 0.18, 0.362]}>
+      <mesh scale={0.999} position={[0, 0.18, 0.362]}>
         <planeGeometry args={[0.5, 0.3]} />
         <meshStandardMaterial color="#58A6FF" roughness={0.2} transparent opacity={0.7} />
       </mesh>

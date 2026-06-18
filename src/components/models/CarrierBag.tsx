@@ -32,44 +32,44 @@ export const CarrierBag = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef}>
       {/* Front face */}
-      <mesh castShadow position={[0, 0, 0.45]}>
+      <mesh scale={0.999} castShadow position={[0, 0, 0.45]}>
         <planeGeometry args={[0.9, 1.6]} />
         {mat}
       </mesh>
       {/* Back face */}
-      <mesh castShadow position={[0, 0, -0.45]} rotation={[0, Math.PI, 0]}>
+      <mesh scale={0.999} castShadow position={[0, 0, -0.45]} rotation={[0, Math.PI, 0]}>
         <planeGeometry args={[0.9, 1.6]} />
         {mat}
       </mesh>
       {/* Left face */}
-      <mesh castShadow position={[-0.45, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+      <mesh scale={0.999} castShadow position={[-0.45, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
         <planeGeometry args={[0.9, 1.6]} />
         {mat}
       </mesh>
       {/* Right face */}
-      <mesh castShadow position={[0.45, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+      <mesh scale={0.999} castShadow position={[0.45, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[0.9, 1.6]} />
         {mat}
       </mesh>
       {/* Bottom */}
-      <mesh castShadow position={[0, -0.8, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} castShadow position={[0, -0.8, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[0.9, 0.9]} />
         {mat}
       </mesh>
       {/* Gusset folds (side creases) */}
       {[-0.22, 0.22].map((x, i) => (
-        <mesh key={i} position={[x, 0, 0.45]} rotation={[0, i === 0 ? 0.3 : -0.3, 0]}>
+        <mesh scale={0.999} key={i} position={[x, 0, 0.45]} rotation={[0, i === 0 ? 0.3 : -0.3, 0]}>
           <planeGeometry args={[0.05, 1.6]} />
           <meshStandardMaterial color={texture ? '#ffffff' : '#c8b89a'} side={THREE.DoubleSide} />
         </mesh>
       ))}
       {/* Handle - left arc */}
-      <mesh position={[-0.2, 0.95, 0]} rotation={[0, 0, 0]}>
+      <mesh scale={0.999} position={[-0.2, 0.95, 0]} rotation={[0, 0, 0]}>
         <torusGeometry args={[0.18, 0.018, 8, 24, Math.PI]} />
         <meshStandardMaterial color="#8B6914" roughness={0.6} />
       </mesh>
       {/* Handle - right arc */}
-      <mesh position={[0.2, 0.95, 0]} rotation={[0, 0, 0]}>
+      <mesh scale={0.999} position={[0.2, 0.95, 0]} rotation={[0, 0, 0]}>
         <torusGeometry args={[0.18, 0.018, 8, 24, Math.PI]} />
         <meshStandardMaterial color="#8B6914" roughness={0.6} />
       </mesh>

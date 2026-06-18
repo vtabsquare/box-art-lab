@@ -39,7 +39,7 @@ export const NuggetsBox = ({ color, autoRotate, textureUrl }: Props) => {
         A very clean, perfectly proportioned wide rectangular carton.
         This represents the standard frozen food / nuggets box.
       */}
-      <mesh castShadow receiveShadow position={[0, H/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, 0]}>
         <boxGeometry args={[W, H, D]} />
         {mat}
       </mesh>

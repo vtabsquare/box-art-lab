@@ -65,14 +65,14 @@ export const SpoutPouch = ({ color, autoRotate, textureUrl, bgTextureUrl, active
   return (
     <group ref={groupRef} position={[0, 0, 0]} scale={[1.1, 1.1, 1.1]}>
       {/* ── POUCH BODY ──────────────────────────────────────────────────────── */}
-      <mesh position={[-BW / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[-BW / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]} castShadow>
         <extrudeGeometry args={[shape, extrudeSettings]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* Front Face Logo Plane */}
       {frontTex && (
-        <mesh position={[0, 0, B_Depth / 3 + 0.04]} rotation={[-0.05, 0, 0]}>
+        <mesh scale={0.999} position={[0, 0, B_Depth / 3 + 0.04]} rotation={[-0.05, 0, 0]}>
           <planeGeometry args={[BW * 0.8, BH * 0.7]} />
           <meshPhysicalMaterial color="#fff" map={frontTex} roughness={0.3} clearcoat={0.8} transparent />
         </mesh>
@@ -80,22 +80,22 @@ export const SpoutPouch = ({ color, autoRotate, textureUrl, bgTextureUrl, active
 
       {/* ── HEAT SEAL EDGES ──────────────────────────────────────────────────── */}
       {/* Top seal */}
-      <mesh position={[0, BH / 2 - 0.05, 0]}>
+      <mesh scale={0.999} position={[0, BH / 2 - 0.05, 0]}>
         <boxGeometry args={[BW, 0.1, T_Depth + 0.01]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Cut corner for spout */}
-      <mesh position={[-BW / 2 + 0.15, BH / 2 - 0.15, 0]} rotation={[0, 0, Math.PI / 4]}>
+      <mesh scale={0.999} position={[-BW / 2 + 0.15, BH / 2 - 0.15, 0]} rotation={[0, 0, Math.PI / 4]}>
         <boxGeometry args={[0.4, 0.1, T_Depth + 0.02]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* Side seals */}
-      <mesh position={[BW / 2, 0, 0]} rotation={[-0.05, 0, 0]}>
+      <mesh scale={0.999} position={[BW / 2, 0, 0]} rotation={[-0.05, 0, 0]}>
         <boxGeometry args={[0.08, BH, T_Depth + 0.02]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-BW / 2, -0.1, 0]} rotation={[-0.05, 0, 0]}>
+      <mesh scale={0.999} position={[-BW / 2, -0.1, 0]} rotation={[-0.05, 0, 0]}>
         <boxGeometry args={[0.08, BH - 0.2, T_Depth + 0.02]} />
         <primitive object={mOuter} />
       </mesh>
@@ -103,17 +103,17 @@ export const SpoutPouch = ({ color, autoRotate, textureUrl, bgTextureUrl, active
       {/* ── SPOUT AND CAP ────────────────────────────────────────────────────── */}
       <group position={[-BW / 2 + 0.1, BH / 2 - 0.1, 0]} rotation={[0, 0, Math.PI / 4]}>
         {/* Base welded into pouch */}
-        <mesh position={[0, 0.1, 0]}>
+        <mesh scale={0.999} position={[0, 0.1, 0]}>
           <cylinderGeometry args={[0.1, 0.15, 0.2, 16]} />
           <primitive object={mSpout} />
         </mesh>
         {/* Neck */}
-        <mesh position={[0, 0.25, 0]}>
+        <mesh scale={0.999} position={[0, 0.25, 0]}>
           <cylinderGeometry args={[0.08, 0.08, 0.1, 16]} />
           <primitive object={mSpout} />
         </mesh>
         {/* Ridged Cap */}
-        <mesh position={[0, 0.35, 0]} castShadow>
+        <mesh scale={0.999} position={[0, 0.35, 0]} castShadow>
           <cylinderGeometry args={[0.12, 0.12, 0.15, 16]} />
           <primitive object={mSpout} />
         </mesh>

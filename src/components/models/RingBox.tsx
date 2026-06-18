@@ -57,47 +57,47 @@ export const RingBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFac
     <group ref={groupRef} position={[0, BH / 2, 0]} scale={[1.2, 1.2, 1.2]}>
       {/* ── BASE ─────────────────────────────────────────────────────────── */}
       {/* Base walls */}
-      <mesh position={[0, -BH / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2, 0]} castShadow>
         <cylinderGeometry args={[R, R, BH, 64, 1, true]} />
         <primitive object={mOuter} side={THREE.DoubleSide} />
       </mesh>
       {/* Base floor */}
-      <mesh position={[0, -BH, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH, 0]} castShadow>
         <cylinderGeometry args={[R, R, 0.02, 64]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* ── INNER LINING (base) ──────────────────────────────────────────── */}
       {/* Inner walls */}
-      <mesh position={[0, -BH / 2, 0]}>
+      <mesh scale={0.999} position={[0, -BH / 2, 0]}>
         <cylinderGeometry args={[r, r, BH, 64, 1, true]} />
         <primitive object={mInner} side={THREE.DoubleSide} />
       </mesh>
       {/* Inner floor */}
-      <mesh position={[0, -BH + 0.02, 0]}>
+      <mesh scale={0.999} position={[0, -BH + 0.02, 0]}>
         <cylinderGeometry args={[r, r, 0.01, 64]} />
         <primitive object={mInner} />
       </mesh>
 
       {/* ── VELVET RING PAD ──────────────────────────────────────────────── */}
       {/* The pad fills the upper part of the base, slightly protruding */}
-      <mesh position={[0, -0.05, 0]}>
+      <mesh scale={0.999} position={[0, -0.05, 0]}>
         <cylinderGeometry args={[r - 0.01, r - 0.01, 0.2, 64]} />
         <primitive object={mVelvet} />
       </mesh>
       {/* Slit line */}
-      <mesh position={[0, 0.051, 0]}>
+      <mesh scale={0.999} position={[0, 0.051, 0]}>
         <boxGeometry args={[r * 1.5, 0.01, 0.02]} />
         <meshBasicMaterial color="#000000" opacity={0.6} transparent />
       </mesh>
 
       {/* ── THE RING ─────────────────────────────────────────────────────── */}
       <group position={[0, 0.1, 0]}>
-        <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} rotation={[Math.PI / 2, 0, 0]}>
           <torusGeometry args={[0.1, 0.015, 32, 64]} />
           <primitive object={mTrim} />
         </mesh>
-        <mesh position={[0, 0.1, 0]}>
+        <mesh scale={0.999} position={[0, 0.1, 0]}>
           <octahedronGeometry args={[0.03]} />
           <meshPhysicalMaterial color="#ffffff" transmission={0.95} opacity={1} roughness={0} ior={2.4} thickness={0.1} />
         </mesh>
@@ -105,7 +105,7 @@ export const RingBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFac
 
       {/* ── HARDWARE (Trim) ──────────────────────────────────────────────── */}
       {/* Gold rim on base */}
-      <mesh position={[0, 0, 0]}>
+      <mesh scale={0.999} position={[0, 0, 0]}>
         <cylinderGeometry args={[R + 0.005, R + 0.005, 0.03, 64]} />
         <primitive object={mTrim} />
       </mesh>
@@ -115,37 +115,37 @@ export const RingBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFac
         {/* Hinge-local center of lid is at [0, LH/2, R] */}
 
         {/* Lid walls */}
-        <mesh position={[0, LH / 2, R]} castShadow>
+        <mesh scale={0.999} position={[0, LH / 2, R]} castShadow>
           <cylinderGeometry args={[R, R, LH, 64, 1, true]} />
           <primitive object={mOuter} side={THREE.DoubleSide} />
         </mesh>
         {/* Lid top */}
-        <mesh position={[0, LH, R]} castShadow>
+        <mesh scale={0.999} position={[0, LH, R]} castShadow>
           <cylinderGeometry args={[R, R, 0.02, 64]} />
           <primitive object={mLidFace} />
         </mesh>
 
         {/* Lid inner walls */}
-        <mesh position={[0, LH / 2, R]}>
+        <mesh scale={0.999} position={[0, LH / 2, R]}>
           <cylinderGeometry args={[r, r, LH, 64, 1, true]} />
           <primitive object={mInner} side={THREE.DoubleSide} />
         </mesh>
         {/* Lid inner roof */}
-        <mesh position={[0, LH - 0.02, R]}>
+        <mesh scale={0.999} position={[0, LH - 0.02, R]}>
           <cylinderGeometry args={[r, r, 0.01, 64]} />
           <primitive object={mInner} />
         </mesh>
 
         {/* Logo print */}
         {lidTex && (
-          <mesh position={[0, LH - 0.03, R]} rotation={[Math.PI / 2, Math.PI, 0]}>
+          <mesh scale={0.999} position={[0, LH - 0.03, R]} rotation={[Math.PI / 2, Math.PI, 0]}>
             <planeGeometry args={[r * 1.2, r * 1.2]} />
             <meshPhysicalMaterial color="#fff" map={logoTex} roughness={0.9} transparent />
           </mesh>
         )}
 
         {/* Lid gold rim */}
-        <mesh position={[0, 0, R]}>
+        <mesh scale={0.999} position={[0, 0, R]}>
           <cylinderGeometry args={[R + 0.005, R + 0.005, 0.03, 64]} />
           <primitive object={mTrim} />
         </mesh>

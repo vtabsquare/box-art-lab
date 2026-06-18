@@ -238,7 +238,7 @@ export function buildTemplateObjects(
   bgColorOverride?: string
 ): fabric.Object[] {
   // Remove old template layer objects
-  const toRemove = canvas.getObjects().filter((o: any) => o.tmplLayer === true);
+  const toRemove = canvas.getObjects().filter((o: any  ) => o.tmplLayer === true);
   toRemove.forEach((o) => canvas.remove(o));
 
   let objs: fabric.Object[] = [];
@@ -302,7 +302,7 @@ export function buildTemplateObjects(
   }
 
   // Insert template objects after the 'bg' rect but before 'grid'
-  const bgIndex = canvas.getObjects().findIndex((o: any) => o.id === 'bg');
+  const bgIndex = canvas.getObjects().findIndex((o: any  ) => o.id === 'bg');
   objs.forEach((obj, i) => {
     canvas.insertAt(obj, bgIndex + 1 + i, false);
   });
@@ -311,6 +311,6 @@ export function buildTemplateObjects(
 }
 
 export function clearTemplateObjects(canvas: fabric.Canvas) {
-  const toRemove = canvas.getObjects().filter((o: any) => o.tmplLayer === true);
+  const toRemove = canvas.getObjects().filter((o: any  ) => o.tmplLayer === true);
   toRemove.forEach((o) => canvas.remove(o));
 }

@@ -78,37 +78,37 @@ export const ChocolateBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ════════ BASE TRAY ════════ */}
       <group position={[0, -0.05, 0]}>
         {/* Floor */}
-        <mesh castShadow receiveShadow position={[0, -H/2 + bt/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, -H/2 + bt/2, 0]}>
           <boxGeometry args={[W, bt, D]} />
           {outerMat}
         </mesh>
         {/* Walls */}
-        <mesh castShadow receiveShadow position={[0, 0, -D/2 + bt/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, 0, -D/2 + bt/2]}>
           <boxGeometry args={[W, H, bt]} />
           {outerMat}
         </mesh>
-        <mesh castShadow receiveShadow position={[0, 0, D/2 - bt/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, 0, D/2 - bt/2]}>
           <boxGeometry args={[W, H, bt]} />
           {outerMat}
         </mesh>
-        <mesh castShadow receiveShadow position={[-W/2 + bt/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[-W/2 + bt/2, 0, 0]}>
           <boxGeometry args={[bt, H, D]} />
           {outerMat}
         </mesh>
-        <mesh castShadow receiveShadow position={[W/2 - bt/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[W/2 - bt/2, 0, 0]}>
           <boxGeometry args={[bt, H, D]} />
           {outerMat}
         </mesh>
         
         {/* Inner Gold Insert Plane */}
-        <mesh receiveShadow position={[0, -H/2 + bt + 0.01, 0]} rotation={[-Math.PI/2, 0, 0]}>
+        <mesh scale={0.999} receiveShadow position={[0, -H/2 + bt + 0.01, 0]} rotation={[-Math.PI/2, 0, 0]}>
           <planeGeometry args={[W - bt*2, D - bt*2]} />
           {innerMat}
         </mesh>
 
         {/* Chocolates */}
         {chocolates.map((choc, i) => (
-          <mesh key={i} castShadow position={choc.pos}>
+          <mesh scale={0.999} key={i} castShadow position={choc.pos}>
             {choc.isRound ? (
               <sphereGeometry args={[0.08, 16, 16]} />
             ) : (
@@ -127,24 +127,24 @@ export const ChocolateBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* Positioned slightly offset and resting on the base */}
       <group position={[-0.3, H/2 + 0.05, -0.2]} rotation={[0.1, -0.2, 0.1]}>
         {/* Lid Top */}
-        <mesh castShadow receiveShadow position={[0, H/2 - bt/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, H/2 - bt/2, 0]}>
           <boxGeometry args={[W + 0.02, bt, D + 0.02]} />
           {outerMat}
         </mesh>
         {/* Lid Walls */}
-        <mesh castShadow receiveShadow position={[0, 0, -D/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, 0, -D/2]}>
           <boxGeometry args={[W + 0.02, H, bt]} />
           {outerMat}
         </mesh>
-        <mesh castShadow receiveShadow position={[0, 0, D/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, 0, D/2]}>
           <boxGeometry args={[W + 0.02, H, bt]} />
           {outerMat}
         </mesh>
-        <mesh castShadow receiveShadow position={[-W/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[-W/2, 0, 0]}>
           <boxGeometry args={[bt, H, D + 0.02]} />
           {outerMat}
         </mesh>
-        <mesh castShadow receiveShadow position={[W/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[W/2, 0, 0]}>
           <boxGeometry args={[bt, H, D + 0.02]} />
           {outerMat}
         </mesh>

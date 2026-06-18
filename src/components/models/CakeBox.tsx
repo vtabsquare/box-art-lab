@@ -65,32 +65,32 @@ export const CakeBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ══════════════ SOLID WALLS ══════════════ */}
       
       {/* Bottom Floor */}
-      <mesh castShadow receiveShadow position={[0, -halfH + bt/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, -halfH + bt/2, 0]}>
         <boxGeometry args={[W, bt, D]} />
         {mat()}
       </mesh>
       
       {/* Back Wall */}
-      <mesh castShadow receiveShadow position={[0, 0, -halfD + bt/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, 0, -halfD + bt/2]}>
         <boxGeometry args={[W, H, bt]} />
         {mat()}
       </mesh>
 
       {/* Left Wall */}
-      <mesh castShadow receiveShadow position={[-halfW + bt/2, 0, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[-halfW + bt/2, 0, 0]}>
         <boxGeometry args={[bt, H, D]} />
         {mat()}
       </mesh>
 
       {/* Right Wall */}
-      <mesh castShadow receiveShadow position={[halfW - bt/2, 0, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[halfW - bt/2, 0, 0]}>
         <boxGeometry args={[bt, H, D]} />
         {mat()}
       </mesh>
 
       {/* Interior Base (Cardboard color for realism when looking through window) */}
       {!texture && (
-        <mesh position={[0, -halfH + bt + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} position={[0, -halfH + bt + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[W - bt * 2, D - bt * 2]} />
           <meshStandardMaterial color="#f5f5dc" roughness={0.9} />
         </mesh>
@@ -100,19 +100,19 @@ export const CakeBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ══════════════ FRONT WALL (Cutout) ══════════════ */}
       
       {/* Front Bottom Strip */}
-      <mesh castShadow receiveShadow position={[0, -halfH + marginY/2, halfD - bt/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, -halfH + marginY/2, halfD - bt/2]}>
         <boxGeometry args={[W, marginY, bt]} />
         {mat()}
       </mesh>
 
       {/* Front Left Strip */}
-      <mesh castShadow receiveShadow position={[-halfW + marginX/2, -halfH + marginY + (H - marginY)/2, halfD - bt/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[-halfW + marginX/2, -halfH + marginY + (H - marginY)/2, halfD - bt/2]}>
         <boxGeometry args={[marginX, H - marginY, bt]} />
         {mat()}
       </mesh>
 
       {/* Front Right Strip */}
-      <mesh castShadow receiveShadow position={[halfW - marginX/2, -halfH + marginY + (H - marginY)/2, halfD - bt/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[halfW - marginX/2, -halfH + marginY + (H - marginY)/2, halfD - bt/2]}>
         <boxGeometry args={[marginX, H - marginY, bt]} />
         {mat()}
       </mesh>
@@ -121,25 +121,25 @@ export const CakeBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ══════════════ TOP LID (Cutout) ══════════════ */}
       
       {/* Top Back Strip */}
-      <mesh castShadow receiveShadow position={[0, halfH - bt/2, -halfD + marginZBack/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, halfH - bt/2, -halfD + marginZBack/2]}>
         <boxGeometry args={[W, bt, marginZBack]} />
         {mat()}
       </mesh>
 
       {/* Top Front Strip */}
-      <mesh castShadow receiveShadow position={[0, halfH - bt/2, halfD - marginZFront/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, halfH - bt/2, halfD - marginZFront/2]}>
         <boxGeometry args={[W, bt, marginZFront]} />
         {mat()}
       </mesh>
 
       {/* Top Left Strip */}
-      <mesh castShadow receiveShadow position={[-halfW + marginX/2, halfH - bt/2, (marginZBack - marginZFront)/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[-halfW + marginX/2, halfH - bt/2, (marginZBack - marginZFront)/2]}>
         <boxGeometry args={[marginX, bt, D - marginZBack - marginZFront]} />
         {mat()}
       </mesh>
 
       {/* Top Right Strip */}
-      <mesh castShadow receiveShadow position={[halfW - marginX/2, halfH - bt/2, (marginZBack - marginZFront)/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[halfW - marginX/2, halfH - bt/2, (marginZBack - marginZFront)/2]}>
         <boxGeometry args={[marginX, bt, D - marginZBack - marginZFront]} />
         {mat()}
       </mesh>
@@ -148,13 +148,13 @@ export const CakeBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ══════════════ CLEAR PLASTIC WINDOW ══════════════ */}
       
       {/* Top Window */}
-      <mesh position={[0, halfH - bt/2, (marginZBack - marginZFront)/2]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, halfH - bt/2, (marginZBack - marginZFront)/2]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[W - marginX * 2 + 0.02, D - marginZBack - marginZFront + 0.02]} />
         {glassMat}
       </mesh>
 
       {/* Front Window */}
-      <mesh position={[0, -halfH + marginY + (H - marginY)/2, halfD - bt/2]}>
+      <mesh scale={0.999} position={[0, -halfH + marginY + (H - marginY)/2, halfD - bt/2]}>
         <planeGeometry args={[W - marginX * 2 + 0.02, H - marginY + 0.02]} />
         {glassMat}
       </mesh>

@@ -70,7 +70,7 @@ export const SandwichBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* 
         A clean wedge shaped box.
       */}
-      <mesh castShadow receiveShadow geometry={geo}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={geo}>
         {mat}
       </mesh>
     </group>

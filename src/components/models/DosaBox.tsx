@@ -57,29 +57,29 @@ export const DosaBox = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef} position={[0, -H/2, 0]}>
       {/* ════════ BASE ════════ */}
-      <mesh castShadow receiveShadow position={[0, bt/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, bt/2, 0]}>
         <boxGeometry args={[W, bt, D]} />
         {mat}
       </mesh>
 
       {/* ════════ WALLS ════════ */}
       {/* Back */}
-      <mesh castShadow receiveShadow position={[0, H/2, -D/2 + bt/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, -D/2 + bt/2]}>
         <boxGeometry args={[W, H, bt]} />
         {mat}
       </mesh>
       {/* Front */}
-      <mesh castShadow receiveShadow position={[0, H/2, D/2 - bt/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, D/2 - bt/2]}>
         <boxGeometry args={[W, H, bt]} />
         {mat}
       </mesh>
       {/* Left */}
-      <mesh castShadow receiveShadow position={[-W/2 + bt/2, H/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[-W/2 + bt/2, H/2, 0]}>
         <boxGeometry args={[bt, H, D - bt*2]} />
         {mat}
       </mesh>
       {/* Right */}
-      <mesh castShadow receiveShadow position={[W/2 - bt/2, H/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[W/2 - bt/2, H/2, 0]}>
         <boxGeometry args={[bt, H, D - bt*2]} />
         {mat}
       </mesh>
@@ -89,14 +89,14 @@ export const DosaBox = ({ color, autoRotate, textureUrl }: Props) => {
       <group position={[0, H - bt/2, -D/2 + bt/2]} rotation={[-Math.PI * 0.35, 0, 0]}>
         
         {/* Lid Main Panel */}
-        <mesh castShadow receiveShadow position={[0, bt/2, D/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, bt/2, D/2]}>
           <boxGeometry args={[W, bt, D]} />
           {mat}
         </mesh>
 
         {/* Front Tuck-in Flap */}
         <group position={[0, bt/2, D]} rotation={[Math.PI * 0.45, 0, 0]}>
-          <mesh castShadow receiveShadow position={[0, -H * 0.25, bt/2]}>
+          <mesh scale={0.999} castShadow receiveShadow position={[0, -H * 0.25, bt/2]}>
             <boxGeometry args={[W - 0.04, H * 0.5, bt]} />
             {mat}
           </mesh>
@@ -106,7 +106,7 @@ export const DosaBox = ({ color, autoRotate, textureUrl }: Props) => {
         <group position={[-W/2, bt/2, D/2]} rotation={[0, -Math.PI/2, 0]}>
           {/* Negative rotation to fold inwards */}
           <group rotation={[-Math.PI * 0.45, 0, 0]}>
-            <mesh castShadow receiveShadow geometry={flapGeo}>
+            <mesh scale={0.999} castShadow receiveShadow geometry={flapGeo}>
               {mat}
             </mesh>
           </group>
@@ -116,7 +116,7 @@ export const DosaBox = ({ color, autoRotate, textureUrl }: Props) => {
         <group position={[W/2, bt/2, D/2]} rotation={[0, -Math.PI/2, 0]}>
           {/* Positive rotation to fold inwards */}
           <group rotation={[Math.PI * 0.45, 0, 0]}>
-            <mesh castShadow receiveShadow geometry={flapGeo}>
+            <mesh scale={0.999} castShadow receiveShadow geometry={flapGeo}>
               {mat}
             </mesh>
           </group>
@@ -124,7 +124,7 @@ export const DosaBox = ({ color, autoRotate, textureUrl }: Props) => {
       </group>
       
       {/* Inner Floor for contrast */}
-      <mesh receiveShadow position={[0, bt + 0.001, 0]} rotation={[-Math.PI/2, 0, 0]}>
+      <mesh scale={0.999} receiveShadow position={[0, bt + 0.001, 0]} rotation={[-Math.PI/2, 0, 0]}>
         <planeGeometry args={[W - bt*2, D - bt*2]} />
         <meshPhysicalMaterial color="#8b5a2b" roughness={1} metalness={0} />
       </mesh>

@@ -1,16 +1,10 @@
-/**
- * SachetPouch - Accurate 3D model for a Sachet / Strip Pouch
- *
- * Architecture:
- *   - Main body: Small, thin flat rectangle slightly puffy in center
- *   - Crimped edges: Distinct border strips on all four sides
- */
-
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -19,83 +13,103 @@ interface Props {
   activeFaces?: Record<string, boolean>;
 }
 
-const EMPTY_TEX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
-
 export const SachetPouch = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFaces }: Props) => {
   const groupRef = useRef<THREE.Group>(null!);
-  const logoTex = useTexture(textureUrl || EMPTY_TEX);
-  logoTex.colorSpace = THREE.SRGBColorSpace;
+  
+  const texture = useTexture(textureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+  const bgTex = useTexture(bgTextureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+  texture.colorSpace = THREE.SRGBColorSpace;
+  bgTex.colorSpace = THREE.SRGBColorSpace;
 
   useFrame((_, dt) => {
     if (groupRef.current && autoRotate) groupRef.current.rotation.y += dt * 0.3;
   });
 
-  const extC = color || '#f2f2f2'; // Clean white sachet
-  const mOuter = new THREE.MeshPhysicalMaterial({ color: extC, roughness: 0.6, clearcoat: 0.2 });
-  // Make the seals slightly darker/rougher to simulate crimping
-  const mSeal = new THREE.MeshPhysicalMaterial({ color: extC, roughness: 0.9, clearcoat: 0.1 });
-
-  const showLogo = !activeFaces || activeFaces['front'] !== false;
-  const frontTex = showLogo && textureUrl ? logoTex : null;
+  const baseColor = color || '#000000'; // Default black for the shampoo sachet look
+  const materials = useMemo(() => {
+    return faceOrder.map(faceName => {
+      const showLogo = !activeFaces || activeFaces[faceName] !== false;
+      const activeTex = showLogo && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
+      
+      // High-gloss Polythene / Metallized Film material
+      return new THREE.MeshPhysicalMaterial({
+        color: activeTex ? '#ffffff' : baseColor,
+        map: activeTex,
+        roughness: 0.15,
+        metalness: 0.1,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.15,
+        side: THREE.FrontSide,
+      });
+    });
+  }, [baseColor, textureUrl, bgTextureUrl, activeFaces, texture, bgTex]);
 
   const BW = 1.0;
-  const BH = 1.2;
-  const BD = 0.08; // Thin puffy middle
-  const sealW = 0.08; // Border width
+  const BH = 1.4; // Typical sachet aspect ratio
+  const Puff_Depth = 0.18; // Max thickness in the liquid-filled center
+  const Seal_W = 0.08; // Width of the crimped seal
+  const Seal_Thickness = 0.01; // Thickness of the flat sealed edges
 
-  const shape = new THREE.Shape();
-  shape.moveTo(-BW / 2, -BH / 2);
-  shape.lineTo(BW / 2, -BH / 2);
-  shape.lineTo(BW / 2, BH / 2);
-  shape.lineTo(-BW / 2, BH / 2);
-  shape.lineTo(-BW / 2, -BH / 2);
+  const pouchGeometry = useMemo(() => {
+    // 32x32 segments for very smooth pillow puffing
+    const geo = new THREE.BoxGeometry(BW, BH, Puff_Depth, 32, 32, 2);
+    const pos = geo.attributes.position;
+    
+    const sealThresholdX = (BW / 2 - Seal_W) / (BW / 2);
+    const sealThresholdY = (BH / 2 - Seal_W) / (BH / 2);
 
-  const extrudeSettings = {
-    steps: 1,
-    depth: BD,
-    bevelEnabled: true,
-    bevelThickness: 0.02,
-    bevelSize: 0.02,
-    bevelSegments: 2
-  };
+    for (let i = 0; i < pos.count; i++) {
+      const x = pos.getX(i);
+      const y = pos.getY(i);
+      let z = pos.getZ(i);
+
+      // Normalize coordinates (-1 to 1)
+      const nx = x / (BW / 2);
+      const ny = y / (BH / 2);
+
+      const absNx = Math.abs(nx);
+      const absNy = Math.abs(ny);
+
+      let targetZ = Seal_Thickness / 2;
+
+      // If vertex is inside the puffed area (not on the seal)
+      if (absNx < sealThresholdX && absNy < sealThresholdY) {
+         // Map distance from seal edge to center (0 to 1)
+         const puffX = 1 - (absNx / sealThresholdX);
+         const puffY = 1 - (absNy / sealThresholdY);
+
+         // Sine curve for smooth pillow-like liquid bulge
+         const curve = Math.sin(puffX * Math.PI / 2) * Math.sin(puffY * Math.PI / 2);
+         targetZ = (Seal_Thickness / 2) + (Puff_Depth / 2) * Math.pow(curve, 0.8);
+      }
+
+      // Add a tiny bit of high-frequency noise/ripple to the seal areas to mimic heat crimping
+      if (absNy >= sealThresholdY) {
+         // Vertical ridges on top and bottom seals
+         targetZ += Math.sin(x * 120) * 0.002;
+      } else if (absNx >= sealThresholdX) {
+         // Horizontal ridges on side seals
+         targetZ += Math.sin(y * 120) * 0.002;
+      }
+
+      if (z > 0) {
+         z = targetZ;
+      } else if (z < 0) {
+         z = -targetZ;
+      }
+
+      pos.setXYZ(i, x, y, z);
+    }
+    
+    geo.computeVertexNormals();
+    return geo;
+  }, [BW, BH, Puff_Depth, Seal_W, Seal_Thickness]);
 
   return (
     <group ref={groupRef} position={[0, 0, 0]} scale={[1.4, 1.4, 1.4]}>
       {/* ── POUCH BODY ──────────────────────────────────────────────────────── */}
-      <mesh position={[0, 0, -BD / 2]} castShadow>
-        <extrudeGeometry args={[shape, extrudeSettings]} />
-        <primitive object={mOuter} />
-      </mesh>
-
-      {/* Front Face Logo Plane */}
-      {frontTex && (
-        <mesh position={[0, 0, BD / 2 + 0.021]}>
-          <planeGeometry args={[BW * 0.8, BH * 0.7]} />
-          <meshPhysicalMaterial color="#fff" map={frontTex} roughness={0.6} clearcoat={0.2} transparent />
-        </mesh>
-      )}
-
-      {/* ── CRIMPED EDGE SEALS ──────────────────────────────────────────────── */}
-      {/* Top Seal */}
-      <mesh position={[0, BH / 2 - sealW / 2, 0]}>
-        <boxGeometry args={[BW, sealW, BD - 0.04]} />
-        <primitive object={mSeal} />
-      </mesh>
-      {/* Bottom Seal */}
-      <mesh position={[0, -BH / 2 + sealW / 2, 0]}>
-        <boxGeometry args={[BW, sealW, BD - 0.04]} />
-        <primitive object={mSeal} />
-      </mesh>
-      {/* Left Seal */}
-      <mesh position={[-BW / 2 + sealW / 2, 0, 0]}>
-        <boxGeometry args={[sealW, BH, BD - 0.04]} />
-        <primitive object={mSeal} />
-      </mesh>
-      {/* Right Seal */}
-      <mesh position={[BW / 2 - sealW / 2, 0, 0]}>
-        <boxGeometry args={[sealW, BH, BD - 0.04]} />
-        <primitive object={mSeal} />
-      </mesh>
+      {/* A single continuous mesh with manipulated vertices for seamless textures */}
+      <mesh scale={0.999} castShadow receiveShadow geometry={pouchGeometry} material={materials} />
     </group>
   );
 };

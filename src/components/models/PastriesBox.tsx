@@ -51,32 +51,32 @@ export const PastriesBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ════════ BASE ════════ */}
       <group>
         {/* Floor */}
-        <mesh castShadow receiveShadow position={[0, bt/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, bt/2, 0]}>
           <boxGeometry args={[W, bt, D]} />
           {mat}
         </mesh>
-        <mesh receiveShadow position={[0, bt + 0.001, 0]} rotation={[-Math.PI/2, 0, 0]}>
+        <mesh scale={0.999} receiveShadow position={[0, bt + 0.001, 0]} rotation={[-Math.PI/2, 0, 0]}>
           <planeGeometry args={[W, D]} />
           {insideMat}
         </mesh>
         
         {/* Left Wall */}
-        <mesh castShadow receiveShadow position={[-W/2 + bt/2, H/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[-W/2 + bt/2, H/2, 0]}>
           <boxGeometry args={[bt, H, D]} />
           {mat}
         </mesh>
         {/* Right Wall */}
-        <mesh castShadow receiveShadow position={[W/2 - bt/2, H/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[W/2 - bt/2, H/2, 0]}>
           <boxGeometry args={[bt, H, D]} />
           {mat}
         </mesh>
         {/* Front Wall */}
-        <mesh castShadow receiveShadow position={[0, H/2, D/2 - bt/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, D/2 - bt/2]}>
           <boxGeometry args={[W, H, bt]} />
           {mat}
         </mesh>
         {/* Back Wall (lid attaches to this) */}
-        <mesh castShadow receiveShadow position={[0, H/2, -D/2 + bt/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, -D/2 + bt/2]}>
           <boxGeometry args={[W, H, bt]} />
           {mat}
         </mesh>
@@ -87,26 +87,26 @@ export const PastriesBox = ({ color, autoRotate, textureUrl }: Props) => {
         {/* Shift lid to pivot on edge */}
         <group position={[0, 0, D/2]}>
           {/* Main Top Lid */}
-          <mesh castShadow receiveShadow position={[0, bt/2, 0]}>
+          <mesh scale={0.999} castShadow receiveShadow position={[0, bt/2, 0]}>
             <boxGeometry args={[W, bt, D]} />
             {mat}
           </mesh>
-          <mesh receiveShadow position={[0, -bt/2 - 0.001, 0]} rotation={[Math.PI/2, 0, 0]}>
+          <mesh scale={0.999} receiveShadow position={[0, -bt/2 - 0.001, 0]} rotation={[Math.PI/2, 0, 0]}>
             <planeGeometry args={[W, D]} />
             {insideMat}
           </mesh>
           
           {/* Lid Front Tuck Flap */}
-          <mesh castShadow receiveShadow position={[0, -0.15 + bt/2, D/2 - bt/2]}>
+          <mesh scale={0.999} castShadow receiveShadow position={[0, -0.15 + bt/2, D/2 - bt/2]}>
             <boxGeometry args={[W - 0.05, 0.3, bt]} />
             {mat}
           </mesh>
           {/* Lid Side Flaps */}
-          <mesh castShadow receiveShadow position={[-W/2 + bt/2, -0.15 + bt/2, 0]}>
+          <mesh scale={0.999} castShadow receiveShadow position={[-W/2 + bt/2, -0.15 + bt/2, 0]}>
             <boxGeometry args={[bt, 0.3, D - 0.05]} />
             {mat}
           </mesh>
-          <mesh castShadow receiveShadow position={[W/2 - bt/2, -0.15 + bt/2, 0]}>
+          <mesh scale={0.999} castShadow receiveShadow position={[W/2 - bt/2, -0.15 + bt/2, 0]}>
             <boxGeometry args={[bt, 0.3, D - 0.05]} />
             {mat}
           </mesh>

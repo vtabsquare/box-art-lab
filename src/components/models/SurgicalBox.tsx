@@ -1,18 +1,20 @@
 /**
- * SurgicalBox - Accurate 3D model for Surgical Kit Box
- *
+ * SurgicalBox / Medical Device Box
+ * 
  * Architecture:
- *   - Base rigid tray (white)
- *   - Thermoformed plastic inner tray (medical blue)
- *   - Metallic surgical tools (scalpel, forceps placeholders)
- *   - Lid rigid tray (placed slightly hovering/angled)
+ *   - Empty RETF (Roll End Tuck Front) Mailer Box
+ *   - Clean interior, double side walls
+ *   - Lid hinged at the back, opened back with dust flaps and tuck flap
+ *   - No hardcoded typography or extra colors, supports standard texture mapping
  */
 
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -25,129 +27,89 @@ const EMPTY_TEX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC
 
 export const SurgicalBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFaces }: Props) => {
   const groupRef = useRef<THREE.Group>(null!);
-  const logoTex = useTexture(textureUrl || EMPTY_TEX);
+  const texture = useTexture(textureUrl || EMPTY_TEX);
   const bgTex = useTexture(bgTextureUrl || EMPTY_TEX);
-  logoTex.colorSpace = THREE.SRGBColorSpace;
+  texture.colorSpace = THREE.SRGBColorSpace;
   bgTex.colorSpace = THREE.SRGBColorSpace;
 
   useFrame((_, dt) => {
-    if (groupRef.current && autoRotate) groupRef.current.rotation.y += dt * 0.2;
+    if (groupRef.current && autoRotate) groupRef.current.rotation.y += dt * 0.25;
   });
 
-  const extC = color || '#fdfdfd'; // Clean medical white
-  const trayC = '#1b75bc'; // Medical grade blue for the thermoformed tray
-  const wallT = 0.04;
+  const extC = color || '#ffffff';
+  const mInner = useMemo(() => new THREE.MeshStandardMaterial({ color: '#f8f8f8', roughness: 0.9 }), []);
+  const extMaterials = useMemo(() => {
+    return faceOrder.map(faceName => {
+      const showLogo = !activeFaces || activeFaces[faceName] !== false;
+      const activeTex = showLogo && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
+      
+      return new THREE.MeshStandardMaterial({
+        color: activeTex ? '#ffffff' : extC,
+        map: activeTex,
+        roughness: 0.8,
+      });
+    });
+  }, [extC, textureUrl, bgTextureUrl, activeFaces, texture, bgTex]);
 
-  const mOuter = new THREE.MeshPhysicalMaterial({ color: extC, roughness: 0.5, clearcoat: 0.1 });
-  // Thermoformed plastic tray material
-  const mTray = new THREE.MeshPhysicalMaterial({ color: trayC, roughness: 0.3, clearcoat: 0.5, metalness: 0.1 });
-  // Stainless steel surgical tools
-  const mSteel = new THREE.MeshPhysicalMaterial({ color: '#e0e0e0', roughness: 0.1, metalness: 0.9, clearcoat: 0.2 });
-
-  const showLogo = !activeFaces || activeFaces['top'] !== false;
-  const lidTex = showLogo && textureUrl ? logoTex : (bgTextureUrl ? bgTex : null);
-  const mLidFace = new THREE.MeshPhysicalMaterial({ color: lidTex ? '#fff' : extC, map: lidTex, roughness: 0.5 });
-
-  const BW = 2.5;
-  const BD = 1.5;
-  const BH = 0.4;
+  // Box Dimensions
+  const BW = 2.4;
+  const BD = 1.8;
+  const BH = 0.5;
+  const T = 0.04; // single wall thickness
+  const T2 = 0.08; // double wall thickness
 
   return (
-    <group ref={groupRef} position={[0, BH / 2, 0]} scale={[0.8, 0.8, 0.8]}>
-      {/* ── BASE TRAY ─────────────────────────────────────────────────────────── */}
-      <mesh position={[0, -BH / 2 + wallT / 2, 0]} castShadow>
-        <boxGeometry args={[BW, wallT, BD]} />
-        <primitive object={mOuter} />
-      </mesh>
-      <mesh position={[0, 0, BD / 2 - wallT / 2]} castShadow>
-        <boxGeometry args={[BW, BH, wallT]} />
-        <primitive object={mOuter} />
-      </mesh>
-      <mesh position={[0, 0, -BD / 2 + wallT / 2]} castShadow>
-        <boxGeometry args={[BW, BH, wallT]} />
-        <primitive object={mOuter} />
-      </mesh>
-      <mesh position={[-BW / 2 + wallT / 2, 0, 0]} castShadow>
-        <boxGeometry args={[wallT, BH, BD]} />
-        <primitive object={mOuter} />
-      </mesh>
-      <mesh position={[BW / 2 - wallT / 2, 0, 0]} castShadow>
-        <boxGeometry args={[wallT, BH, BD]} />
-        <primitive object={mOuter} />
-      </mesh>
-
-      {/* ── THERMOFORMED BLUE TRAY INSERT ─────────────────────────────────────── */}
-      <mesh position={[0, -0.05, 0]}>
-        <boxGeometry args={[BW - wallT * 2 - 0.02, BH - 0.1, BD - wallT * 2 - 0.02]} />
-        <primitive object={mTray} />
-      </mesh>
-      {/* Central indentation holding tools */}
-      <mesh position={[0, -0.04, 0]}>
-        <boxGeometry args={[BW - 0.4, 0.02, BD - 0.4]} />
-        <meshPhysicalMaterial color="#115588" roughness={0.4} /> {/* Darker shade for depth */}
-      </mesh>
-
-      {/* ── SURGICAL TOOLS (Stainless Steel) ─────────────────────────────────── */}
-      {/* Scalpel Handle */}
-      <group position={[0, -0.03, 0.2]}>
-        <mesh position={[0, 0, 0]} castShadow>
-          <boxGeometry args={[1.2, 0.04, 0.1]} />
-          <primitive object={mSteel} />
-        </mesh>
-        <mesh position={[0.65, 0, 0]} castShadow>
-          <cylinderGeometry args={[0.04, 0.02, 0.3, 16]} rotation={[0, 0, Math.PI / 2]} />
-          <primitive object={mSteel} />
-        </mesh>
-      </group>
+    <group ref={groupRef} position={[0, -0.2, 0]} scale={[1.1, 1.1, 1.1]}>
       
-      {/* Forceps/Tweezers */}
-      <group position={[0, -0.03, -0.2]}>
-        <mesh position={[0, 0, 0.05]} rotation={[0, 0.02, 0]} castShadow>
-          <boxGeometry args={[1.4, 0.03, 0.06]} />
-          <primitive object={mSteel} />
+      {/* ── BASE & WALLS ── */}
+      <mesh scale={0.999} position={[0, T/2, 0]} castShadow receiveShadow material={[mInner, mInner, mInner, extMaterials[3], mInner, mInner]}>
+        <boxGeometry args={[BW, T, BD]} />
+      </mesh>
+      
+      {/* Left Wall (Double thick) */}
+      <mesh scale={0.999} position={[-BW/2 + T2/2, BH/2, 0]} castShadow receiveShadow material={[mInner, extMaterials[1], mInner, mInner, mInner, mInner]}>
+        <boxGeometry args={[T2, BH, BD]} />
+      </mesh>
+
+      {/* Right Wall (Double thick) */}
+      <mesh scale={0.999} position={[BW/2 - T2/2, BH/2, 0]} castShadow receiveShadow material={[extMaterials[0], mInner, mInner, mInner, mInner, mInner]}>
+        <boxGeometry args={[T2, BH, BD]} />
+      </mesh>
+
+      {/* Back Wall (Single thick, where lid hinges) */}
+      <mesh scale={0.999} position={[0, BH/2, -BD/2 + T/2]} castShadow receiveShadow material={[mInner, mInner, mInner, mInner, mInner, extMaterials[5]]}>
+        <boxGeometry args={[BW, BH, T]} />
+      </mesh>
+
+      {/* Front Wall (Double thick) */}
+      <mesh scale={0.999} position={[0, BH/2, BD/2 - T2/2]} castShadow receiveShadow material={[mInner, mInner, mInner, mInner, extMaterials[4], mInner]}>
+        <boxGeometry args={[BW, BH, T2]} />
+      </mesh>
+
+      {/* ── LID (Hinged backward) ── */}
+      <group position={[0, BH, -BD/2 + T/2]} rotation={[-0.8, 0, 0]}>
+        {/* Main lid panel */}
+        {/* Inner face is +Z (index 4), Outer face is -Z (index 5) mapping to 'top' (extMaterials[2]) */}
+        <mesh scale={0.999} position={[0, BD/2, T/2]} castShadow receiveShadow material={[mInner, mInner, mInner, mInner, mInner, extMaterials[2]]}>
+          <boxGeometry args={[BW, BD, T]} />
         </mesh>
-        <mesh position={[0, 0, -0.05]} rotation={[0, -0.02, 0]} castShadow>
-          <boxGeometry args={[1.4, 0.03, 0.06]} />
-          <primitive object={mSteel} />
+        
+        {/* Lid Front Tuck Flap */}
+        {/* Folds inward 90 degrees */}
+        <mesh scale={0.999} position={[0, BD, T/2 + 0.2]} rotation={[Math.PI / 2 - 0.1, 0, 0]} castShadow receiveShadow material={[mInner, mInner, mInner, mInner, mInner, mInner]}>
+          <boxGeometry args={[BW * 0.96, 0.4, T]} />
         </mesh>
-        {/* Connecting joint */}
-        <mesh position={[-0.68, 0, 0]} castShadow>
-          <cylinderGeometry args={[0.05, 0.05, 0.03, 16]} rotation={[Math.PI / 2, 0, 0]} />
-          <primitive object={mSteel} />
+        
+        {/* Lid side flaps (Dust flaps) */}
+        {/* Fold inward 90 degrees */}
+        <mesh scale={0.999} position={[-BW/2 + T/2 + 0.1, BD/2, T/2 + 0.2]} rotation={[0, Math.PI / 2 - 0.2, 0]} castShadow receiveShadow material={[mInner, mInner, mInner, mInner, mInner, mInner]}>
+           <boxGeometry args={[0.3, BD * 0.8, T]} />
+        </mesh>
+        <mesh scale={0.999} position={[BW/2 - T/2 - 0.1, BD/2, T/2 + 0.2]} rotation={[0, -Math.PI / 2 + 0.2, 0]} castShadow receiveShadow material={[mInner, mInner, mInner, mInner, mInner, mInner]}>
+           <boxGeometry args={[0.3, BD * 0.8, T]} />
         </mesh>
       </group>
 
-      {/* ── LID TRAY (Hovering / Angled behind) ──────────────────────────────── */}
-      <group position={[0, BH + 0.2, -BD / 2]} rotation={[-0.8, 0, 0]}>
-        <mesh position={[0, BH / 2, 0]} castShadow>
-          <boxGeometry args={[BW + 0.04, wallT, BD + 0.04]} />
-          <primitive object={mLidFace} />
-        </mesh>
-        <mesh position={[0, 0, BD / 2 + 0.02]} castShadow>
-          <boxGeometry args={[BW + 0.04, BH, wallT]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[0, 0, -BD / 2 - 0.02]} castShadow>
-          <boxGeometry args={[BW + 0.04, BH, wallT]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[-BW / 2 - 0.02, 0, 0]} castShadow>
-          <boxGeometry args={[wallT, BH, BD + 0.04]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[BW / 2 + 0.02, 0, 0]} castShadow>
-          <boxGeometry args={[wallT, BH, BD + 0.04]} />
-          <primitive object={mOuter} />
-        </mesh>
-
-        {/* Inner lid logo/instructions */}
-        {lidTex && (
-          <mesh position={[0, BH / 2 - wallT - 0.01, 0]} rotation={[Math.PI / 2, Math.PI, 0]}>
-            <planeGeometry args={[BW - 0.4, BD - 0.4]} />
-            <meshPhysicalMaterial color="#fff" map={logoTex} roughness={0.9} transparent />
-          </mesh>
-        )}
-      </group>
     </group>
   );
 };

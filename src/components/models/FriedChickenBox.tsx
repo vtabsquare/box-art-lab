@@ -72,7 +72,7 @@ export const FriedChickenBox = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef} position={[0, -(baseH + roofH)/2, 0]}>
       {/* Base Box */}
-      <mesh castShadow receiveShadow position={[0, baseH/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, baseH/2, 0]}>
         <boxGeometry args={[W, baseH, D]} />
         {mat}
       </mesh>
@@ -80,17 +80,17 @@ export const FriedChickenBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* Roof Flaps */}
       <group position={[0, baseH, 0]}>
         {/* Front Arched Flap */}
-        <mesh castShadow receiveShadow geometry={flapGeo} position={[0, 0, D/2]} rotation={[-roofAngle, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={flapGeo} position={[0, 0, D/2]} rotation={[-roofAngle, 0, 0]}>
           {mat}
         </mesh>
         
         {/* Back Arched Flap */}
-        <mesh castShadow receiveShadow geometry={flapGeo} position={[0, 0, -D/2]} rotation={[roofAngle, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={flapGeo} position={[0, 0, -D/2]} rotation={[roofAngle, 0, 0]}>
           {mat}
         </mesh>
         
         {/* Side locking triangles */}
-        <mesh castShadow receiveShadow position={[-W/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[-W/2, 0, 0]}>
           <bufferGeometry>
             <float32BufferAttribute attach="attributes-position" args={[new Float32Array([
               0, 0, D/2,
@@ -100,7 +100,7 @@ export const FriedChickenBox = ({ color, autoRotate, textureUrl }: Props) => {
           </bufferGeometry>
           {mat}
         </mesh>
-        <mesh castShadow receiveShadow position={[W/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[W/2, 0, 0]}>
           <bufferGeometry>
             <float32BufferAttribute attach="attributes-position" args={[new Float32Array([
               0, 0, -D/2,

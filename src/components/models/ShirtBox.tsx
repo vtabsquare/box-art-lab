@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -32,8 +34,6 @@ export const ShirtBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFa
   const D = 1.2;   // depth
   const wall = 0.015; // cardboard thickness
   const lidAngle = -0.12; // slightly open
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const materials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
@@ -52,29 +52,29 @@ export const ShirtBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFa
   return (
     <group ref={groupRef} position={[0, -H / 2, 0]}>
       {/* ── Base tray ── */}
-      <mesh castShadow receiveShadow material={materials} position={[0, wall / 2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, wall / 2, 0]}>
         <boxGeometry args={[W, wall, D]} />
       </mesh>
-      <mesh castShadow material={materials} position={[0, wall + (H - wall) / 2, D / 2 - wall / 2]}>
+      <mesh scale={0.999} castShadow material={materials} position={[0, wall + (H - wall) / 2, D / 2 - wall / 2]}>
         <boxGeometry args={[W, H - wall, wall]} />
       </mesh>
-      <mesh castShadow material={materials} position={[0, wall + (H - wall) / 2, -D / 2 + wall / 2]}>
+      <mesh scale={0.999} castShadow material={materials} position={[0, wall + (H - wall) / 2, -D / 2 + wall / 2]}>
         <boxGeometry args={[W, H - wall, wall]} />
       </mesh>
-      <mesh castShadow material={materials} position={[-W / 2 + wall / 2, wall + (H - wall) / 2, 0]}>
+      <mesh scale={0.999} castShadow material={materials} position={[-W / 2 + wall / 2, wall + (H - wall) / 2, 0]}>
         <boxGeometry args={[wall, H - wall, D - 2 * wall]} />
       </mesh>
-      <mesh castShadow material={materials} position={[W / 2 - wall / 2, wall + (H - wall) / 2, 0]}>
+      <mesh scale={0.999} castShadow material={materials} position={[W / 2 - wall / 2, wall + (H - wall) / 2, 0]}>
         <boxGeometry args={[wall, H - wall, D - 2 * wall]} />
       </mesh>
 
-      <mesh position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[W - 2 * wall, D - 2 * wall]} />
         <primitive object={innerMat} attach="material" />
       </mesh>
 
       {/* ── Tissue paper inside ── */}
-      <mesh position={[0, wall + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, wall + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[W - 0.1, D - 0.1]} />
         <meshStandardMaterial color="#fffef5" roughness={0.85} transparent opacity={0.6} side={THREE.DoubleSide} />
       </mesh>
@@ -83,11 +83,11 @@ export const ShirtBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFa
       <group position={[0, H, -D / 2]}>
         <group rotation={[lidAngle, 0, 0]}>
           {/* Main flap */}
-          <mesh castShadow material={materials} position={[0, wall / 2, D / 2]}>
+          <mesh scale={0.999} castShadow material={materials} position={[0, wall / 2, D / 2]}>
             <boxGeometry args={[W, wall, D]} />
           </mesh>
           {/* Tuck tab at front of flap */}
-          <mesh castShadow position={[0, -0.04, D - wall / 2]} rotation={[0.15, 0, 0]}>
+          <mesh scale={0.999} castShadow position={[0, -0.04, D - wall / 2]} rotation={[0.15, 0, 0]}>
             <boxGeometry args={[W * 0.85, 0.08, wall]} />
             <primitive object={innerMat} attach="material" />
           </mesh>

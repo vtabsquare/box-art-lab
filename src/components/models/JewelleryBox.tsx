@@ -64,59 +64,59 @@ export const JewelleryBox = ({ color, autoRotate, textureUrl, bgTextureUrl, acti
   return (
     <group ref={groupRef} position={[0, BH / 2, 0]}>
       {/* ── BASE ─────────────────────────────────────────────────────────── */}
-      <mesh position={[0, -BH, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH, 0]} castShadow>
         <boxGeometry args={[BW, wallT, BD]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0, -BH / 2, BD / 2 - wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2, BD / 2 - wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0, -BH / 2, -BD / 2 + wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2, -BD / 2 + wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-BW / 2 + wallT / 2, -BH / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[-BW / 2 + wallT / 2, -BH / 2, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[BW / 2 - wallT / 2, -BH / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[BW / 2 - wallT / 2, -BH / 2, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* ── INNER LINING (base) ──────────────────────────────────────────── */}
-      <mesh position={[0, -BH + wallT + 0.005, 0]}>
+      <mesh scale={0.999} position={[0, -BH + wallT + 0.005, 0]}>
         <boxGeometry args={[BW - wallT * 2, 0.01, BD - wallT * 2]} />
         <primitive object={mInner} />
       </mesh>
-      <mesh position={[0, -BH / 2 + wallT / 2, BD / 2 - wallT - 0.01]}>
+      <mesh scale={0.999} position={[0, -BH / 2 + wallT / 2, BD / 2 - wallT - 0.01]}>
         <boxGeometry args={[BW - wallT * 2, BH - wallT, 0.01]} />
         <primitive object={mInner} />
       </mesh>
-      <mesh position={[0, -BH / 2 + wallT / 2, -BD / 2 + wallT + 0.01]}>
+      <mesh scale={0.999} position={[0, -BH / 2 + wallT / 2, -BD / 2 + wallT + 0.01]}>
         <boxGeometry args={[BW - wallT * 2, BH - wallT, 0.01]} />
         <primitive object={mInner} />
       </mesh>
-      <mesh position={[-BW / 2 + wallT + 0.01, -BH / 2 + wallT / 2, 0]}>
+      <mesh scale={0.999} position={[-BW / 2 + wallT + 0.01, -BH / 2 + wallT / 2, 0]}>
         <boxGeometry args={[0.01, BH - wallT, BD - wallT * 2]} />
         <primitive object={mInner} />
       </mesh>
-      <mesh position={[BW / 2 - wallT - 0.01, -BH / 2 + wallT / 2, 0]}>
+      <mesh scale={0.999} position={[BW / 2 - wallT - 0.01, -BH / 2 + wallT / 2, 0]}>
         <boxGeometry args={[0.01, BH - wallT, BD - wallT * 2]} />
         <primitive object={mInner} />
       </mesh>
 
       {/* ── DIVIDERS ─────────────────────────────────────────────────────── */}
-      <mesh position={[0, -BH / 2, 0]}>
+      <mesh scale={0.999} position={[0, -BH / 2, 0]}>
         <boxGeometry args={[BW - wallT * 2, BH - wallT - 0.02, 0.04]} />
         <primitive object={mInner} />
       </mesh>
-      <mesh position={[0.3, -BH / 2, 0.25]}>
+      <mesh scale={0.999} position={[0.3, -BH / 2, 0.25]}>
         <boxGeometry args={[0.04, BH - wallT - 0.02, BD / 2 - wallT - 0.02]} />
         <primitive object={mInner} />
       </mesh>
-      <mesh position={[-0.3, -BH / 2, -0.25]}>
+      <mesh scale={0.999} position={[-0.3, -BH / 2, -0.25]}>
         <boxGeometry args={[0.04, BH - wallT - 0.02, BD / 2 - wallT - 0.02]} />
         <primitive object={mInner} />
       </mesh>
@@ -124,51 +124,51 @@ export const JewelleryBox = ({ color, autoRotate, textureUrl, bgTextureUrl, acti
       {/* ── LID (hinged at back-top of base) ─────────────────────────────── */}
       <group position={[0, 0, hZ]} rotation={[-Math.PI * 0.60, 0, 0]}>
         {/* Lid Top */}
-        <mesh position={[0, LH, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[0, LH, BD / 2]} castShadow>
           <boxGeometry args={[BW, wallT, BD]} />
           <primitive object={mLidFace} />
         </mesh>
-        <mesh position={[0, LH / 2, BD - wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, LH / 2, BD - wallT / 2]} castShadow>
           <boxGeometry args={[BW, LH, wallT]} />
           <primitive object={mOuter} />
         </mesh>
-        <mesh position={[0, LH / 2, wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, LH / 2, wallT / 2]} castShadow>
           <boxGeometry args={[BW, LH, wallT]} />
           <primitive object={mOuter} />
         </mesh>
-        <mesh position={[-BW / 2 + wallT / 2, LH / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[-BW / 2 + wallT / 2, LH / 2, BD / 2]} castShadow>
           <boxGeometry args={[wallT, LH, BD]} />
           <primitive object={mOuter} />
         </mesh>
-        <mesh position={[BW / 2 - wallT / 2, LH / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[BW / 2 - wallT / 2, LH / 2, BD / 2]} castShadow>
           <boxGeometry args={[wallT, LH, BD]} />
           <primitive object={mOuter} />
         </mesh>
 
         {/* Lid Inner Lining */}
-        <mesh position={[0, LH - wallT - 0.005, BD / 2]}>
+        <mesh scale={0.999} position={[0, LH - wallT - 0.005, BD / 2]}>
           <boxGeometry args={[BW - wallT * 2, 0.01, BD - wallT * 2]} />
           <primitive object={mInner} />
         </mesh>
-        <mesh position={[0, LH / 2, BD - wallT - 0.01]}>
+        <mesh scale={0.999} position={[0, LH / 2, BD - wallT - 0.01]}>
           <boxGeometry args={[BW - wallT * 2, LH - wallT, 0.01]} />
           <primitive object={mInner} />
         </mesh>
-        <mesh position={[0, LH / 2, wallT + 0.01]}>
+        <mesh scale={0.999} position={[0, LH / 2, wallT + 0.01]}>
           <boxGeometry args={[BW - wallT * 2, LH - wallT, 0.01]} />
           <primitive object={mInner} />
         </mesh>
-        <mesh position={[-BW / 2 + wallT + 0.01, LH / 2, BD / 2]}>
+        <mesh scale={0.999} position={[-BW / 2 + wallT + 0.01, LH / 2, BD / 2]}>
           <boxGeometry args={[0.01, LH - wallT, BD - wallT * 2]} />
           <primitive object={mInner} />
         </mesh>
-        <mesh position={[BW / 2 - wallT - 0.01, LH / 2, BD / 2]}>
+        <mesh scale={0.999} position={[BW / 2 - wallT - 0.01, LH / 2, BD / 2]}>
           <boxGeometry args={[0.01, LH - wallT, BD - wallT * 2]} />
           <primitive object={mInner} />
         </mesh>
 
         {lidTex && (
-          <mesh position={[0, LH - wallT - 0.012, BD / 2]} rotation={[Math.PI / 2, Math.PI, 0]}>
+          <mesh scale={0.999} position={[0, LH - wallT - 0.012, BD / 2]} rotation={[Math.PI / 2, Math.PI, 0]}>
             <planeGeometry args={[1.0, 0.7]} />
             <meshPhysicalMaterial color="#fff" map={logoTex} roughness={0.9} transparent />
           </mesh>
@@ -176,11 +176,11 @@ export const JewelleryBox = ({ color, autoRotate, textureUrl, bgTextureUrl, acti
       </group>
 
       {/* ── HARDWARE ─────────────────────────────────────────────────────── */}
-      <mesh position={[0.4, -0.05, -BD / 2 - 0.01]}>
+      <mesh scale={0.999} position={[0.4, -0.05, -BD / 2 - 0.01]}>
         <boxGeometry args={[0.06, 0.1, 0.02]} />
         <primitive object={mHardware} />
       </mesh>
-      <mesh position={[-0.4, -0.05, -BD / 2 - 0.01]}>
+      <mesh scale={0.999} position={[-0.4, -0.05, -BD / 2 - 0.01]}>
         <boxGeometry args={[0.06, 0.1, 0.02]} />
         <primitive object={mHardware} />
       </mesh>

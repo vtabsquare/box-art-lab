@@ -77,41 +77,41 @@ export const ZipLockPouch = ({ color, autoRotate, textureUrl, bgTextureUrl, acti
     <group ref={groupRef} position={[0, 0, 0]} scale={[1.1, 1.1, 1.1]}>
       {/* ── POUCH BODY ──────────────────────────────────────────────────────── */}
       {/* Rotate the extrusion so the width aligns with X-axis */}
-      <mesh position={[-BW / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[-BW / 2, 0, 0]} rotation={[0, Math.PI / 2, 0]} castShadow>
         <extrudeGeometry args={[shape, extrudeSettings]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* Front Face Logo Plane */}
       {frontTex && (
-        <mesh position={[0, 0, B_Depth / 3 + 0.04]} rotation={[-0.05, 0, 0]}>
+        <mesh scale={0.999} position={[0, 0, B_Depth / 3 + 0.04]} rotation={[-0.05, 0, 0]}>
           <planeGeometry args={[BW * 0.8, BH * 0.7]} />
           <meshPhysicalMaterial color="#fff" map={frontTex} roughness={0.4} clearcoat={0.6} transparent />
         </mesh>
       )}
 
       {/* ── ZIPPER LINE ──────────────────────────────────────────────────────── */}
-      <mesh position={[0, BH / 2 - 0.25, 0.03]} rotation={[0, 0, 0]}>
+      <mesh scale={0.999} position={[0, BH / 2 - 0.25, 0.03]} rotation={[0, 0, 0]}>
         <cylinderGeometry args={[0.015, 0.015, BW, 16]} rotation={[0, 0, Math.PI / 2]} />
         <primitive object={mZip} />
       </mesh>
-      <mesh position={[0, BH / 2 - 0.25, -0.03]} rotation={[0, 0, 0]}>
+      <mesh scale={0.999} position={[0, BH / 2 - 0.25, -0.03]} rotation={[0, 0, 0]}>
         <cylinderGeometry args={[0.015, 0.015, BW, 16]} rotation={[0, 0, Math.PI / 2]} />
         <primitive object={mZip} />
       </mesh>
 
       {/* ── HEAT SEAL EDGES ──────────────────────────────────────────────────── */}
       {/* Top seal */}
-      <mesh position={[0, BH / 2 - 0.05, 0]}>
+      <mesh scale={0.999} position={[0, BH / 2 - 0.05, 0]}>
         <boxGeometry args={[BW, 0.1, T_Depth + 0.01]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Side seals */}
-      <mesh position={[BW / 2, 0, 0]} rotation={[-0.05, 0, 0]}>
+      <mesh scale={0.999} position={[BW / 2, 0, 0]} rotation={[-0.05, 0, 0]}>
         <boxGeometry args={[0.08, BH, T_Depth + 0.02]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-BW / 2, 0, 0]} rotation={[-0.05, 0, 0]}>
+      <mesh scale={0.999} position={[-BW / 2, 0, 0]} rotation={[-0.05, 0, 0]}>
         <boxGeometry args={[0.08, BH, T_Depth + 0.02]} />
         <primitive object={mOuter} />
       </mesh>

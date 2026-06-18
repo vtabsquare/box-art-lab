@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -33,8 +35,6 @@ export const ShippingBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl
   
   // Flap opening angles
   const flapAngle = 2.2; // roughly 125 degrees open
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const materials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
@@ -54,30 +54,30 @@ export const ShippingBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl
     <group ref={groupRef} position={[0, -H / 2, 0]}>
       {/* ── Base Walls ── */}
       {/* Bottom Floor */}
-      <mesh castShadow receiveShadow material={materials} position={[0, wall / 2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, wall / 2, 0]}>
         <boxGeometry args={[W, wall, D]} />
       </mesh>
       
       {/* Left Wall */}
-      <mesh castShadow material={materials} position={[-W / 2 + wall / 2, wall + (H - wall) / 2, 0]}>
+      <mesh scale={0.999} castShadow material={materials} position={[-W / 2 + wall / 2, wall + (H - wall) / 2, 0]}>
         <boxGeometry args={[wall, H - wall, D]} />
       </mesh>
       {/* Right Wall */}
-      <mesh castShadow material={materials} position={[W / 2 - wall / 2, wall + (H - wall) / 2, 0]}>
+      <mesh scale={0.999} castShadow material={materials} position={[W / 2 - wall / 2, wall + (H - wall) / 2, 0]}>
         <boxGeometry args={[wall, H - wall, D]} />
       </mesh>
       
       {/* Front Wall */}
-      <mesh castShadow material={materials} position={[0, wall + (H - wall) / 2, D / 2 - wall / 2]}>
+      <mesh scale={0.999} castShadow material={materials} position={[0, wall + (H - wall) / 2, D / 2 - wall / 2]}>
         <boxGeometry args={[W - 2 * wall, H - wall, wall]} />
       </mesh>
       {/* Back Wall */}
-      <mesh castShadow material={materials} position={[0, wall + (H - wall) / 2, -D / 2 + wall / 2]}>
+      <mesh scale={0.999} castShadow material={materials} position={[0, wall + (H - wall) / 2, -D / 2 + wall / 2]}>
         <boxGeometry args={[W - 2 * wall, H - wall, wall]} />
       </mesh>
 
       {/* Inner Floor covering bottom flaps */}
-      <mesh receiveShadow position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} receiveShadow position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[W - 2 * wall, D - 2 * wall]} />
         <primitive object={innerMat} attach="material" />
       </mesh>
@@ -85,28 +85,28 @@ export const ShippingBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl
       {/* ── Top Flaps ── */}
       {/* Left Flap (Inner) */}
       <group position={[-W / 2 + wall, H, 0]} rotation={[0, 0, flapAngle]}>
-        <mesh castShadow material={materials} position={[W / 4, wall / 2, 0]}>
+        <mesh scale={0.999} castShadow material={materials} position={[W / 4, wall / 2, 0]}>
           <boxGeometry args={[W / 2, wall, D - 2 * wall]} />
         </mesh>
       </group>
 
       {/* Right Flap (Inner) */}
       <group position={[W / 2 - wall, H, 0]} rotation={[0, 0, -flapAngle]}>
-        <mesh castShadow material={materials} position={[-W / 4, wall / 2, 0]}>
+        <mesh scale={0.999} castShadow material={materials} position={[-W / 4, wall / 2, 0]}>
           <boxGeometry args={[W / 2, wall, D - 2 * wall]} />
         </mesh>
       </group>
 
       {/* Front Flap (Outer) */}
       <group position={[0, H, D / 2 - wall / 2]} rotation={[-flapAngle, 0, 0]}>
-        <mesh castShadow material={materials} position={[0, wall * 1.5, D / 4]}>
+        <mesh scale={0.999} castShadow material={materials} position={[0, wall * 1.5, D / 4]}>
           <boxGeometry args={[W, wall, D / 2]} />
         </mesh>
       </group>
 
       {/* Back Flap (Outer) */}
       <group position={[0, H, -D / 2 + wall / 2]} rotation={[flapAngle, 0, 0]}>
-        <mesh castShadow material={materials} position={[0, wall * 1.5, -D / 4]}>
+        <mesh scale={0.999} castShadow material={materials} position={[0, wall * 1.5, -D / 4]}>
           <boxGeometry args={[W, wall, D / 2]} />
         </mesh>
       </group>

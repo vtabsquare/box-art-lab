@@ -75,75 +75,72 @@ export const WatchBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFa
     <group ref={groupRef} position={[0, BH / 2, 0]}>
       {/* ── BASE ─────────────────────────────────────────────────────────── */}
       {/* Floor */}
-      <mesh position={[0, -BH, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH, 0]} castShadow>
         <boxGeometry args={[BW, wallT, BD]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Front wall */}
-      <mesh position={[0, -BH / 2, BD / 2 - wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2, BD / 2 - wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Back wall */}
-      <mesh position={[0, -BH / 2, -BD / 2 + wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2, -BD / 2 + wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Left wall */}
-      <mesh position={[-BW / 2 + wallT / 2, -BH / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[-BW / 2 + wallT / 2, -BH / 2, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Right wall */}
-      <mesh position={[BW / 2 - wallT / 2, -BH / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[BW / 2 - wallT / 2, -BH / 2, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* ── INNER LINING (base) ──────────────────────────────────────────── */}
       {/* inner floor */}
-      <mesh position={[0, -BH + wallT + 0.005, 0]}>
+      <mesh scale={0.999} position={[0, -BH + wallT + 0.005, 0]}>
         <boxGeometry args={[BW - wallT * 2, 0.01, BD - wallT * 2]} />
         <primitive object={mInner} />
       </mesh>
       {/* inner front */}
-      <mesh position={[0, -BH / 2 + wallT / 2, BD / 2 - wallT - 0.01]}>
+      <mesh scale={0.999} position={[0, -BH / 2 + wallT / 2, BD / 2 - wallT - 0.01]}>
         <boxGeometry args={[BW - wallT * 2, BH - wallT, 0.01]} />
         <primitive object={mInner} />
       </mesh>
       {/* inner back */}
-      <mesh position={[0, -BH / 2 + wallT / 2, -BD / 2 + wallT + 0.01]}>
+      <mesh scale={0.999} position={[0, -BH / 2 + wallT / 2, -BD / 2 + wallT + 0.01]}>
         <boxGeometry args={[BW - wallT * 2, BH - wallT, 0.01]} />
         <primitive object={mInner} />
       </mesh>
       {/* inner left */}
-      <mesh position={[-BW / 2 + wallT + 0.01, -BH / 2 + wallT / 2, 0]}>
+      <mesh scale={0.999} position={[-BW / 2 + wallT + 0.01, -BH / 2 + wallT / 2, 0]}>
         <boxGeometry args={[0.01, BH - wallT, BD - wallT * 2]} />
         <primitive object={mInner} />
       </mesh>
       {/* inner right */}
-      <mesh position={[BW / 2 - wallT - 0.01, -BH / 2 + wallT / 2, 0]}>
+      <mesh scale={0.999} position={[BW / 2 - wallT - 0.01, -BH / 2 + wallT / 2, 0]}>
         <boxGeometry args={[0.01, BH - wallT, BD - wallT * 2]} />
         <primitive object={mInner} />
       </mesh>
 
       {/* ── WATCH PILLOW ─────────────────────────────────────────────────── */}
       {/* Soft rectangular pillow sitting in the tray */}
-      <mesh position={[0, -BH + wallT + 0.16, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH + wallT + 0.16, 0]} castShadow>
         <boxGeometry args={[0.62, 0.28, 0.55]} />
         <primitive object={mPillow} />
       </mesh>
       {/* Pillow top rounded crown */}
-      <mesh position={[0, -BH + wallT + 0.31, 0]}>
+      <mesh scale={0.999} position={[0, -BH + wallT + 0.31, 0]}>
         <cylinderGeometry args={[0.31, 0.31, 0.06, 32, 1, false]} />
         <primitive object={mPillow} />
       </mesh>
-      {/* Pillow strap / wrap band */}
-      <mesh position={[0, -BH + wallT + 0.22, 0]}>
-        <torusGeometry args={[0.0, 0.0, 0, 0]} /> {/* placeholder */}
-      </mesh>
+      {/* Pillow strap / wrap band removed due to invalid geometry placeholder */}
       {/* Horizontal strap */}
-      <mesh position={[0, -BH + wallT + 0.18, 0]}>
+      <mesh scale={0.999} position={[0, -BH + wallT + 0.18, 0]}>
         <boxGeometry args={[0.64, 0.045, 0.14]} />
         <primitive object={mInner} />
       </mesh>
@@ -156,60 +153,60 @@ export const WatchBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFa
 
         {/* Lid outer shell — 4 sides + outer face */}
         {/* Top outer face */}
-        <mesh position={[0, LH, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[0, LH, BD / 2]} castShadow>
           <boxGeometry args={[BW, wallT, BD]} />
           <primitive object={mLidFace} />
         </mesh>
         {/* Lid front wall */}
-        <mesh position={[0, LH / 2, BD - wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, LH / 2, BD - wallT / 2]} castShadow>
           <boxGeometry args={[BW, LH, wallT]} />
           <primitive object={mOuter} />
         </mesh>
         {/* Lid back wall (at hinge) */}
-        <mesh position={[0, LH / 2, wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, LH / 2, wallT / 2]} castShadow>
           <boxGeometry args={[BW, LH, wallT]} />
           <primitive object={mOuter} />
         </mesh>
         {/* Lid left wall */}
-        <mesh position={[-BW / 2 + wallT / 2, LH / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[-BW / 2 + wallT / 2, LH / 2, BD / 2]} castShadow>
           <boxGeometry args={[wallT, LH, BD]} />
           <primitive object={mOuter} />
         </mesh>
         {/* Lid right wall */}
-        <mesh position={[BW / 2 - wallT / 2, LH / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[BW / 2 - wallT / 2, LH / 2, BD / 2]} castShadow>
           <boxGeometry args={[wallT, LH, BD]} />
           <primitive object={mOuter} />
         </mesh>
 
         {/* Lid inner lining */}
-        <mesh position={[0, LH - wallT - 0.005, BD / 2]}>
+        <mesh scale={0.999} position={[0, LH - wallT - 0.005, BD / 2]}>
           <boxGeometry args={[BW - wallT * 2, 0.01, BD - wallT * 2]} />
           <primitive object={mInner} />
         </mesh>
         {/* Inner front lining */}
-        <mesh position={[0, LH / 2, BD - wallT - 0.01]}>
+        <mesh scale={0.999} position={[0, LH / 2, BD - wallT - 0.01]}>
           <boxGeometry args={[BW - wallT * 2, LH - wallT, 0.01]} />
           <primitive object={mInner} />
         </mesh>
         {/* Inner back lining */}
-        <mesh position={[0, LH / 2, wallT + 0.01]}>
+        <mesh scale={0.999} position={[0, LH / 2, wallT + 0.01]}>
           <boxGeometry args={[BW - wallT * 2, LH - wallT, 0.01]} />
           <primitive object={mInner} />
         </mesh>
         {/* Inner left lining */}
-        <mesh position={[-BW / 2 + wallT + 0.01, LH / 2, BD / 2]}>
+        <mesh scale={0.999} position={[-BW / 2 + wallT + 0.01, LH / 2, BD / 2]}>
           <boxGeometry args={[0.01, LH - wallT, BD - wallT * 2]} />
           <primitive object={mInner} />
         </mesh>
         {/* Inner right lining */}
-        <mesh position={[BW / 2 - wallT - 0.01, LH / 2, BD / 2]}>
+        <mesh scale={0.999} position={[BW / 2 - wallT - 0.01, LH / 2, BD / 2]}>
           <boxGeometry args={[0.01, LH - wallT, BD - wallT * 2]} />
           <primitive object={mInner} />
         </mesh>
 
         {/* Logo/branding on lid inner face */}
         {lidTex && (
-          <mesh position={[0, LH - wallT - 0.012, BD / 2]} rotation={[Math.PI / 2, Math.PI, 0]}>
+          <mesh scale={0.999} position={[0, LH - wallT - 0.012, BD / 2]} rotation={[Math.PI / 2, Math.PI, 0]}>
             <planeGeometry args={[0.85, 0.85]} />
             <meshPhysicalMaterial color="#fff" map={logoTex} roughness={0.9} transparent />
           </mesh>

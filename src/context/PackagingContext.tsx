@@ -1,3 +1,4 @@
+ 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { PackagingState, defaultState, DesignConfig, BoxDimensions, Industry } from '@/lib/designRules';
 

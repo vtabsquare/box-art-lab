@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -12,9 +14,8 @@ interface Props {
 }
 
 /**
- * Carrier Box — A tall shopping bag / carrier box with rope handles.
- * Open top, solid walls, reinforced bottom, and two rope loop handles.
- * Proportions: medium (L) × narrow (W) × tall (H)
+ * Gable Box / Carrier Box
+ * A folding carton meal box with a handle on top.
  */
 export const CarrierBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFaces }: Props) => {
   const groupRef = useRef<THREE.Group>(null!);
@@ -26,128 +27,108 @@ export const CarrierBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl,
   useFrame((_, delta) => {
     if (groupRef.current && autoRotate) groupRef.current.rotation.y += delta * 0.3;
   });
-
-  const W = 1.1;    // width (x)
-  const H = 1.5;    // height (y)
-  const D = 0.55;   // depth (z)
-  const wall = 0.02;
-  const rimH = 0.04; // reinforced top rim
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const materials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
       const activeTex = showLogo && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
       return new THREE.MeshPhysicalMaterial({
-        color: activeTex ? '#ffffff' : color || '#e8d5b7',
+        color: activeTex ? '#ffffff' : color || '#c9a485', // Kraft paper brown default
         map: activeTex,
-        roughness: 0.6,
+        roughness: 0.85,
         metalness: 0.0,
+        clearcoat: 0.05,
       });
     });
   }, [color, textureUrl, bgTextureUrl, activeFaces, texture, bgTex]);
 
-  const innerMat = new THREE.MeshStandardMaterial({ color: '#f5f0e8', roughness: 0.55 });
-  const handleMat = new THREE.MeshStandardMaterial({ color: '#8B6914', roughness: 0.65 });
+  const W = 1.8;
+  const D = 1.1;
+  const H = 0.9;
+  const rH = 0.6; // roof height
+  const hH = 0.35; // handle height
+  const t = 0.01; // wall thickness
+
+  const L = Math.sqrt(rH * rH + (D / 2) * (D / 2));
+  const roofAngle = Math.atan2(D / 2, rH);
+
+  const { handleGeo, sideRoofGeo } = useMemo(() => {
+    // Handle Shape with cutout
+    const hShape = new THREE.Shape();
+    const hw = W / 2 * 0.95; // Slightly narrower at the very top
+    const hbw = W / 2;       // Base of handle
+    hShape.moveTo(-hbw, 0);
+    hShape.lineTo(hbw, 0);
+    hShape.lineTo(hw, hH);
+    hShape.lineTo(-hw, hH);
+    hShape.lineTo(-hbw, 0);
+
+    const hole = new THREE.Path();
+    const holeW = 0.7;
+    const holeH = 0.14;
+    const holeY = hH * 0.55;
+    hole.moveTo(-holeW / 2, holeY - holeH / 2);
+    hole.lineTo(holeW / 2, holeY - holeH / 2);
+    hole.absarc(holeW / 2, holeY, holeH / 2, -Math.PI / 2, Math.PI / 2, false);
+    hole.lineTo(-holeW / 2, holeY + holeH / 2);
+    hole.absarc(-holeW / 2, holeY, holeH / 2, Math.PI / 2, Math.PI * 1.5, false);
+    hShape.holes.push(hole);
+
+    const extrudeSettings = { depth: t, bevelEnabled: false };
+    const hGeo = new THREE.ExtrudeGeometry(hShape, extrudeSettings);
+    hGeo.center();
+
+    // Side Roof Shape (triangle folded inwards)
+    const srShape = new THREE.Shape();
+    srShape.moveTo(-D / 2, 0);
+    srShape.lineTo(D / 2, 0);
+    srShape.lineTo(0, rH);
+    srShape.lineTo(-D / 2, 0);
+    const srGeo = new THREE.ExtrudeGeometry(srShape, extrudeSettings);
+    srGeo.center();
+
+    return { handleGeo: hGeo, sideRoofGeo: srGeo };
+  }, []);
+
+  // Material arrays for extruded geometry to pick up front/back textures
+  const handleFrontMat = [materials[4], materials[4]];
+  const handleBackMat = [materials[5], materials[5]];
 
   return (
-    <group ref={groupRef} position={[0, -H / 2, 0]}>
-      {/* ── Bottom ── */}
-      <mesh castShadow receiveShadow material={materials} position={[0, wall / 2, 0]}>
-        <boxGeometry args={[W, wall, D]} />
+    <group ref={groupRef} position={[0, -(H + rH + hH) / 2, 0]}>
+      {/* ── Base Box ── */}
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, H / 2, D / 2]}>
+        <boxGeometry args={[W, H, t]} />
+      </mesh>
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, H / 2, -D / 2]}>
+        <boxGeometry args={[W, H, t]} />
+      </mesh>
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[-W / 2, H / 2, 0]}>
+        <boxGeometry args={[t, H, D]} />
+      </mesh>
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[W / 2, H / 2, 0]}>
+        <boxGeometry args={[t, H, D]} />
+      </mesh>
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, t / 2, 0]}>
+        <boxGeometry args={[W, t, D]} />
       </mesh>
 
-      {/* ── Front wall ── */}
-      <mesh castShadow material={materials} position={[0, H / 2, D / 2]}>
-        <boxGeometry args={[W, H, wall]} />
+      {/* ── Angled Roof Panels ── */}
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, H + rH / 2, D / 4]} rotation={[-roofAngle, 0, 0]}>
+        <boxGeometry args={[W, L, t]} />
       </mesh>
-      {/* ── Back wall ── */}
-      <mesh castShadow material={materials} position={[0, H / 2, -D / 2]}>
-        <boxGeometry args={[W, H, wall]} />
-      </mesh>
-      {/* ── Left wall ── */}
-      <mesh castShadow material={materials} position={[-W / 2, H / 2, 0]}>
-        <boxGeometry args={[wall, H, D]} />
-      </mesh>
-      {/* ── Right wall ── */}
-      <mesh castShadow material={materials} position={[W / 2, H / 2, 0]}>
-        <boxGeometry args={[wall, H, D]} />
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, H + rH / 2, -D / 4]} rotation={[roofAngle, 0, 0]}>
+        <boxGeometry args={[W, L, t]} />
       </mesh>
 
-      {/* ── Inner bottom ── */}
-      <mesh position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[W - wall * 2, D - wall * 2]} />
-        <primitive object={innerMat} attach="material" />
-      </mesh>
+      {/* ── Side Triangle Roofs (folded inward) ── */}
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[-W / 2 + t / 2, H + rH / 2, 0]} rotation={[0, Math.PI / 2, 0]} geometry={sideRoofGeo} />
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[W / 2 - t / 2, H + rH / 2, 0]} rotation={[0, Math.PI / 2, 0]} geometry={sideRoofGeo} />
 
-      {/* ── Reinforced top rim ── */}
-      {/* Front rim */}
-      <mesh position={[0, H + rimH / 2, D / 2]}>
-        <boxGeometry args={[W + 0.01, rimH, wall * 2]} />
-        <primitive object={innerMat} attach="material" />
-      </mesh>
-      {/* Back rim */}
-      <mesh position={[0, H + rimH / 2, -D / 2]}>
-        <boxGeometry args={[W + 0.01, rimH, wall * 2]} />
-        <primitive object={innerMat} attach="material" />
-      </mesh>
-      {/* Left rim */}
-      <mesh position={[-W / 2, H + rimH / 2, 0]}>
-        <boxGeometry args={[wall * 2, rimH, D + 0.01]} />
-        <primitive object={innerMat} attach="material" />
-      </mesh>
-      {/* Right rim */}
-      <mesh position={[W / 2, H + rimH / 2, 0]}>
-        <boxGeometry args={[wall * 2, rimH, D + 0.01]} />
-        <primitive object={innerMat} attach="material" />
-      </mesh>
-
-      {/* ── Rope handles (front) ── */}
-      <group position={[0, H + rimH, D / 2 + 0.02]}>
-        {/* Left handle */}
-        <mesh position={[-W * 0.22, 0.18, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.18, 0.015, 8, 32, Math.PI]} />
-          <primitive object={handleMat} attach="material" />
-        </mesh>
-        {/* Right handle */}
-        <mesh position={[W * 0.22, 0.18, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.18, 0.015, 8, 32, Math.PI]} />
-          <primitive object={handleMat} attach="material" />
-        </mesh>
-        {/* Handle connectors (grommets) */}
-        {[-W * 0.22 - 0.18, -W * 0.22 + 0.18, W * 0.22 - 0.18, W * 0.22 + 0.18].map((x, i) => (
-          <mesh key={i} position={[x, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-            <cylinderGeometry args={[0.022, 0.022, 0.01, 12]} />
-            <meshStandardMaterial color="#a0865c" roughness={0.3} metalness={0.5} />
-          </mesh>
-        ))}
-      </group>
-
-      {/* ── Rope handles (back) ── */}
-      <group position={[0, H + rimH, -(D / 2 + 0.02)]} rotation={[0, Math.PI, 0]}>
-        <mesh position={[-W * 0.22, 0.18, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.18, 0.015, 8, 32, Math.PI]} />
-          <primitive object={handleMat} attach="material" />
-        </mesh>
-        <mesh position={[W * 0.22, 0.18, 0]} rotation={[Math.PI / 2, 0, 0]}>
-          <torusGeometry args={[0.18, 0.015, 8, 32, Math.PI]} />
-          <primitive object={handleMat} attach="material" />
-        </mesh>
-        {[-W * 0.22 - 0.18, -W * 0.22 + 0.18, W * 0.22 - 0.18, W * 0.22 + 0.18].map((x, i) => (
-          <mesh key={i} position={[x, 0, 0]} rotation={[Math.PI / 2, 0, 0]}>
-            <cylinderGeometry args={[0.022, 0.022, 0.01, 12]} />
-            <meshStandardMaterial color="#a0865c" roughness={0.3} metalness={0.5} />
-          </mesh>
-        ))}
-      </group>
-
-      {/* ── Bottom crease lines ── */}
-      {[-D / 4, D / 4].map((z, i) => (
-        <mesh key={i} position={[0, 0.005, z]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[W - 0.02, 0.005]} />
-          <meshStandardMaterial color="#c0a87c" transparent opacity={0.4} />
-        </mesh>
-      ))}
+      {/* ── Top Handles ── */}
+      {/* Front handle half */}
+      <mesh scale={0.999} castShadow receiveShadow material={handleFrontMat} position={[0, H + rH + hH / 2, t / 2]} geometry={handleGeo} />
+      {/* Back handle half */}
+      <mesh scale={0.999} castShadow receiveShadow material={handleBackMat} position={[0, H + rH + hH / 2, -t / 2]} geometry={handleGeo} />
     </group>
   );
 };

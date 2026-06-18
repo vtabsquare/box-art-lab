@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -33,8 +35,6 @@ export const LaptopBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, 
   const wall = 0.025; // Corrugated cardboard is thicker
   
   const lidAngle = -0.5; // open angle
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const materials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
@@ -54,28 +54,28 @@ export const LaptopBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, 
     <group ref={groupRef} position={[0, -H / 2, 0]}>
       {/* ── Base Tray ── */}
       {/* Bottom */}
-      <mesh castShadow receiveShadow material={materials} position={[0, wall / 2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, wall / 2, 0]}>
         <boxGeometry args={[W, wall, D]} />
       </mesh>
       {/* Front */}
-      <mesh castShadow material={materials} position={[0, wall + (H - wall) / 2, D / 2 - wall / 2]}>
+      <mesh scale={0.999} castShadow material={materials} position={[0, wall + (H - wall) / 2, D / 2 - wall / 2]}>
         <boxGeometry args={[W, H - wall, wall]} />
       </mesh>
       {/* Back */}
-      <mesh castShadow material={materials} position={[0, wall + (H - wall) / 2, -D / 2 + wall / 2]}>
+      <mesh scale={0.999} castShadow material={materials} position={[0, wall + (H - wall) / 2, -D / 2 + wall / 2]}>
         <boxGeometry args={[W, H - wall, wall]} />
       </mesh>
       {/* Left (Double thick for roll end) */}
-      <mesh castShadow material={materials} position={[-W / 2 + wall, wall + (H - wall) / 2, 0]}>
+      <mesh scale={0.999} castShadow material={materials} position={[-W / 2 + wall, wall + (H - wall) / 2, 0]}>
         <boxGeometry args={[wall * 2, H - wall, D - 2 * wall]} />
       </mesh>
       {/* Right (Double thick for roll end) */}
-      <mesh castShadow material={materials} position={[W / 2 - wall, wall + (H - wall) / 2, 0]}>
+      <mesh scale={0.999} castShadow material={materials} position={[W / 2 - wall, wall + (H - wall) / 2, 0]}>
         <boxGeometry args={[wall * 2, H - wall, D - 2 * wall]} />
       </mesh>
 
       {/* Inner Floor */}
-      <mesh receiveShadow position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} receiveShadow position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[W - 4 * wall, D - 2 * wall]} />
         <primitive object={innerMat} attach="material" />
       </mesh>
@@ -84,27 +84,27 @@ export const LaptopBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, 
       <group position={[0, H, -D / 2 + wall / 2]}>
         <group rotation={[lidAngle, 0, 0]}>
           {/* Main Top Face */}
-          <mesh castShadow material={materials} position={[0, wall / 2, D / 2 - wall / 2]}>
+          <mesh scale={0.999} castShadow material={materials} position={[0, wall / 2, D / 2 - wall / 2]}>
             <boxGeometry args={[W - 0.01, wall, D - wall]} />
           </mesh>
 
           {/* Front Tuck Flap */}
-          <mesh castShadow material={materials} position={[0, -H / 2 + wall, D - wall]} rotation={[-0.2, 0, 0]}>
+          <mesh scale={0.999} castShadow material={materials} position={[0, -H / 2 + wall, D - wall]} rotation={[-0.2, 0, 0]}>
             <boxGeometry args={[W - 4 * wall, H - 2 * wall, wall]} />
           </mesh>
 
           {/* Left Dust Flap */}
-          <mesh castShadow material={materials} position={[-W / 2 + wall, -0.05, 0.2]} rotation={[0, 0, 0.5]}>
+          <mesh scale={0.999} castShadow material={materials} position={[-W / 2 + wall, -0.05, 0.2]} rotation={[0, 0, 0.5]}>
             <boxGeometry args={[wall, 0.1, 0.3]} />
           </mesh>
 
           {/* Right Dust Flap */}
-          <mesh castShadow material={materials} position={[W / 2 - wall, -0.05, 0.2]} rotation={[0, 0, -0.5]}>
+          <mesh scale={0.999} castShadow material={materials} position={[W / 2 - wall, -0.05, 0.2]} rotation={[0, 0, -0.5]}>
             <boxGeometry args={[wall, 0.1, 0.3]} />
           </mesh>
 
           {/* Inner Lid Surface */}
-          <mesh position={[0, -0.001, D / 2 - wall / 2]} rotation={[Math.PI / 2, 0, 0]}>
+          <mesh scale={0.999} position={[0, -0.001, D / 2 - wall / 2]} rotation={[Math.PI / 2, 0, 0]}>
             <planeGeometry args={[W - 0.02, D - wall - 0.02]} />
             <primitive object={innerMat} attach="material" />
           </mesh>

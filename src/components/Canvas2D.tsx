@@ -146,7 +146,7 @@ const Canvas2D = ({ design, productName, logoUrl, designFileUrl, colorPreference
 
     // Ensure title/subtitle/logo are on top after template objects are inserted
     const bring = (id: string) => {
-      const obj = canvas.getObjects().find((o: any) => o.id === id);
+      const obj = canvas.getObjects().find((o: any  ) => o.id === id);
       if (obj) canvas.bringToFront(obj);
     };
     bring('grid');
@@ -216,7 +216,7 @@ const Canvas2D = ({ design, productName, logoUrl, designFileUrl, colorPreference
     if (designFileUrl) {
       // Only reload when the URL actually changes
       if (!existingDesignBg || (existingDesignBg as any).getSrc() !== designFileUrl) {
-        fabric.Image.fromURL(designFileUrl, (img: any) => {
+        fabric.Image.fromURL(designFileUrl, (img: any  ) => {
           // Scale to fill the full 512×512 canvas
           const scaleX = 512 / (img.width  || 512);
           const scaleY = 512 / (img.height || 512);
@@ -232,7 +232,7 @@ const Canvas2D = ({ design, productName, logoUrl, designFileUrl, colorPreference
           canvas.add(img);
           // Place just above the solid bg rect but below everything else
           canvas.sendToBack(img);
-          canvas.sendToBack(canvas.getObjects().find((o: any) => o.id === 'bg')!);
+          canvas.sendToBack(canvas.getObjects().find((o: any  ) => o.id === 'bg')!);
           canvas.renderAll();
           updateTexture();
         }, { crossOrigin: 'anonymous' });
@@ -249,7 +249,7 @@ const Canvas2D = ({ design, productName, logoUrl, designFileUrl, colorPreference
     if (logoUrl) {
       if (!existingLogo || (existingLogo as any).getSrc() !== logoUrl) {
         // Need to load new logo
-        fabric.Image.fromURL(logoUrl, (img: any) => {
+        fabric.Image.fromURL(logoUrl, (img: any  ) => {
           img.set({
             id: 'logo',
             originX: 'center', originY: 'middle',
@@ -288,10 +288,10 @@ const Canvas2D = ({ design, productName, logoUrl, designFileUrl, colorPreference
       const canvas = fabricRef.current;
       
       // Objects to toggle
-      const grid = canvas.getObjects().find((o: any) => o.id === 'grid');
-      const title = canvas.getObjects().find((o: any) => o.id === 'title');
-      const subtitle = canvas.getObjects().find((o: any) => o.id === 'subtitle');
-      const logo = canvas.getObjects().find((o: any) => o.id === 'logo');
+      const grid = canvas.getObjects().find((o: any  ) => o.id === 'grid');
+      const title = canvas.getObjects().find((o: any  ) => o.id === 'title');
+      const subtitle = canvas.getObjects().find((o: any  ) => o.id === 'subtitle');
+      const logo = canvas.getObjects().find((o: any  ) => o.id === 'logo');
       
       // 1. Hide grid for main export
       if (grid) grid.set('visible', false);

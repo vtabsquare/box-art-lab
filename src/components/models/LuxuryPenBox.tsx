@@ -58,48 +58,48 @@ export const LuxuryPenBox = ({ color, autoRotate, textureUrl, bgTextureUrl, acti
     <group ref={groupRef} position={[0, BH / 2, 0]} scale={[0.8, 0.8, 0.8]}>
       {/* ── BASE TRAY ─────────────────────────────────────────────────────────── */}
       {/* Tray Floor */}
-      <mesh position={[0, -BH, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH, 0]} castShadow>
         <boxGeometry args={[BW, wallT, BD]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Tray Walls */}
-      <mesh position={[0, -BH / 2, BD / 2 - wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2, BD / 2 - wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0, -BH / 2, -BD / 2 + wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2, -BD / 2 + wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-BW / 2 + wallT / 2, -BH / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[-BW / 2 + wallT / 2, -BH / 2, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[BW / 2 - wallT / 2, -BH / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[BW / 2 - wallT / 2, -BH / 2, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* ── INNER PEN INSERT ─────────────────────────────────────────────────── */}
       {/* Insert base filling the tray */}
-      <mesh position={[0, -BH / 2, 0]}>
+      <mesh scale={0.999} position={[0, -BH / 2, 0]}>
         <boxGeometry args={[BW - wallT * 2, BH - 0.05, BD - wallT * 2]} />
         <primitive object={mInner} />
       </mesh>
       {/* Pen groove (visualized as a slightly recessed dark bar) */}
-      <mesh position={[0, -0.026, 0]}>
+      <mesh scale={0.999} position={[0, -0.026, 0]}>
         <boxGeometry args={[BW - 0.4, 0.01, 0.15]} />
         <meshBasicMaterial color="#1a1a1a" />
       </mesh>
       {/* Elastic band to hold pen */}
-      <mesh position={[0, -0.015, 0]}>
+      <mesh scale={0.999} position={[0, -0.015, 0]}>
         <boxGeometry args={[0.08, 0.02, 0.16]} />
         <primitive object={mElastic} />
       </mesh>
 
       {/* ── OUTER WRAP (Book style) ──────────────────────────────────────────── */}
       {/* Bottom Wrap under tray */}
-      <mesh position={[0, -BH - wallT / 2 - wrapT / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH - wallT / 2 - wrapT / 2, 0]} castShadow>
         <boxGeometry args={[BW + wrapT * 2, wrapT, BD + wrapT * 2]} />
         <primitive object={mOuter} />
       </mesh>
@@ -108,7 +108,7 @@ export const LuxuryPenBox = ({ color, autoRotate, textureUrl, bgTextureUrl, acti
       {/* Hinge 1: Bottom-Back edge -> rotates slightly back to show it's open */}
       <group position={[0, -BH - wallT / 2, -BD / 2 - wrapT]} rotation={[-Math.PI * 0.1, 0, 0]}>
         {/* Back Wrap Wall */}
-        <mesh position={[0, BH / 2, -wrapT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, BH / 2, -wrapT / 2]} castShadow>
           <boxGeometry args={[BW + wrapT * 2, BH + wallT, wrapT]} />
           <primitive object={mOuter} />
         </mesh>
@@ -116,14 +116,14 @@ export const LuxuryPenBox = ({ color, autoRotate, textureUrl, bgTextureUrl, acti
         {/* Hinge 2: Top-Back edge -> Top Lid */}
         <group position={[0, BH + wallT, 0]} rotation={[-Math.PI * 0.5, 0, 0]}>
           {/* Top Lid */}
-          <mesh position={[0, wrapT / 2, BD / 2]} castShadow>
+          <mesh scale={0.999} position={[0, wrapT / 2, BD / 2]} castShadow>
             <boxGeometry args={[BW + wrapT * 2, wrapT, BD + wrapT * 2]} />
             <primitive object={mLidFace} />
           </mesh>
 
           {/* Inner lid logo */}
           {lidTex && (
-            <mesh position={[0, -0.001, BD / 2]} rotation={[Math.PI / 2, Math.PI, 0]}>
+            <mesh scale={0.999} position={[0, -0.001, BD / 2]} rotation={[Math.PI / 2, Math.PI, 0]}>
               <planeGeometry args={[1.5, 0.4]} />
               <meshPhysicalMaterial color="#fff" map={logoTex} roughness={0.9} transparent />
             </mesh>
@@ -131,7 +131,7 @@ export const LuxuryPenBox = ({ color, autoRotate, textureUrl, bgTextureUrl, acti
 
           {/* Hinge 3: Top-Front edge -> Magnetic Flap */}
           <group position={[0, 0, BD + wrapT]} rotation={[-Math.PI * 0.25, 0, 0]}>
-            <mesh position={[0, -BH / 2, wrapT / 2]} castShadow>
+            <mesh scale={0.999} position={[0, -BH / 2, wrapT / 2]} castShadow>
               <boxGeometry args={[BW + wrapT * 2, BH, wrapT]} />
               <primitive object={mOuter} />
             </mesh>

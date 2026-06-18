@@ -51,23 +51,23 @@ export const WeddingBox = ({ color, autoRotate, textureUrl, bgTextureUrl, active
     <group ref={groupRef} position={[0, -0.2, 0]} scale={[0.8, 0.8, 0.8]}>
       {/* ── BASE TRAY ─────────────────────────────────────────────────────────── */}
       <group position={[0, 0, 0]}>
-        <mesh position={[0, -BH_Tray / 2 + wallT / 2, 0]} castShadow>
+        <mesh scale={0.999} position={[0, -BH_Tray / 2 + wallT / 2, 0]} castShadow>
           <boxGeometry args={[BW, wallT, BD]} />
           <primitive object={mInner} />
         </mesh>
-        <mesh position={[0, 0, BD / 2 - wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, 0, BD / 2 - wallT / 2]} castShadow>
           <boxGeometry args={[BW, BH_Tray, wallT]} />
           <primitive object={mOuter} />
         </mesh>
-        <mesh position={[0, 0, -BD / 2 + wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, 0, -BD / 2 + wallT / 2]} castShadow>
           <boxGeometry args={[BW, BH_Tray, wallT]} />
           <primitive object={mOuter} />
         </mesh>
-        <mesh position={[-BW / 2 + wallT / 2, 0, 0]} castShadow>
+        <mesh scale={0.999} position={[-BW / 2 + wallT / 2, 0, 0]} castShadow>
           <boxGeometry args={[wallT, BH_Tray, BD]} />
           <primitive object={mOuter} />
         </mesh>
-        <mesh position={[BW / 2 - wallT / 2, 0, 0]} castShadow>
+        <mesh scale={0.999} position={[BW / 2 - wallT / 2, 0, 0]} castShadow>
           <boxGeometry args={[wallT, BH_Tray, BD]} />
           <primitive object={mOuter} />
         </mesh>
@@ -75,30 +75,30 @@ export const WeddingBox = ({ color, autoRotate, textureUrl, bgTextureUrl, active
 
       {/* ── LID TRAY ──────────────────────────────────────────────────────────── */}
       {/* Lid is slightly larger and hovered/rotated to show it's a 2-piece box */}
-      <group position={[0, BH_Tray / 2 + BH_Lid / 2 + 0.1, -0.1]} rotation={[-0.15, 0.1, 0]}>
+      <group position={[0, BH_Tray / 2 + BH_Lid / 2 + 0.8, -0.1]} rotation={[-0.15, 0.1, 0]}>
         {/* Top Roof */}
-        <mesh position={[0, BH_Lid / 2 - wallT / 2, 0]} castShadow>
+        <mesh scale={0.999} position={[0, BH_Lid / 2 - wallT / 2, 0]} castShadow>
           <boxGeometry args={[BW + 0.08, wallT, BD + 0.08]} />
           <primitive object={mTopLid} />
         </mesh>
         {/* Front wall */}
-        <mesh position={[0, 0, (BD + 0.08) / 2 - wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, 0, (BD + 0.08) / 2 - wallT / 2]} castShadow>
           <boxGeometry args={[BW + 0.08, BH_Lid, wallT]} />
           {/* Wrap pattern onto sides if background texture exists, else solid */}
           <primitive object={bgTextureUrl ? mTopLid : mOuter} />
         </mesh>
         {/* Back wall */}
-        <mesh position={[0, 0, -(BD + 0.08) / 2 + wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, 0, -(BD + 0.08) / 2 + wallT / 2]} castShadow>
           <boxGeometry args={[BW + 0.08, BH_Lid, wallT]} />
           <primitive object={bgTextureUrl ? mTopLid : mOuter} />
         </mesh>
         {/* Left wall */}
-        <mesh position={[-(BW + 0.08) / 2 + wallT / 2, 0, 0]} castShadow>
+        <mesh scale={0.999} position={[-(BW + 0.08) / 2 + wallT / 2, 0, 0]} castShadow>
           <boxGeometry args={[wallT, BH_Lid, BD + 0.08]} />
           <primitive object={bgTextureUrl ? mTopLid : mOuter} />
         </mesh>
         {/* Right wall */}
-        <mesh position={[(BW + 0.08) / 2 - wallT / 2, 0, 0]} castShadow>
+        <mesh scale={0.999} position={[(BW + 0.08) / 2 - wallT / 2, 0, 0]} castShadow>
           <boxGeometry args={[wallT, BH_Lid, BD + 0.08]} />
           <primitive object={bgTextureUrl ? mTopLid : mOuter} />
         </mesh>

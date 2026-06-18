@@ -114,29 +114,29 @@ export const TriangularCakeBox = ({ color, autoRotate, textureUrl }: Props) => {
     shape.lineTo(0, D/2 - wBorder - 0.02);
     shape.lineTo(-W/2 + wBorder + 0.02, -D/2 + wBorder);
     const geometry = new THREE.ShapeGeometry(shape);
-    geometry.rotateX(-Math.PI / 2); // Lay flat facing up
+    geometry.rotateX(Math.PI / 2); // Lay flat facing up
     return geometry;
   }, [W, D, wBorder]);
 
   return (
     <group ref={groupRef} position={[0, -H/2, 0]}>
       {/* Base Floor */}
-      <mesh castShadow receiveShadow geometry={baseGeo} position={[0, bt, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={baseGeo} position={[0, bt, 0]}>
         {mat}
       </mesh>
       
       {/* Walls */}
-      <mesh castShadow receiveShadow geometry={wallsGeo} position={[0, H, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={wallsGeo} position={[0, H, 0]}>
         {mat}
       </mesh>
 
       {/* Lid with cutout */}
-      <mesh castShadow receiveShadow geometry={lidGeo} position={[0, H + bt, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={lidGeo} position={[0, H + bt, 0]}>
         {mat}
       </mesh>
 
       {/* Glass Window */}
-      <mesh geometry={glassGeo} position={[0, H - 0.01, 0]}>
+      <mesh scale={0.999} geometry={glassGeo} position={[0, H - 0.01, 0]}>
         {glassMat}
       </mesh>
     </group>

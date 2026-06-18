@@ -114,7 +114,7 @@ export const PopcornBox = ({ color, autoRotate, textureUrl, bgTextureUrl, active
         const activeTex = showLogo && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
         
         return (
-          <mesh key={`outer-${i}`} geometry={geo} castShadow receiveShadow>
+          <mesh scale={0.999} key={`outer-${i}`} geometry={geo} castShadow receiveShadow>
             <meshPhysicalMaterial
               color={activeTex ? '#ffffff' : defaultColor}
               map={activeTex ?? undefined}
@@ -128,7 +128,7 @@ export const PopcornBox = ({ color, autoRotate, textureUrl, bgTextureUrl, active
 
       {/* ── Inner walls (white cardboard) ── */}
       {wallGeometries.map((geo, i) => (
-        <mesh key={`inner-${i}`} geometry={geo}>
+        <mesh scale={0.999} key={`inner-${i}`} geometry={geo}>
           <meshPhysicalMaterial
             color="#f8f6f0"
             roughness={0.9}
@@ -139,11 +139,11 @@ export const PopcornBox = ({ color, autoRotate, textureUrl, bgTextureUrl, active
       ))}
 
       {/* ── Bottom (white inside, kraft outside) ── */}
-      <mesh position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[botW, botW]} />
         <meshPhysicalMaterial color="#f8f6f0" roughness={0.9} side={THREE.FrontSide} />
       </mesh>
-      <mesh position={[0, -0.001, 0]} rotation={[Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, -0.001, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <planeGeometry args={[botW, botW]} />
         <meshPhysicalMaterial
           color={(!activeFaces || activeFaces.bottom !== false) && textureUrl ? '#ffffff' : defaultColor}

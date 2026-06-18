@@ -39,7 +39,7 @@ export const SeaFoodBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* 
         A very wide, shallow landscape box for seafood/shrimp.
       */}
-      <mesh castShadow receiveShadow position={[0, H/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, 0]}>
         <boxGeometry args={[W, H, D]} />
         {mat}
       </mesh>

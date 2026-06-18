@@ -1,73 +1,68 @@
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
-interface Props { color: string; autoRotate: boolean; textureUrl?: string | null; }
 
-export const PlumCakeBox = ({ color, autoRotate, textureUrl }: Props) => {
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
+interface Props {
+  color: string;
+  autoRotate: boolean;
+  textureUrl?: string | null;
+  bgTextureUrl?: string | null;
+  activeFaces?: Record<string, boolean>;
+}
+
+export const PlumCakeBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFaces }: Props) => {
   const groupRef = useRef<THREE.Group>(null!);
-
-  const texture = useMemo(() => {
-    if (!textureUrl) return null;
-    const t = new THREE.TextureLoader().load(textureUrl);
-    t.colorSpace = THREE.SRGBColorSpace;
-    return t;
-  }, [textureUrl]);
+  const texture = useTexture(textureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+  const bgTex = useTexture(bgTextureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+  texture.colorSpace = THREE.SRGBColorSpace;
+  bgTex.colorSpace = THREE.SRGBColorSpace;
 
   useFrame((_, delta) => {
     if (groupRef.current && autoRotate) groupRef.current.rotation.y += delta * 0.4;
   });
 
-  const boxColor = color || '#880e4f'; // Dark festive plum red
+  const boxColor = color || '#a81c1c'; // Festive red as fallback
+  const materials = useMemo(() => {
+    return faceOrder.map(faceName => {
+      const showLogo = !activeFaces || activeFaces[faceName] !== false;
+      const activeTex = showLogo && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
+      return new THREE.MeshPhysicalMaterial({
+        color: activeTex ? '#ffffff' : boxColor,
+        map: activeTex,
+        roughness: 0.5,
+        metalness: 0.05,
+        clearcoat: 0.1,
+      });
+    });
+  }, [boxColor, textureUrl, bgTextureUrl, activeFaces, texture, bgTex]);
 
-  // Metallic tin material
-  const mat = (
-    <meshPhysicalMaterial
-      map={texture || undefined}
-      color={texture ? '#ffffff' : boxColor}
-      roughness={0.3}
-      metalness={0.6}
-      clearcoat={0.3}
-    />
-  );
-  
-  const innerMat = (
-    <meshStandardMaterial
-      color="#e0e0e0"
-      roughness={0.4}
-      metalness={0.8}
-    />
-  );
-
-  const radius = 0.8;
+  const W = 1;
   const H = 0.5;
-  const lidH = 0.1;
-  const lidRadius = radius + 0.02; // slightly larger to fit over
+  const D = 1;
 
   return (
     <group ref={groupRef} position={[0, -H/2, 0]}>
-      {/* Tin Base */}
-      <mesh castShadow receiveShadow position={[0, H/2, 0]}>
-        <cylinderGeometry args={[radius, radius, H, 64]} />
-        {mat}
+      {/* Main Box Body */}
+      <mesh scale={0.999} castShadow receiveShadow material={materials} position={[0, H/2, 0]}>
+        <boxGeometry args={[W, H, D]} />
       </mesh>
-      
-      {/* Inner Floor (if lid was open, but it's closed, we just render outer) */}
-      
-      {/* Tin Lid */}
-      {/* Resting slightly on top, overlapping the base */}
-      <group position={[0, H, 0]}>
-        {/* Lid Top */}
-        <mesh castShadow receiveShadow position={[0, 0, 0]}>
-          <cylinderGeometry args={[lidRadius, lidRadius, lidH, 64]} />
-          {mat}
-        </mesh>
-        {/* Lid Lip detail */}
-        <mesh castShadow receiveShadow position={[0, lidH/2, 0]}>
-          <torusGeometry args={[lidRadius - 0.01, 0.01, 16, 64]} />
-          {mat}
-        </mesh>
-      </group>
+
+      {/* Top Tuck Flap Seam Detail (to make it look like a folding carton) */}
+      <mesh scale={0.999} position={[0, H + 0.001, D/2 - 0.01]}>
+        <boxGeometry args={[W - 0.02, 0.002, 0.02]} />
+        <meshStandardMaterial color="#000000" opacity={0.1} transparent roughness={0.8} />
+      </mesh>
+      <mesh scale={0.999} position={[-W/2 + 0.01, H + 0.001, 0]}>
+        <boxGeometry args={[0.02, 0.002, D - 0.02]} />
+        <meshStandardMaterial color="#000000" opacity={0.1} transparent roughness={0.8} />
+      </mesh>
+      <mesh scale={0.999} position={[W/2 - 0.01, H + 0.001, 0]}>
+        <boxGeometry args={[0.02, 0.002, D - 0.02]} />
+        <meshStandardMaterial color="#000000" opacity={0.1} transparent roughness={0.8} />
+      </mesh>
     </group>
   );
 };

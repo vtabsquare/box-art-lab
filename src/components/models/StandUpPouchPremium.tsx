@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -61,8 +63,6 @@ export const StandUpPouchPremium = ({ color, autoRotate, textureUrl, bgTextureUr
   const sealW = 0.04; // width of side seals
 
   const geo = useMemo(() => createPouchGeometry(W, H, D, maxBulge), []);
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const materials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
@@ -85,14 +85,14 @@ export const StandUpPouchPremium = ({ color, autoRotate, textureUrl, bgTextureUr
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
       {/* ── Main Pouch Body ── */}
-      <mesh castShadow receiveShadow geometry={geo} material={materials} />
+      <mesh scale={0.999} castShadow receiveShadow geometry={geo} material={materials} />
 
       {/* ── Side Seals ── */}
-      <mesh position={[-W / 2 + sealW / 2, 0, 0]}>
+      <mesh scale={0.999} position={[-W / 2 + sealW / 2, 0, 0]}>
         <boxGeometry args={[sealW, H, D + 0.005]} />
         <primitive object={sealMat} attach="material" />
       </mesh>
-      <mesh position={[W / 2 - sealW / 2, 0, 0]}>
+      <mesh scale={0.999} position={[W / 2 - sealW / 2, 0, 0]}>
         <boxGeometry args={[sealW, H, D + 0.005]} />
         <primitive object={sealMat} attach="material" />
       </mesh>
@@ -105,23 +105,23 @@ export const StandUpPouchPremium = ({ color, autoRotate, textureUrl, bgTextureUr
       </mesh>
 
       {/* ── Zip Lock Line ── */}
-      <mesh position={[0, H / 2 - 0.25, D / 2 + 0.005]}>
+      <mesh scale={0.999} position={[0, H / 2 - 0.25, D / 2 + 0.005]}>
         <boxGeometry args={[W - sealW * 2, 0.02, 0.005]} />
         <meshStandardMaterial color="#ffffff" transparent opacity={0.3} />
       </mesh>
 
       {/* ── Top Euro Hole Cutout (Simulated with a contrasting shape) ── */}
-      <mesh position={[0, H / 2 - 0.1, 0]} rotation={[Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, H / 2 - 0.1, 0]} rotation={[Math.PI / 2, 0, 0]}>
         {/* A simple ring to simulate the hanging hole punch */}
         <cylinderGeometry args={[0.04, 0.04, D + 0.01, 16]} />
         <meshBasicMaterial color="#000000" />
       </mesh>
       {/* Euro hole side slots */}
-      <mesh position={[-0.06, H / 2 - 0.1, 0]}>
+      <mesh scale={0.999} position={[-0.06, H / 2 - 0.1, 0]}>
          <boxGeometry args={[0.06, 0.02, D + 0.01]} />
          <meshBasicMaterial color="#000000" />
       </mesh>
-      <mesh position={[0.06, H / 2 - 0.1, 0]}>
+      <mesh scale={0.999} position={[0.06, H / 2 - 0.1, 0]}>
          <boxGeometry args={[0.06, 0.02, D + 0.01]} />
          <meshBasicMaterial color="#000000" />
       </mesh>

@@ -1,18 +1,20 @@
 /**
- * LuxuryScarfBox - 2-part rigid box with transparent window and ribbon
+ * LuxuryScarfBox - Magnetic Rigid Box
  *
  * Architecture:
- *   - Base Tray: 4 walls + floor
- *   - Scarf/Tissue: Plane sitting inside the base
- *   - Lid: 4 walls + Top face made of a window frame + transparent center
- *   - Ribbon: Wraps around the fully closed lid with a bow on top
+ *   - Shallow rigid base tray
+ *   - Wrapped cover hinged at the back, flipped open
+ *   - Magnetic front flap folded down from the lid
+ *   - Custom branding applied to both the outside and the inside lid
  */
 
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useTexture } from '@react-three/drei';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -25,167 +27,98 @@ const EMPTY_TEX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC
 
 export const LuxuryScarfBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFaces }: Props) => {
   const groupRef = useRef<THREE.Group>(null!);
-  const logoTex = useTexture(textureUrl || EMPTY_TEX);
-  logoTex.colorSpace = THREE.SRGBColorSpace;
+  const texture = useTexture(textureUrl || EMPTY_TEX);
+  const bgTex = useTexture(bgTextureUrl || EMPTY_TEX);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  bgTex.colorSpace = THREE.SRGBColorSpace;
 
   useFrame((_, dt) => {
     if (groupRef.current && autoRotate) groupRef.current.rotation.y += dt * 0.25;
   });
 
-  const extC = color || '#151515'; // Very dark grey/black
-  const wallT = 0.03;
+  const extC = color || '#1a1a1a'; // Dark luxury grey/black
+  const wallT = 0.04;
 
-  const mOuter = new THREE.MeshPhysicalMaterial({ color: extC, roughness: 0.9, clearcoat: 0.1 });
-  const mInner = new THREE.MeshPhysicalMaterial({ color: '#222', roughness: 1.0 });
-  const mRibbon = new THREE.MeshPhysicalMaterial({ color: '#0a0a0a', roughness: 0.2, clearcoat: 0.5 }); // Shiny silk black
-  const mWindow = new THREE.MeshPhysicalMaterial({ color: '#ffffff', transmission: 0.9, opacity: 1, roughness: 0.05, ior: 1.5, thickness: 0.01 });
+  const mInner = useMemo(() => new THREE.MeshStandardMaterial({ color: '#2a2a2a', roughness: 0.95 }), []);
+  const extMaterials = useMemo(() => {
+    return faceOrder.map(faceName => {
+      const showLogo = !activeFaces || activeFaces[faceName] !== false;
+      const activeTex = showLogo && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
+      
+      return new THREE.MeshStandardMaterial({
+        color: activeTex ? '#ffffff' : extC,
+        map: activeTex,
+        roughness: 0.7,
+      });
+    });
+  }, [extC, textureUrl, bgTextureUrl, activeFaces, texture, bgTex]);
 
-  // Base dimensions
-  const BW = 1.6;
-  const BD = 1.4;
-  const BH = 0.3;
+  // Base tray dimensions
+  const BW = 2.6;
+  const BD = 1.7;
+  const BH = 0.25;
 
-  // Lid dimensions (fits precisely over base)
-  const LW = BW + 0.02;
-  const LD = BD + 0.02;
-  const LH = 0.25;
-
-  const FW = 0.2; // Window frame border width
+  // Lid dimensions (slightly oversized to wrap the tray)
+  const LW = BW + 0.06;
+  const LD = BD + 0.06;
 
   return (
-    <group ref={groupRef} position={[0, BH / 2, 0]} scale={[0.9, 0.9, 0.9]}>
+    <group ref={groupRef} position={[0, -0.2, 0]} scale={[1.1, 1.1, 1.1]}>
       {/* ── BASE TRAY ─────────────────────────────────────────────────────────── */}
-      <mesh position={[0, -BH, 0]} castShadow>
+      {/* Floor */}
+      <mesh scale={0.999} position={[0, wallT / 2, 0]} castShadow receiveShadow material={[mInner, mInner, mInner, extMaterials[3], mInner, mInner]}>
         <boxGeometry args={[BW, wallT, BD]} />
-        <primitive object={mOuter} />
-      </mesh>
-      <mesh position={[0, -BH / 2, BD / 2 - wallT / 2]} castShadow>
-        <boxGeometry args={[BW, BH, wallT]} />
-        <primitive object={mOuter} />
-      </mesh>
-      <mesh position={[0, -BH / 2, -BD / 2 + wallT / 2]} castShadow>
-        <boxGeometry args={[BW, BH, wallT]} />
-        <primitive object={mOuter} />
-      </mesh>
-      <mesh position={[-BW / 2 + wallT / 2, -BH / 2, 0]} castShadow>
-        <boxGeometry args={[wallT, BH, BD]} />
-        <primitive object={mOuter} />
-      </mesh>
-      <mesh position={[BW / 2 - wallT / 2, -BH / 2, 0]} castShadow>
-        <boxGeometry args={[wallT, BH, BD]} />
-        <primitive object={mOuter} />
       </mesh>
       
-      {/* Inner Floor Lining */}
-      <mesh position={[0, -BH + wallT + 0.005, 0]}>
-        <boxGeometry args={[BW - wallT * 2, 0.01, BD - wallT * 2]} />
-        <primitive object={mInner} />
+      {/* Left Wall */}
+      <mesh scale={0.999} position={[-BW / 2 + wallT / 2, BH / 2 + wallT / 2, 0]} castShadow receiveShadow material={[mInner, extMaterials[1], mInner, mInner, mInner, mInner]}>
+        <boxGeometry args={[wallT, BH, BD]} />
       </mesh>
 
-      {/* ── INTERIOR TISSUE / SCARF PLACEHOLDER ──────────────────────────────── */}
-      {/* Slightly folded tissue paper look */}
-      <mesh position={[0, -BH / 2, 0]}>
-        <boxGeometry args={[BW - 0.1, 0.02, BD - 0.1]} />
-        <meshPhysicalMaterial color="#dcdcdc" roughness={0.8} clearcoat={0.1} />
+      {/* Right Wall */}
+      <mesh scale={0.999} position={[BW / 2 - wallT / 2, BH / 2 + wallT / 2, 0]} castShadow receiveShadow material={[extMaterials[0], mInner, mInner, mInner, mInner, mInner]}>
+        <boxGeometry args={[wallT, BH, BD]} />
       </mesh>
-      {/* Logo inside, clearly visible through window */}
-      {textureUrl && (
-        <mesh position={[0, -BH / 2 + 0.011, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <planeGeometry args={[0.5, 0.5]} />
-          <meshPhysicalMaterial color="#fff" map={logoTex} roughness={0.9} transparent />
-        </mesh>
-      )}
 
-      {/* ── LID (Fully closed over the base) ─────────────────────────────────── */}
-      {/* Lid Top edge is at Y=0, walls go down to -LH */}
-      <group position={[0, 0, 0]}>
-        {/* Lid walls */}
-        <mesh position={[0, -LH / 2, LD / 2 - wallT / 2]} castShadow>
-          <boxGeometry args={[LW, LH, wallT]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[0, -LH / 2, -LD / 2 + wallT / 2]} castShadow>
-          <boxGeometry args={[LW, LH, wallT]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[-LW / 2 + wallT / 2, -LH / 2, 0]} castShadow>
-          <boxGeometry args={[wallT, LH, LD]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[LW / 2 - wallT / 2, -LH / 2, 0]} castShadow>
-          <boxGeometry args={[wallT, LH, LD]} />
-          <primitive object={mOuter} />
+      {/* Back Wall */}
+      <mesh scale={0.999} position={[0, BH / 2 + wallT / 2, -BD / 2 + wallT / 2]} castShadow receiveShadow material={[mInner, mInner, mInner, mInner, mInner, extMaterials[5]]}>
+        <boxGeometry args={[BW - wallT * 2, BH, wallT]} />
+      </mesh>
+
+      {/* Front Wall */}
+      <mesh scale={0.999} position={[0, BH / 2 + wallT / 2, BD / 2 - wallT / 2]} castShadow receiveShadow material={[mInner, mInner, mInner, mInner, extMaterials[4], mInner]}>
+        <boxGeometry args={[BW - wallT * 2, BH, wallT]} />
+      </mesh>
+
+      {/* ── COVER & LID (Magnetic style) ──────────────────────────────────────── */}
+      {/* The cover wrap hinges exactly at the top outer corner of the back wall */}
+      <group position={[0, BH + wallT / 2, -BD / 2 - 0.02]} rotation={[-1.9, 0, 0]}>
+        
+        {/* Main top lid panel */}
+        {/* Inner face is -Y (index 3), Outer face is +Y (index 2) matching 'top' face */}
+        <mesh scale={0.999} position={[0, 0, LD / 2]} castShadow receiveShadow material={[mInner, mInner, extMaterials[2], mInner, mInner, mInner]}>
+          <boxGeometry args={[LW, wallT, LD]} />
         </mesh>
 
-        {/* Lid Top Frame (Window cutout) */}
-        <mesh position={[0, -wallT / 2, -LD / 2 + FW / 2]} castShadow>
-          <boxGeometry args={[LW, wallT, FW]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[0, -wallT / 2, LD / 2 - FW / 2]} castShadow>
-          <boxGeometry args={[LW, wallT, FW]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[-LW / 2 + FW / 2, -wallT / 2, 0]} castShadow>
-          <boxGeometry args={[FW, wallT, LD - FW * 2]} />
-          <primitive object={mOuter} />
-        </mesh>
-        <mesh position={[LW / 2 - FW / 2, -wallT / 2, 0]} castShadow>
-          <boxGeometry args={[FW, wallT, LD - FW * 2]} />
-          <primitive object={mOuter} />
-        </mesh>
-
-        {/* Transparent Window Pane */}
-        <mesh position={[0, -wallT / 2, 0]}>
-          <boxGeometry args={[LW - FW * 2, 0.005, LD - FW * 2]} />
-          <primitive object={mWindow} />
-        </mesh>
-
-        {/* ── RIBBON ─────────────────────────────────────────────────────────── */}
-        <group position={[0, 0, 0]}>
-          {/* Horizontal Wrap */}
-          <mesh position={[0, 0.005, 0]}>
-            <boxGeometry args={[LW + 0.005, 0.005, 0.15]} />
-            <primitive object={mRibbon} />
+        {/* Inner Lid Logo - Prominently displayed like in luxury boxes */}
+        {textureUrl && (
+          <mesh scale={0.999} position={[0, -wallT / 2 - 0.001, LD / 2]} rotation={[Math.PI / 2, Math.PI, 0]}>
+            <planeGeometry args={[LW * 0.8, LD * 0.8]} />
+            <meshStandardMaterial color="#fff" map={texture} roughness={0.8} transparent />
           </mesh>
-          <mesh position={[LW / 2 + 0.002, -BH / 2, 0]}>
-            <boxGeometry args={[0.005, BH, 0.15]} />
-            <primitive object={mRibbon} />
-          </mesh>
-          <mesh position={[-LW / 2 - 0.002, -BH / 2, 0]}>
-            <boxGeometry args={[0.005, BH, 0.15]} />
-            <primitive object={mRibbon} />
-          </mesh>
+        )}
 
-          {/* Bow on top-center */}
-          <group position={[0, 0.02, 0]}>
-            {/* Center knot */}
-            <mesh position={[0, 0, 0]}>
-              <boxGeometry args={[0.08, 0.04, 0.12]} />
-              <primitive object={mRibbon} />
-            </mesh>
-            {/* Left loop */}
-            <mesh position={[-0.15, 0, 0]} rotation={[0, 0.2, 0.2]}>
-              <torusGeometry args={[0.1, 0.02, 16, 32]} />
-              <primitive object={mRibbon} />
-            </mesh>
-            {/* Right loop */}
-            <mesh position={[0.15, 0, 0]} rotation={[0, -0.2, -0.2]}>
-              <torusGeometry args={[0.1, 0.02, 16, 32]} />
-              <primitive object={mRibbon} />
-            </mesh>
-            {/* Tails */}
-            <mesh position={[-0.1, -0.01, 0.12]} rotation={[Math.PI / 2 + 0.2, 0, -0.4]}>
-              <boxGeometry args={[0.1, 0.01, 0.3]} />
-              <primitive object={mRibbon} />
-            </mesh>
-            <mesh position={[0.1, -0.01, 0.12]} rotation={[Math.PI / 2 + 0.2, 0, 0.4]}>
-              <boxGeometry args={[0.1, 0.01, 0.3]} />
-              <primitive object={mRibbon} />
-            </mesh>
-          </group>
+        {/* Magnetic Front Flap */}
+        {/* Folds inwards dynamically towards the base tray */}
+        <group position={[0, 0, LD]} rotation={[Math.PI / 2 - 0.1, 0, 0]}>
+          {/* Inner face is -Y, Outer face is +Y (which maps to 'front' when closed) */}
+          <mesh scale={0.999} position={[0, 0.2, 0]} castShadow receiveShadow material={[mInner, mInner, extMaterials[4], mInner, mInner, mInner]}>
+            <boxGeometry args={[LW, 0.4, wallT]} />
+          </mesh>
         </group>
+        
       </group>
+
     </group>
   );
 };

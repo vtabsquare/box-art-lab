@@ -11,108 +11,243 @@ interface Props {
   activeFaces?: Record<string, boolean>;
 }
 
-// Helper to create the bulging flat pouch geometry
-const createFlatPouchGeometry = (W: number, H: number, D: number, maxBulge: number) => {
-  const geo = new THREE.BoxGeometry(W, H, D, 1, 48, 1);
-  const posAttribute = geo.attributes.position;
-  const v = new THREE.Vector3();
+const EMPTY_TEX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
 
-  for (let i = 0; i < posAttribute.count; i++) {
-    v.fromBufferAttribute(posAttribute, i);
-    const ny = (v.y + H / 2) / H; // 0 at bottom, 1 at top
-    
-    // Flat pouch: bulge is max in the center (ny=0.5) and tapers to 0 at top and bottom
-    // We add flat seal areas at top and bottom (ny < 0.1 or ny > 0.9)
-    let bulge = 0;
-    if (ny > 0.1 && ny < 0.9) {
-      // Map 0.1 -> 0.9 to 0 -> 1 for the sine curve
-      const curveNy = (ny - 0.1) / 0.8;
-      bulge = maxBulge * Math.sin(curveNy * Math.PI);
-    }
+// Builds a smooth, slightly-bulging flat pouch mesh from a grid of vertices.
+// The pouch is flat on the edges (heat-sealed) and slightly puffy in the center.
+const buildPouchGeo = (W: number, H: number, bulge: number, segsX: number, segsY: number) => {
+  const geo = new THREE.BufferGeometry();
+  const positions: number[] = [];
+  const normals: number[] = [];
+  const uvs: number[] = [];
+  const indices: number[] = [];
 
-    if (v.z > 0) {
-      v.z += bulge;
-    } else if (v.z < 0) {
-      v.z -= bulge;
+  const SEAL = 0.06; // fraction of width/height that is heat-seal (flat)
+
+  const nx = segsX + 1;
+  const ny = segsY + 1;
+
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) {
+      const u = i / segsX;
+      const v = j / segsY;
+
+      const x = (u - 0.5) * W;
+      const y = (v - 0.5) * H;
+
+      // Shape factor: 0 at edges (seal), 1 at center
+      const fx = Math.min(u / SEAL, (1 - u) / SEAL, 1);
+      const fy = Math.min(v / SEAL, (1 - v) / SEAL, 1);
+      const factor = Math.sin(fx * Math.PI * 0.5) * Math.sin(fy * Math.PI * 0.5);
+
+      const z = bulge * factor;
+
+      // Front face
+      positions.push(x, y, z);
+      normals.push(0, 0, 1);
+      uvs.push(u, v);
     }
-    
-    posAttribute.setXYZ(i, v.x, v.y, v.z);
   }
-  
+
+  // Back face (mirrored)
+  const backOffset = nx * ny;
+  for (let j = 0; j < ny; j++) {
+    for (let i = 0; i < nx; i++) {
+      const u = i / segsX;
+      const v = j / segsY;
+      const x = (u - 0.5) * W;
+      const y = (v - 0.5) * H;
+      const fx = Math.min(u / SEAL, (1 - u) / SEAL, 1);
+      const fy = Math.min(v / SEAL, (1 - v) / SEAL, 1);
+      const factor = Math.sin(fx * Math.PI * 0.5) * Math.sin(fy * Math.PI * 0.5);
+      const z = -bulge * factor;
+      positions.push(x, y, z);
+      normals.push(0, 0, -1);
+      uvs.push(1 - u, v);
+    }
+  }
+
+  // Front face indices
+  for (let j = 0; j < segsY; j++) {
+    for (let i = 0; i < segsX; i++) {
+      const a = j * nx + i;
+      const b = j * nx + i + 1;
+      const c = (j + 1) * nx + i;
+      const d = (j + 1) * nx + i + 1;
+      indices.push(a, c, b, b, c, d);
+    }
+  }
+
+  // Back face indices (reversed winding)
+  for (let j = 0; j < segsY; j++) {
+    for (let i = 0; i < segsX; i++) {
+      const a = backOffset + j * nx + i;
+      const b = backOffset + j * nx + i + 1;
+      const c = backOffset + (j + 1) * nx + i;
+      const d = backOffset + (j + 1) * nx + i + 1;
+      indices.push(a, b, c, b, d, c);
+    }
+  }
+
+  geo.setIndex(indices);
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
   geo.computeVertexNormals();
   return geo;
 };
 
+// A thin tube used for the zip-close strip
+const buildZipGeo = (W: number, radius: number) => {
+  const path = new THREE.LineCurve3(
+    new THREE.Vector3(-W / 2 + radius, 0, 0),
+    new THREE.Vector3(W / 2 - radius, 0, 0)
+  );
+  return new THREE.TubeGeometry(path, 1, radius, 12, false);
+};
+
+// Hang hole: a torus at the top center
+const buildHangHoleGeo = (innerR: number, tubeR: number) =>
+  new THREE.TorusGeometry(innerR, tubeR, 16, 32);
+
 export const FlatPouchPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFaces }: Props) => {
   const groupRef = useRef<THREE.Group>(null!);
-  const texture = useTexture(textureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
-  const bgTex = useTexture(bgTextureUrl || 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=');
+  const texture = useTexture(textureUrl || EMPTY_TEX);
+  const bgTex = useTexture(bgTextureUrl || EMPTY_TEX);
   texture.colorSpace = THREE.SRGBColorSpace;
   bgTex.colorSpace = THREE.SRGBColorSpace;
 
   useFrame((_, delta) => {
-    if (groupRef.current && autoRotate) groupRef.current.rotation.y += delta * 0.3;
+    if (groupRef.current && autoRotate) groupRef.current.rotation.y += delta * 0.28;
   });
 
-  const W = 0.9;
-  const H = 1.3;
-  const D = 0.015; // Initial thickness
-  const maxBulge = 0.12;
-  const sealW = 0.035; // width of side seals
+  // --- Dimensions ---
+  const W = 1.5;   // width
+  const H = 1.9;   // height
+  const BULGE = 0.055; // how puffy the pouch is
 
-  const geo = useMemo(() => createFlatPouchGeometry(W, H, D, maxBulge), []);
+  // --- Geometries ---
+  const pouchGeo = useMemo(() => buildPouchGeo(W, H, BULGE, 32, 40), []);
 
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
-  const materials = useMemo(() => {
-    return faceOrder.map(faceName => {
-      const showLogo = !activeFaces || activeFaces[faceName] !== false;
-      const activeTex = showLogo && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
-      return new THREE.MeshPhysicalMaterial({
-        color: activeTex ? '#ffffff' : color || '#2e4a3b',
-        map: activeTex,
-        roughness: 0.4,
-        metalness: 0.15,
-      });
-    });
-  }, [color, textureUrl, bgTextureUrl, activeFaces, texture, bgTex]);
+  // Heat-seal strips (thin flat quads on the edges)
+  const sealThick = 0.008;
+  const sealW = 0.055;
 
-  const sealMat = new THREE.MeshPhysicalMaterial({
-    color: color || '#22382c',
-    roughness: 0.5,
+  // Zip strip geometry
+  const zipGeo = useMemo(() => buildZipGeo(W - 0.01, 0.018), []);
+  const zipGrooveGeo = useMemo(() => buildZipGeo(W - 0.01, 0.010), []);
+
+  // Hang hole
+  const hangGeo = useMemo(() => buildHangHoleGeo(0.055, 0.012), []);
+
+  // --- Materials ---
+  const pouchColor = color || '#3bb8e8';
+
+  const showFrontTex = !activeFaces || activeFaces['front'] !== false;
+  const showBackTex = !activeFaces || activeFaces['back'] !== false;
+  const frontTex = showFrontTex && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
+  const backTex = showBackTex && textureUrl ? texture : (bgTextureUrl ? bgTex : null);
+
+  const mFront = useMemo(() => new THREE.MeshPhysicalMaterial({
+    color: frontTex ? '#ffffff' : pouchColor,
+    map: frontTex || undefined,
+    roughness: 0.08,
+    metalness: 0.05,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.05,
+    reflectivity: 0.9,
+    side: THREE.FrontSide,
+  }), [pouchColor, frontTex]);
+
+  const mBack = useMemo(() => new THREE.MeshPhysicalMaterial({
+    color: backTex ? '#ffffff' : pouchColor,
+    map: backTex || undefined,
+    roughness: 0.08,
+    metalness: 0.05,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.05,
+    reflectivity: 0.9,
+    side: THREE.BackSide,
+  }), [pouchColor, backTex]);
+
+  const mSeal = useMemo(() => new THREE.MeshPhysicalMaterial({
+    color: pouchColor,
+    roughness: 0.25,
     metalness: 0.1,
-  });
+    clearcoat: 0.8,
+    side: THREE.DoubleSide,
+  }), [pouchColor]);
+
+  const mZip = useMemo(() => new THREE.MeshPhysicalMaterial({
+    color: '#e8e8f0',
+    roughness: 0.3,
+    metalness: 0.2,
+    clearcoat: 0.9,
+  }), []);
+
+  const mZipGroove = useMemo(() => new THREE.MeshPhysicalMaterial({
+    color: '#c0c0d8',
+    roughness: 0.4,
+    metalness: 0.1,
+  }), []);
+
+  const mHole = useMemo(() => new THREE.MeshPhysicalMaterial({
+    color: '#aaaacc',
+    roughness: 0.2,
+    metalness: 0.3,
+    clearcoat: 1.0,
+  }), []);
+
+  // Zip strip Y position — near the top, just below top seal
+  const zipY = H / 2 - sealW - 0.08;
+  // Hang hole Y position — within the top seal zone
+  const hangY = H / 2 - sealW * 0.5;
 
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
-      {/* ── Main Pouch Body ── */}
-      <mesh castShadow receiveShadow geometry={geo} material={materials} />
 
-      {/* ── Side Seals ── */}
-      <mesh position={[-W / 2 + sealW / 2, 0, 0]}>
-        <boxGeometry args={[sealW, H, D + 0.005]} />
-        <primitive object={sealMat} attach="material" />
+      {/* ── Main pouch body (front + back faces via single geometry) ── */}
+      <mesh scale={0.999} castShadow receiveShadow geometry={pouchGeo} material={mFront} />
+      <mesh scale={0.999} castShadow receiveShadow geometry={pouchGeo} material={mBack} />
+
+      {/* ── Heat-seal side strips ── */}
+      {/* Left seal */}
+      <mesh scale={0.999} castShadow position={[-W / 2 + sealW / 2, 0, 0]}>
+        <boxGeometry args={[sealW, H, sealThick]} />
+        <primitive object={mSeal} attach="material" />
       </mesh>
-      <mesh position={[W / 2 - sealW / 2, 0, 0]}>
-        <boxGeometry args={[sealW, H, D + 0.005]} />
-        <primitive object={sealMat} attach="material" />
+      {/* Right seal */}
+      <mesh scale={0.999} castShadow position={[W / 2 - sealW / 2, 0, 0]}>
+        <boxGeometry args={[sealW, H, sealThick]} />
+        <primitive object={mSeal} attach="material" />
+      </mesh>
+      {/* Top seal */}
+      <mesh scale={0.999} castShadow position={[0, H / 2 - sealW / 2, 0]}>
+        <boxGeometry args={[W, sealW, sealThick]} />
+        <primitive object={mSeal} attach="material" />
+      </mesh>
+      {/* Bottom seal */}
+      <mesh scale={0.999} castShadow position={[0, -H / 2 + sealW / 2, 0]}>
+        <boxGeometry args={[W, sealW, sealThick]} />
+        <primitive object={mSeal} attach="material" />
       </mesh>
 
-      {/* ── Top & Bottom Seals (Horizontal) ── */}
-      <mesh position={[0, H / 2 - sealW / 2, 0]}>
-        <boxGeometry args={[W, sealW, D + 0.005]} />
-        <primitive object={sealMat} attach="material" />
-      </mesh>
-      <mesh position={[0, -H / 2 + sealW / 2, 0]}>
-        <boxGeometry args={[W, sealW, D + 0.005]} />
-        <primitive object={sealMat} attach="material" />
-      </mesh>
+      {/* ── Zip-lock close strip ── */}
+      {/* Main zip ridge (front) */}
+      <mesh scale={0.999} geometry={zipGeo} material={mZip} position={[0, zipY, BULGE * 0.6]} castShadow />
+      {/* Groove (slightly behind the main ridge) */}
+      <mesh scale={0.999} geometry={zipGrooveGeo} material={mZipGroove} position={[0, zipY - 0.03, BULGE * 0.6 + 0.001]} />
+      {/* Back-face zip strip */}
+      <mesh scale={0.999} geometry={zipGeo} material={mZip} position={[0, zipY, -BULGE * 0.6]} castShadow />
+      <mesh scale={0.999} geometry={zipGrooveGeo} material={mZipGroove} position={[0, zipY - 0.03, -BULGE * 0.6 - 0.001]} />
 
-      {/* ── Tear Notch ── */}
-      {/* Subtle indent on the left side seal near the top */}
-      <mesh position={[-W / 2, H / 2 - 0.15, 0]}>
-        <cylinderGeometry args={[0.015, 0.015, D + 0.02, 16]} />
-        <meshBasicMaterial color="#000000" />
-      </mesh>
+      {/* ── Hang hole at top center ── */}
+      <mesh scale={0.999} geometry={hangGeo}
+        material={mHole}
+        position={[0, hangY, 0]}
+        rotation={[Math.PI / 2, 0, 0]}
+        castShadow
+      />
     </group>
   );
 };

@@ -66,14 +66,14 @@ export const RetortPouch = ({ color, autoRotate, textureUrl, bgTextureUrl, activ
   return (
     <group ref={groupRef} position={[0, 0, 0]} scale={[1.1, 1.1, 1.1]}>
       {/* ── POUCH BODY ──────────────────────────────────────────────────────── */}
-      <mesh position={[0, 0, -BD / 2]} castShadow>
+      <mesh scale={0.999} position={[0, 0, -BD / 2]} castShadow>
         <extrudeGeometry args={[shape, extrudeSettings]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* Front Face Logo Plane */}
       {frontTex && (
-        <mesh position={[0, 0, BD / 2 + 0.051]}>
+        <mesh scale={0.999} position={[0, 0, BD / 2 + 0.051]}>
           <planeGeometry args={[BW * 0.9, BH * 0.9]} />
           <meshPhysicalMaterial color="#fff" map={frontTex} roughness={0.2} metalness={0.3} clearcoat={0.8} transparent />
         </mesh>
@@ -81,31 +81,31 @@ export const RetortPouch = ({ color, autoRotate, textureUrl, bgTextureUrl, activ
 
       {/* ── THICK EDGE SEALS ────────────────────────────────────────────────── */}
       {/* Top Seal */}
-      <mesh position={[0, BH / 2 - 0.08, 0]}>
+      <mesh scale={0.999} position={[0, BH / 2 - 0.08, 0]}>
         <boxGeometry args={[BW, 0.15, BD + 0.02]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Bottom Seal */}
-      <mesh position={[0, -BH / 2 + 0.08, 0]}>
+      <mesh scale={0.999} position={[0, -BH / 2 + 0.08, 0]}>
         <boxGeometry args={[BW, 0.15, BD + 0.02]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Side Seals */}
-      <mesh position={[BW / 2 - 0.05, 0, 0]}>
+      <mesh scale={0.999} position={[BW / 2 - 0.05, 0, 0]}>
         <boxGeometry args={[0.1, BH, BD + 0.02]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-BW / 2 + 0.05, 0, 0]}>
+      <mesh scale={0.999} position={[-BW / 2 + 0.05, 0, 0]}>
         <boxGeometry args={[0.1, BH, BD + 0.02]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* Tear Notches */}
-      <mesh position={[BW / 2, BH / 2 - 0.2, 0]}>
+      <mesh scale={0.999} position={[BW / 2, BH / 2 - 0.2, 0]}>
         <cylinderGeometry args={[0.04, 0.04, BD + 0.04, 16]} rotation={[Math.PI / 2, 0, 0]} />
         <meshBasicMaterial color="#ffffff" /> {/* Just to cut out visually, though true boolean cut is hard, we can fake it with bg color or leave it */}
       </mesh>
-      <mesh position={[-BW / 2, BH / 2 - 0.2, 0]}>
+      <mesh scale={0.999} position={[-BW / 2, BH / 2 - 0.2, 0]}>
         <cylinderGeometry args={[0.04, 0.04, BD + 0.04, 16]} rotation={[Math.PI / 2, 0, 0]} />
         <meshBasicMaterial color="#ffffff" />
       </mesh>

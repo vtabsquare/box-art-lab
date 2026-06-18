@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -30,8 +32,6 @@ export const GiftBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, ac
   const H = 0.85;    // base height (y)
   const lidH = 0.18; // lid thickness
   const lidGap = 0.04; // visual gap
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const baseMaterials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
@@ -69,53 +69,52 @@ export const GiftBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, ac
   return (
     <group ref={groupRef} position={[0, -totalH / 2, 0]}>
       {/* ── Base box ── */}
-      <mesh castShadow receiveShadow material={baseMaterials} position={[0, H / 2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow material={baseMaterials} position={[0, H / 2, 0]}>
         <boxGeometry args={[S, H, S]} />
       </mesh>
 
       {/* ── Lid (lift-off, slightly wider) ── */}
-      <mesh castShadow material={lidMaterials} position={[0, H + lidGap + lidH / 2, 0]}>
+      <mesh scale={0.999} castShadow material={lidMaterials} position={[0, H + lidGap + lidH / 2, 0]}>
         <boxGeometry args={[S + 0.04, lidH, S + 0.04]} />
       </mesh>
 
       {/* ── Ribbon cross — on base box sides ── */}
       {/* Front vertical ribbon */}
-      <mesh position={[0, H / 2, S / 2 + 0.003]}>
+      <mesh scale={0.999} position={[0, H / 2, S / 2 + 0.003]}>
         <boxGeometry args={[0.1, H + 0.01, 0.005]} />
         <primitive object={ribbonMat} attach="material" />
       </mesh>
       {/* Back vertical ribbon */}
-      <mesh position={[0, H / 2, -(S / 2 + 0.003)]}>
+      <mesh scale={0.999} position={[0, H / 2, -(S / 2 + 0.003)]}>
         <boxGeometry args={[0.1, H + 0.01, 0.005]} />
         <primitive object={ribbonMat} attach="material" />
       </mesh>
       {/* Left horizontal ribbon */}
-      <mesh position={[-(S / 2 + 0.003), H / 2, 0]}>
+      <mesh scale={0.999} position={[-(S / 2 + 0.003), H / 2, 0]}>
         <boxGeometry args={[0.005, H + 0.01, 0.1]} />
         <primitive object={ribbonMat} attach="material" />
       </mesh>
       {/* Right horizontal ribbon */}
-      <mesh position={[S / 2 + 0.003, H / 2, 0]}>
+      <mesh scale={0.999} position={[S / 2 + 0.003, H / 2, 0]}>
         <boxGeometry args={[0.005, H + 0.01, 0.1]} />
         <primitive object={ribbonMat} attach="material" />
       </mesh>
 
       {/* ── Ribbon on lid top ── */}
       {/* X-direction ribbon on lid */}
-      <mesh position={[0, H + lidGap + lidH + 0.003, 0]}>
+      <mesh scale={0.999} position={[0, H + lidGap + lidH + 0.003, 0]}>
         <boxGeometry args={[S + 0.05, 0.005, 0.1]} />
         <primitive object={ribbonMat} attach="material" />
       </mesh>
       {/* Z-direction ribbon on lid */}
-      <mesh position={[0, H + lidGap + lidH + 0.003, 0]}>
+      <mesh scale={0.999} position={[0, H + lidGap + lidH + 0.003, 0]}>
         <boxGeometry args={[0.1, 0.005, S + 0.05]} />
         <primitive object={ribbonMat} attach="material" />
       </mesh>
 
       {/* ── Bow on top ── */}
       {[0, Math.PI / 2, Math.PI, -Math.PI / 2].map((angle, i) => (
-        <mesh
-          key={i}
+        <mesh scale={0.999} key={i}
           position={[
             Math.sin(angle) * 0.14,
             H + lidGap + lidH + 0.08,
@@ -128,7 +127,7 @@ export const GiftBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, ac
         </mesh>
       ))}
       {/* Bow center knot */}
-      <mesh position={[0, H + lidGap + lidH + 0.1, 0]}>
+      <mesh scale={0.999} position={[0, H + lidGap + lidH + 0.1, 0]}>
         <sphereGeometry args={[0.05, 12, 12]} />
         <primitive object={ribbonMat} attach="material" />
       </mesh>

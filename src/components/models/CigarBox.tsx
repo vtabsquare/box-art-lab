@@ -57,52 +57,52 @@ export const CigarBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFa
       </RoundedBox>
       
       {/* Inner Cedar Lining (floor and protruding walls) */}
-      <mesh position={[0, -0.05, 0]}>
+      <mesh scale={0.999} position={[0, -0.05, 0]}>
         <boxGeometry args={[1.7, 0.05, 1.1]} />
         <primitive object={innerMat} />
       </mesh>
       
       {/* Lip extending upwards into the lid for a tight seal */}
-      <mesh position={[0, 0.04, 0.525]}>
+      <mesh scale={0.999} position={[0, 0.04, 0.525]}>
         <boxGeometry args={[1.7, 0.13, 0.05]} />
         <primitive object={innerMat} />
       </mesh>
-      <mesh position={[0, 0.04, -0.525]}>
+      <mesh scale={0.999} position={[0, 0.04, -0.525]}>
         <boxGeometry args={[1.7, 0.13, 0.05]} />
         <primitive object={innerMat} />
       </mesh>
-      <mesh position={[0.825, 0.04, 0]}>
+      <mesh scale={0.999} position={[0.825, 0.04, 0]}>
         <boxGeometry args={[0.05, 0.13, 1.1]} />
         <primitive object={innerMat} />
       </mesh>
-      <mesh position={[-0.825, 0.04, 0]}>
+      <mesh scale={0.999} position={[-0.825, 0.04, 0]}>
         <boxGeometry args={[0.05, 0.13, 1.1]} />
         <primitive object={innerMat} />
       </mesh>
 
       {/* Front Lock / Keyhole Brass Hardware */}
-      <mesh position={[0, 0, 0.605]}>
+      <mesh scale={0.999} position={[0, 0, 0.605]}>
         <boxGeometry args={[0.16, 0.1, 0.02]} />
         <primitive object={hwMat} />
       </mesh>
-      <mesh position={[0, 0, 0.616]}>
+      <mesh scale={0.999} position={[0, 0, 0.616]}>
         <circleGeometry args={[0.015, 16]} />
         <meshBasicMaterial color="#000000" />
       </mesh>
       {/* Little brass screw details on the lock */}
-      <mesh position={[0.05, 0.02, 0.615]}>
+      <mesh scale={0.999} position={[0.05, 0.02, 0.615]}>
         <circleGeometry args={[0.006, 8]} />
         <meshBasicMaterial color="#665522" />
       </mesh>
-      <mesh position={[-0.05, 0.02, 0.615]}>
+      <mesh scale={0.999} position={[-0.05, 0.02, 0.615]}>
         <circleGeometry args={[0.006, 8]} />
         <meshBasicMaterial color="#665522" />
       </mesh>
-      <mesh position={[0.05, -0.02, 0.615]}>
+      <mesh scale={0.999} position={[0.05, -0.02, 0.615]}>
         <circleGeometry args={[0.006, 8]} />
         <meshBasicMaterial color="#665522" />
       </mesh>
-      <mesh position={[-0.05, -0.02, 0.615]}>
+      <mesh scale={0.999} position={[-0.05, -0.02, 0.615]}>
         <circleGeometry args={[0.006, 8]} />
         <meshBasicMaterial color="#665522" />
       </mesh>
@@ -119,32 +119,32 @@ export const CigarBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFa
         </RoundedBox>
         
         {/* Lid hollow cutout / inner wood */}
-        <mesh position={[0, 0.005, 0.6]}>
+        <mesh scale={0.999} position={[0, 0.005, 0.6]}>
           <boxGeometry args={[1.7, 0.01, 1.1]} />
           <primitive object={innerMat} />
         </mesh>
 
         {/* Logo inside lid */}
         {textureUrl && (
-          <mesh position={[0, -0.002, 0.6]} rotation={[Math.PI / 2, 0, Math.PI]}>
+          <mesh scale={0.999} position={[0, -0.002, 0.6]} rotation={[Math.PI / 2, 0, Math.PI]}>
             <planeGeometry args={[1.3, 0.9]} />
             <meshPhysicalMaterial color="#ffffff" map={texture} roughness={0.9} transparent />
           </mesh>
         )}
 
         {/* Top half of the clasp */}
-        <mesh position={[0, 0.05, 1.205]}>
+        <mesh scale={0.999} position={[0, 0.05, 1.205]}>
           <boxGeometry args={[0.16, 0.1, 0.02]} />
           <primitive object={hwMat} />
         </mesh>
       </group>
 
       {/* Back Hinges (Brass) */}
-      <mesh position={[0.6, 0, -0.61]}>
+      <mesh scale={0.999} position={[0.6, 0, -0.61]}>
         <cylinderGeometry args={[0.015, 0.015, 0.18, 16]} rotation={[0, 0, Math.PI / 2]} />
         <primitive object={hwMat} />
       </mesh>
-      <mesh position={[-0.6, 0, -0.61]}>
+      <mesh scale={0.999} position={[-0.6, 0, -0.61]}>
         <cylinderGeometry args={[0.015, 0.015, 0.18, 16]} rotation={[0, 0, Math.PI / 2]} />
         <primitive object={hwMat} />
       </mesh>

@@ -146,7 +146,7 @@ const StudioPage = () => {
       } else {
         alert('Failed to send quote: ' + response.error);
       }
-    } catch (err: any) {
+    } catch (err: any  ) {
       console.error('Quote email failed:', err);
       alert('Error sending quote email. Please try again.');
     } finally {

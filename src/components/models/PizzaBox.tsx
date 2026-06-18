@@ -61,37 +61,37 @@ export const PizzaBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ══════════════ BASE TRAY ══════════════ */}
       <group>
         {/* Floor */}
-        <mesh castShadow position={[0, 0, 0]}>
-          <boxGeometry args={[W, bt, D]} />
+        <mesh scale={0.999} castShadow position={[0, 0, 0]}>
+          <boxGeometry args={[W * 0.99, bt * 0.95, D * 0.99]} />
           {mat()}
         </mesh>
 
         {/* Front wall  (z = +halfD) */}
-        <mesh castShadow position={[0, BH / 2 + bt / 2, halfD - bt / 2]}>
-          <boxGeometry args={[W, BH, bt]} />
+        <mesh scale={0.999} castShadow position={[0, BH / 2 + bt / 2, halfD - bt / 2]}>
+          <boxGeometry args={[W * 0.99, BH * 0.99, bt * 0.95]} />
           {mat()}
         </mesh>
 
         {/* Back wall   (z = -halfD) */}
-        <mesh castShadow position={[0, BH / 2 + bt / 2, -halfD + bt / 2]}>
-          <boxGeometry args={[W, BH, bt]} />
+        <mesh scale={0.999} castShadow position={[0, BH / 2 + bt / 2, -halfD + bt / 2]}>
+          <boxGeometry args={[W * 0.99, BH * 0.99, bt * 0.95]} />
           {mat()}
         </mesh>
 
         {/* Left wall   (x = -halfW) */}
-        <mesh castShadow position={[-halfW + bt / 2, BH / 2 + bt / 2, 0]}>
-          <boxGeometry args={[bt, BH, D]} />
+        <mesh scale={0.999} castShadow position={[-halfW + bt / 2, BH / 2 + bt / 2, 0]}>
+          <boxGeometry args={[bt * 0.95, BH * 0.99, D * 0.99]} />
           {mat()}
         </mesh>
 
         {/* Right wall  (x = +halfW) */}
-        <mesh castShadow position={[halfW - bt / 2, BH / 2 + bt / 2, 0]}>
-          <boxGeometry args={[bt, BH, D]} />
+        <mesh scale={0.999} castShadow position={[halfW - bt / 2, BH / 2 + bt / 2, 0]}>
+          <boxGeometry args={[bt * 0.95, BH * 0.99, D * 0.99]} />
           {mat()}
         </mesh>
 
         {/* Interior base surface (slightly darker kraft) */}
-        <mesh position={[0, bt / 2 + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} position={[0, bt / 2 + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[W - bt * 2, D - bt * 2]} />
           <meshStandardMaterial color="#c8893a" roughness={0.8} />
         </mesh>
@@ -105,13 +105,13 @@ export const PizzaBox = ({ color, autoRotate, textureUrl }: Props) => {
       <group position={[0, BH + bt, -halfD]} rotation={[lidOpenAngle, 0, 0]}>
 
         {/* Lid top panel — offset so its back edge is at z=0 (pivot) */}
-        <mesh castShadow position={[0, LH + bt / 2, halfD]}>
-          <boxGeometry args={[W, bt, D]} />
+        <mesh scale={0.999} castShadow position={[0, LH + bt / 2, halfD]}>
+          <boxGeometry args={[W * 0.99, bt * 0.95, D * 0.99]} />
           {mat()}
         </mesh>
 
         {/* Lid top face — texture / brand print */}
-        <mesh position={[0, LH + bt + 0.001, halfD]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} position={[0, LH + bt + 0.001, halfD]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[W - 0.05, D - 0.05]} />
           <meshStandardMaterial
             color={texture ? '#ffffff' : '#c8893a'}
@@ -121,31 +121,31 @@ export const PizzaBox = ({ color, autoRotate, textureUrl }: Props) => {
         </mesh>
 
         {/* Lid front wall */}
-        <mesh castShadow position={[0, LH / 2, W - bt / 2]}>
-          <boxGeometry args={[W, LH, bt]} />
+        <mesh scale={0.999} castShadow position={[0, LH / 2, W - bt / 2]}>
+          <boxGeometry args={[W * 0.99, LH * 0.99, bt * 0.95]} />
           {mat()}
         </mesh>
 
         {/* Lid back wall (at pivot z=0) */}
-        <mesh castShadow position={[0, LH / 2, bt / 2]}>
-          <boxGeometry args={[W, LH, bt]} />
+        <mesh scale={0.999} castShadow position={[0, LH / 2, bt / 2]}>
+          <boxGeometry args={[W * 0.99, LH * 0.99, bt * 0.95]} />
           {mat()}
         </mesh>
 
         {/* Lid left wall */}
-        <mesh castShadow position={[-halfW + bt / 2, LH / 2, halfD]}>
-          <boxGeometry args={[bt, LH, D]} />
+        <mesh scale={0.999} castShadow position={[-halfW + bt / 2, LH / 2, halfD]}>
+          <boxGeometry args={[bt * 0.95, LH * 0.99, D * 0.99]} />
           {mat()}
         </mesh>
 
         {/* Lid right wall */}
-        <mesh castShadow position={[halfW - bt / 2, LH / 2, halfD]}>
-          <boxGeometry args={[bt, LH, D]} />
+        <mesh scale={0.999} castShadow position={[halfW - bt / 2, LH / 2, halfD]}>
+          <boxGeometry args={[bt * 0.95, LH * 0.99, D * 0.99]} />
           {mat()}
         </mesh>
 
         {/* Lid underside */}
-        <mesh position={[0, 0, halfD]} rotation={[Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} position={[0, 0, halfD]} rotation={[Math.PI / 2, 0, 0]}>
           <planeGeometry args={[W - bt * 2, D - bt * 2]} />
           <meshStandardMaterial color="#c8893a" roughness={0.8} side={THREE.BackSide} />
         </mesh>
@@ -153,7 +153,7 @@ export const PizzaBox = ({ color, autoRotate, textureUrl }: Props) => {
 
       {/* ══════════════ GREASE-STAIN DETAIL on base interior ══════════════ */}
       {!texture && (
-        <mesh position={[0, bt + 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} position={[0, bt + 0.002, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <circleGeometry args={[0.55, 40]} />
           <meshStandardMaterial color="#a06020" roughness={0.95} transparent opacity={0.25} />
         </mesh>

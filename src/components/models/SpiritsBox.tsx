@@ -52,27 +52,27 @@ export const SpiritsBox = ({ color, autoRotate, textureUrl, bgTextureUrl, active
       
       {/* Slipcase Gap / Separation line */}
       {/* This gives the illusion that the box has a lid that comes off */}
-      <mesh position={[0, -1.2, 0]}>
+      <mesh scale={0.999} position={[0, -1.2, 0]}>
         <boxGeometry args={[1.005, 0.015, 1.005]} />
         <meshPhysicalMaterial color="#000000" roughness={1.0} />
       </mesh>
 
       {/* Wrapped Label / Sleeve */}
       {/* Front */}
-      <mesh castShadow material={wrapMat} position={[0, -0.2, 0.505]}>
+      <mesh scale={0.999} castShadow material={wrapMat} position={[0, -0.2, 0.505]}>
         <planeGeometry args={[1.0, 1.8]} />
       </mesh>
       {/* Right side */}
-      <mesh castShadow material={wrapMat} position={[0.505, -0.2, 0]} rotation={[0, Math.PI / 2, 0]}>
+      <mesh scale={0.999} castShadow material={wrapMat} position={[0.505, -0.2, 0]} rotation={[0, Math.PI / 2, 0]}>
         <planeGeometry args={[1.0, 1.8]} />
       </mesh>
       {/* Left side */}
-      <mesh castShadow material={wrapMat} position={[-0.505, -0.2, 0]} rotation={[0, -Math.PI / 2, 0]}>
+      <mesh scale={0.999} castShadow material={wrapMat} position={[-0.505, -0.2, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[1.0, 1.8]} />
       </mesh>
       
       {/* Inner Label Base (to cover edges of the wrap slightly for realism) */}
-      <mesh position={[0, -0.2, 0]}>
+      <mesh scale={0.999} position={[0, -0.2, 0]}>
         <boxGeometry args={[1.008, 1.8, 1.008]} />
         <meshBasicMaterial color={labelColor} transparent opacity={0.1} />
       </mesh>

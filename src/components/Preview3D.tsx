@@ -10,6 +10,9 @@ import { PopcornBox } from './models/PopcornBox';
 import { PizzaBox } from './models/PizzaBox';
 import { CarrierBoxPremium } from './models/CarrierBoxPremium';
 import { GiftBoxPremium } from './models/GiftBoxPremium';
+import { LingerieBox } from './models/LingerieBox';
+import { HexagonHatBox } from './models/HexagonHatBox';
+import { SareeBox } from './models/SareeBox';
 import { GarmentBox } from './models/GarmentBox';
 import { ShirtBox } from './models/ShirtBox';
 import { ShoeBoxPremium } from './models/ShoeBoxPremium';
@@ -80,6 +83,13 @@ import { WindowBox } from './models/WindowBox';
 import { HamperBox } from './models/HamperBox';
 import { LuxuryBag } from './models/LuxuryBag';
 import { WeddingBox } from './models/WeddingBox';
+import { FestivalGiftBox } from './models/FestivalGiftBox';
+import { KraftPouch } from './models/KraftPouch';
+import { FragileBox } from './models/FragileBox';
+import { BookMailer } from './models/BookMailer';
+import { TubeMailer } from './models/TubeMailer';
+import { EasyReturnBox } from './models/EasyReturnBox';
+import { BodyLotionBox } from './models/BodyLotionBox';
 
 interface ProductModelProps {
   productId: string | null;
@@ -192,6 +202,14 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
         return <CarrierBoxPremium {...p} />;
       case 'gift-box':
         return <GiftBoxPremium {...p} />;
+      case 'saree-box':
+        return <SareeBox {...p} />;
+      case 'lingerie-box':
+        return <LingerieBox {...p} />;
+      case 'hat-box':
+        return <HexagonHatBox {...p} />;
+      case 'jacket-box':
+        return <MailerBoxPremium {...p} />;
       case 'garment-box':
         return <GarmentBox {...p} />;
       case 'shirt-box':
@@ -219,14 +237,14 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
       case 'injection-box':
         return <InjectionBox {...p} />;
       case 'surgical-box':
+      case 'device-box':
         return <SurgicalBox {...p} />;
       case 'supplement-box':
         return <StandardBox {...p} dimensions={[0.7, 1.1, 0.7]} />;
       case 'perfume-box':
         return <PerfumeBox {...p} />;
-      case 'book-mailer':
       case 'tube-mailer':
-        return <MailerBox {...p} dimensions={[25, 35, 5]} />;
+        return <TubeMailer {...p} />;
       case 'cosmetic-box':
         return <StandardBox {...p} dimensions={[0.9, 0.55, 0.75]} />;
       case 'luxury-rigid':
@@ -268,6 +286,18 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
         return <LuxuryBag {...p} />;
       case 'wedding-box':
         return <WeddingBox {...p} />;
+      case 'festival-box':
+        return <FestivalGiftBox {...p} />;
+      case 'kraft-pouch':
+        return <KraftPouch {...p} />;
+      case 'fragile-box':
+        return <FragileBox {...p} />;
+      case 'book-mailer':
+        return <BookMailer {...p} />;
+      case 'return-box':
+        return <EasyReturnBox {...p} />;
+      case 'body-lotion-box':
+        return <BodyLotionBox {...p} />;
       default:
         // Fallback: dimension-based generic box
         return <StandardBox {...p} dimensions={[

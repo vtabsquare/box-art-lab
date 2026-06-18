@@ -47,11 +47,11 @@ export const StandUpPouch = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef}>
       {/* Front panel */}
-      <mesh castShadow position={[0, 0, 0.15]} geometry={frontGeo}>
+      <mesh scale={0.999} castShadow position={[0, 0, 0.15]} geometry={frontGeo}>
         {mat}
       </mesh>
       {/* Back panel */}
-      <mesh castShadow position={[0, 0, -0.15]} rotation={[0, Math.PI, 0]} geometry={frontGeo}>
+      <mesh scale={0.999} castShadow position={[0, 0, -0.15]} rotation={[0, Math.PI, 0]} geometry={frontGeo}>
         {mat}
       </mesh>
       {/* Bottom gusset (oval/rounded base) */}
@@ -61,23 +61,23 @@ export const StandUpPouch = ({ color, autoRotate, textureUrl }: Props) => {
       </mesh>
       {/* Side seals */}
       {[-0.42, 0.42].map((x, i) => (
-        <mesh key={i} castShadow position={[x + (i === 0 ? 0.015 : -0.015), 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <mesh scale={0.999} key={i} castShadow position={[x + (i === 0 ? 0.015 : -0.015), 0, 0]} rotation={[0, Math.PI / 2, 0]}>
           <planeGeometry args={[0.3, 1.9]} />
           <meshStandardMaterial color={pouchColor} roughness={0.2} metalness={0.4} />
         </mesh>
       ))}
       {/* Zip lock line */}
-      <mesh position={[0, 0.72, 0.16]}>
+      <mesh scale={0.999} position={[0, 0.72, 0.16]}>
         <boxGeometry args={[0.76, 0.04, 0.01]} />
         <meshStandardMaterial color="#ffffff" roughness={0.5} transparent opacity={0.8} />
       </mesh>
       {/* Top seal */}
-      <mesh castShadow position={[0, 0.97, 0]}>
+      <mesh scale={0.999} castShadow position={[0, 0.97, 0]}>
         <boxGeometry args={[0.76, 0.06, 0.3]} />
         <meshStandardMaterial color={pouchColor} roughness={0.2} metalness={0.4} />
       </mesh>
       {/* Hang hole */}
-      <mesh position={[0, 1.02, 0]} rotation={[Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, 1.02, 0]} rotation={[Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.04, 0.07, 16]} />
         <meshStandardMaterial color="#ffffff" side={THREE.DoubleSide} />
       </mesh>

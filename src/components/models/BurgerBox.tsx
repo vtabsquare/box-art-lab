@@ -93,7 +93,7 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ════════ BASE ════════ */}
       <group position={[0, H_base/2, 0]}>
         {/* Outer Base Walls */}
-        <mesh castShadow receiveShadow geometry={baseGeo}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={baseGeo}>
           {mat}
         </mesh>
         {/* Inner Base Walls (slightly smaller to avoid z-fighting) */}
@@ -102,15 +102,15 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
         </mesh>
         
         {/* Floor */}
-        <mesh castShadow receiveShadow geometry={floorGeo} position={[0, -H_base/2 + 0.005, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={floorGeo} position={[0, -H_base/2 + 0.005, 0]}>
           {insideMat}
         </mesh>
-        <mesh castShadow receiveShadow geometry={floorGeo} position={[0, -H_base/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={floorGeo} position={[0, -H_base/2, 0]}>
           {mat}
         </mesh>
         
         {/* Front locking tab (sticks out of base) */}
-        <mesh castShadow receiveShadow position={[0, H_base/2, W_mid/2 + 0.02]} rotation={[0.2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, H_base/2, W_mid/2 + 0.02]} rotation={[0.2, 0, 0]}>
           <planeGeometry args={[0.3, 0.15]} />
           {mat}
         </mesh>
@@ -122,7 +122,7 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
         {/* Offset lid so its back bottom edge is at the pivot */}
         <group position={[0, H_lid/2, W_mid/2]}>
           {/* Outer Lid Walls */}
-          <mesh castShadow receiveShadow geometry={lidGeo}>
+          <mesh scale={0.999} castShadow receiveShadow geometry={lidGeo}>
             {mat}
           </mesh>
           {/* Inner Lid Walls */}
@@ -131,15 +131,15 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
           </mesh>
 
           {/* Roof */}
-          <mesh castShadow receiveShadow geometry={roofGeo} position={[0, H_lid/2, 0]}>
+          <mesh scale={0.999} castShadow receiveShadow geometry={roofGeo} position={[0, H_lid/2, 0]}>
             {mat}
           </mesh>
-          <mesh castShadow receiveShadow geometry={roofGeo} position={[0, H_lid/2 - 0.005, 0]}>
+          <mesh scale={0.999} castShadow receiveShadow geometry={roofGeo} position={[0, H_lid/2 - 0.005, 0]}>
             {insideMat}
           </mesh>
           
           {/* Front lid flap (with slit) */}
-          <mesh castShadow receiveShadow position={[0, -H_lid/2 + 0.02, W_mid/2 + 0.02]} rotation={[0.4, 0, 0]}>
+          <mesh scale={0.999} castShadow receiveShadow position={[0, -H_lid/2 + 0.02, W_mid/2 + 0.02]} rotation={[0.4, 0, 0]}>
             <planeGeometry args={[0.5, 0.2]} />
             {mat}
           </mesh>

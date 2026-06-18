@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -34,8 +36,6 @@ export const GarmentBox = ({ color, autoRotate, textureUrl, bgTextureUrl, active
   const lidH = 0.12; // lid height
   const lidGap = 0.06; // gap between base top and lid bottom
   const wall = 0.025;  // wall thickness
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const baseMaterials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
@@ -70,51 +70,51 @@ export const GarmentBox = ({ color, autoRotate, textureUrl, bgTextureUrl, active
     <group ref={groupRef} position={[0, -(H + lidH + lidGap) / 2, 0]}>
       {/* ── Base tray ── */}
       {/* Bottom */}
-      <mesh castShadow receiveShadow position={[0, wall / 2, 0]} material={baseMaterials}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, wall / 2, 0]} material={baseMaterials}>
         <boxGeometry args={[W, wall, D]} />
       </mesh>
       {/* Front wall */}
-      <mesh castShadow position={[0, H / 2, D / 2 - wall / 2]} material={baseMaterials}>
+      <mesh scale={0.999} castShadow position={[0, H / 2, D / 2 - wall / 2]} material={baseMaterials}>
         <boxGeometry args={[W, H, wall]} />
       </mesh>
       {/* Back wall */}
-      <mesh castShadow position={[0, H / 2, -(D / 2 - wall / 2)]} material={baseMaterials}>
+      <mesh scale={0.999} castShadow position={[0, H / 2, -(D / 2 - wall / 2)]} material={baseMaterials}>
         <boxGeometry args={[W, H, wall]} />
       </mesh>
       {/* Left wall */}
-      <mesh castShadow position={[-(W / 2 - wall / 2), H / 2, 0]} material={baseMaterials}>
+      <mesh scale={0.999} castShadow position={[-(W / 2 - wall / 2), H / 2, 0]} material={baseMaterials}>
         <boxGeometry args={[wall, H, D - wall * 2]} />
       </mesh>
       {/* Right wall */}
-      <mesh castShadow position={[W / 2 - wall / 2, H / 2, 0]} material={baseMaterials}>
+      <mesh scale={0.999} castShadow position={[W / 2 - wall / 2, H / 2, 0]} material={baseMaterials}>
         <boxGeometry args={[wall, H, D - wall * 2]} />
       </mesh>
       {/* Inner bottom */}
-      <mesh receiveShadow position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} receiveShadow position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[W - wall * 2, D - wall * 2]} />
         <primitive object={innerMat} attach="material" />
       </mesh>
 
       {/* ── Lid (telescoping, slightly wider) ── */}
       <group position={[0, H + lidGap, 0]}>
-        <mesh castShadow material={lidMaterials} position={[0, lidH / 2, 0]}>
+        <mesh scale={0.999} castShadow material={lidMaterials} position={[0, lidH / 2, 0]}>
           <boxGeometry args={[W + 0.04, lidH, D + 0.04]} />
         </mesh>
         {/* Lid lip (inner rim that telescopes over the base) */}
         {/* Front lip */}
-        <mesh position={[0, -0.02, D / 2 + 0.01]}>
+        <mesh scale={0.999} position={[0, -0.02, D / 2 + 0.01]}>
           <boxGeometry args={[W + 0.02, 0.06, wall / 2]} />
           <primitive object={innerMat} attach="material" />
         </mesh>
         {/* Back lip */}
-        <mesh position={[0, -0.02, -(D / 2 + 0.01)]}>
+        <mesh scale={0.999} position={[0, -0.02, -(D / 2 + 0.01)]}>
           <boxGeometry args={[W + 0.02, 0.06, wall / 2]} />
           <primitive object={innerMat} attach="material" />
         </mesh>
       </group>
 
       {/* ── Tissue paper peeking out ── */}
-      <mesh position={[0, H + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} position={[0, H + 0.01, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[W - 0.1, D - 0.1]} />
         <meshStandardMaterial color="#fffef8" roughness={0.8} transparent opacity={0.7} side={THREE.DoubleSide} />
       </mesh>

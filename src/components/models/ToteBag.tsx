@@ -62,14 +62,14 @@ export const ToteBag = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFac
   return (
     <group ref={groupRef} position={[0, -0.4, 0]} scale={[1.1, 1.1, 1.1]}>
       {/* ── BAG BODY ────────────────────────────────────────────────────────── */}
-      <mesh position={[0, 0, -BD / 2]} castShadow>
+      <mesh scale={0.999} position={[0, 0, -BD / 2]} castShadow>
         <extrudeGeometry args={[shape, extrudeSettings]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* Front Face Logo Plane */}
       {frontTex && (
-        <mesh position={[0, 0, BD / 2 + 0.051]}>
+        <mesh scale={0.999} position={[0, 0, BD / 2 + 0.051]}>
           <planeGeometry args={[BW * 0.7, BH * 0.6]} />
           <meshPhysicalMaterial color="#fff" map={frontTex} roughness={1.0} transparent />
         </mesh>
@@ -77,36 +77,36 @@ export const ToteBag = ({ color, autoRotate, textureUrl, bgTextureUrl, activeFac
 
       {/* ── HANDLES ─────────────────────────────────────────────────────────── */}
       {/* Front Handle */}
-      <mesh position={[0, BH / 2 + 0.5, BD / 2 + 0.05]} rotation={[0, 0, 0]}>
+      <mesh scale={0.999} position={[0, BH / 2 + 0.5, BD / 2 + 0.05]} rotation={[0, 0, 0]}>
         <torusGeometry args={[0.4, 0.04, 8, 32, Math.PI]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Strap extensions to sew into bag */}
-      <mesh position={[-0.4, BH / 2 + 0.2, BD / 2 + 0.05]}>
+      <mesh scale={0.999} position={[-0.4, BH / 2 + 0.2, BD / 2 + 0.05]}>
         <boxGeometry args={[0.08, 0.6, 0.02]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0.4, BH / 2 + 0.2, BD / 2 + 0.05]}>
+      <mesh scale={0.999} position={[0.4, BH / 2 + 0.2, BD / 2 + 0.05]}>
         <boxGeometry args={[0.08, 0.6, 0.02]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* Back Handle */}
-      <mesh position={[0, BH / 2 + 0.5, -BD / 2 - 0.05]} rotation={[0, 0, 0]}>
+      <mesh scale={0.999} position={[0, BH / 2 + 0.5, -BD / 2 - 0.05]} rotation={[0, 0, 0]}>
         <torusGeometry args={[0.4, 0.04, 8, 32, Math.PI]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-0.4, BH / 2 + 0.2, -BD / 2 - 0.05]}>
+      <mesh scale={0.999} position={[-0.4, BH / 2 + 0.2, -BD / 2 - 0.05]}>
         <boxGeometry args={[0.08, 0.6, 0.02]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0.4, BH / 2 + 0.2, -BD / 2 - 0.05]}>
+      <mesh scale={0.999} position={[0.4, BH / 2 + 0.2, -BD / 2 - 0.05]}>
         <boxGeometry args={[0.08, 0.6, 0.02]} />
         <primitive object={mOuter} />
       </mesh>
       
       {/* Top Hem / Seam */}
-      <mesh position={[0, BH / 2, 0]}>
+      <mesh scale={0.999} position={[0, BH / 2, 0]}>
         <boxGeometry args={[BW, 0.08, BD + 0.12]} />
         <primitive object={mOuter} />
       </mesh>

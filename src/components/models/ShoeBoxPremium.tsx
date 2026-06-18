@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
+
+const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
 interface Props {
   color: string;
   autoRotate: boolean;
@@ -40,8 +42,6 @@ export const ShoeBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, ac
   const lidW = W + gap * 2 + lidWall * 2;
   const lidD = D + gap * 2 + lidWall * 2;
   const lidLift = 0.15;
-
-  const faceOrder = ['right', 'left', 'top', 'bottom', 'front', 'back'];
   const baseMaterials = useMemo(() => {
     return faceOrder.map(faceName => {
       const showLogo = !activeFaces || activeFaces[faceName] !== false;
@@ -74,27 +74,27 @@ export const ShoeBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, ac
     <group ref={groupRef} position={[0, -H / 2, 0]}>
       {/* ── Base tray ── */}
       {/* Bottom */}
-      <mesh castShadow receiveShadow material={baseMaterials} position={[0, wall / 2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow material={baseMaterials} position={[0, wall / 2, 0]}>
         <boxGeometry args={[W, wall, D]} />
       </mesh>
       {/* Front wall */}
-      <mesh castShadow material={baseMaterials} position={[0, wall + (H - wall) / 2, D / 2 - wall / 2]}>
+      <mesh scale={0.999} castShadow material={baseMaterials} position={[0, wall + (H - wall) / 2, D / 2 - wall / 2]}>
         <boxGeometry args={[W, H - wall, wall]} />
       </mesh>
       {/* Back wall */}
-      <mesh castShadow material={baseMaterials} position={[0, wall + (H - wall) / 2, -D / 2 + wall / 2]}>
+      <mesh scale={0.999} castShadow material={baseMaterials} position={[0, wall + (H - wall) / 2, -D / 2 + wall / 2]}>
         <boxGeometry args={[W, H - wall, wall]} />
       </mesh>
       {/* Left wall */}
-      <mesh castShadow material={baseMaterials} position={[-W / 2 + wall / 2, wall + (H - wall) / 2, 0]}>
+      <mesh scale={0.999} castShadow material={baseMaterials} position={[-W / 2 + wall / 2, wall + (H - wall) / 2, 0]}>
         <boxGeometry args={[wall, H - wall, D - 2 * wall]} />
       </mesh>
       {/* Right wall */}
-      <mesh castShadow material={baseMaterials} position={[W / 2 - wall / 2, wall + (H - wall) / 2, 0]}>
+      <mesh scale={0.999} castShadow material={baseMaterials} position={[W / 2 - wall / 2, wall + (H - wall) / 2, 0]}>
         <boxGeometry args={[wall, H - wall, D - 2 * wall]} />
       </mesh>
       {/* Inner bottom */}
-      <mesh receiveShadow position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <mesh scale={0.999} receiveShadow position={[0, wall + 0.001, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <planeGeometry args={[W - 2 * wall, D - 2 * wall]} />
         <primitive object={innerMat} attach="material" />
       </mesh>
@@ -103,30 +103,30 @@ export const ShoeBoxPremium = ({ color, autoRotate, textureUrl, bgTextureUrl, ac
       <group position={[0, H, -D / 2]}>
         <group rotation={[-lidLift, 0, 0]}>
           {/* Lid top face */}
-          <mesh castShadow material={lidMaterials} position={[0, lidH / 2, D / 2]}>
+          <mesh scale={0.999} castShadow material={lidMaterials} position={[0, lidH / 2, D / 2]}>
             <boxGeometry args={[lidW, lidH, lidD]} />
           </mesh>
           {/* Lid front skirt */}
-          <mesh castShadow material={lidMaterials} position={[0, -lidSkirtH / 2, D + gap + lidWall / 2]}>
+          <mesh scale={0.999} castShadow material={lidMaterials} position={[0, -lidSkirtH / 2, D + gap + lidWall / 2]}>
             <boxGeometry args={[lidW, lidSkirtH, lidWall]} />
           </mesh>
           {/* Lid back skirt */}
-          <mesh castShadow material={lidMaterials} position={[0, -lidSkirtH / 2, -gap - lidWall / 2]}>
+          <mesh scale={0.999} castShadow material={lidMaterials} position={[0, -lidSkirtH / 2, -gap - lidWall / 2]}>
             <boxGeometry args={[lidW, lidSkirtH, lidWall]} />
           </mesh>
           {/* Lid left skirt */}
-          <mesh castShadow material={lidMaterials} position={[-W / 2 - gap - lidWall / 2, -lidSkirtH / 2, D / 2]}>
+          <mesh scale={0.999} castShadow material={lidMaterials} position={[-W / 2 - gap - lidWall / 2, -lidSkirtH / 2, D / 2]}>
             <boxGeometry args={[lidWall, lidSkirtH, lidD - 2 * lidWall]} />
           </mesh>
           {/* Lid right skirt */}
-          <mesh castShadow material={lidMaterials} position={[W / 2 + gap + lidWall / 2, -lidSkirtH / 2, D / 2]}>
+          <mesh scale={0.999} castShadow material={lidMaterials} position={[W / 2 + gap + lidWall / 2, -lidSkirtH / 2, D / 2]}>
             <boxGeometry args={[lidWall, lidSkirtH, lidD - 2 * lidWall]} />
           </mesh>
         </group>
       </group>
 
       {/* ── Label strip on front ── */}
-      <mesh position={[0, H * 0.45, D / 2 + 0.001]}>
+      <mesh scale={0.999} position={[0, H * 0.45, D / 2 + 0.001]}>
         <planeGeometry args={[W * 0.6, H * 0.35]} />
         <meshStandardMaterial color="#ffffff" roughness={0.4} transparent opacity={0.85} />
       </mesh>

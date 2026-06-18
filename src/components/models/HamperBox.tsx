@@ -49,30 +49,30 @@ export const HamperBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeF
   return (
     <group ref={groupRef} position={[0, -BH_Cover / 2, 0]} scale={[0.8, 0.8, 0.8]}>
       {/* ── BASE TRAY ─────────────────────────────────────────────────────────── */}
-      <mesh position={[0, wallT / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[0, wallT / 2, 0]} castShadow>
         <boxGeometry args={[BW, wallT, BD]} />
         <primitive object={mInner} />
       </mesh>
-      <mesh position={[0, BH_Tray / 2, BD / 2 - wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, BH_Tray / 2, BD / 2 - wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH_Tray, wallT]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[0, BH_Tray / 2, -BD / 2 + wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, BH_Tray / 2, -BD / 2 + wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH_Tray, wallT]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[-BW / 2 + wallT / 2, BH_Tray / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[-BW / 2 + wallT / 2, BH_Tray / 2, 0]} castShadow>
         <boxGeometry args={[wallT, BH_Tray, BD]} />
         <primitive object={mOuter} />
       </mesh>
-      <mesh position={[BW / 2 - wallT / 2, BH_Tray / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[BW / 2 - wallT / 2, BH_Tray / 2, 0]} castShadow>
         <boxGeometry args={[wallT, BH_Tray, BD]} />
         <primitive object={mOuter} />
       </mesh>
 
       {/* Front Face Logo Plane on the Base Tray */}
       {frontTex && (
-        <mesh position={[0, BH_Tray / 2, BD / 2 + 0.001]}>
+        <mesh scale={0.999} position={[0, BH_Tray / 2, BD / 2 + 0.001]}>
           <planeGeometry args={[BW * 0.6, BH_Tray * 0.6]} />
           <meshPhysicalMaterial color="#fff" map={frontTex} roughness={0.8} transparent />
         </mesh>
@@ -82,45 +82,45 @@ export const HamperBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeF
       {/* Cover sits inside the tray walls. Width/Depth = BW - wallT*2 */}
       <group position={[0, wallT, 0]}>
         {/* Top pane */}
-        <mesh position={[0, BH_Cover, 0]}>
+        <mesh scale={0.999} position={[0, BH_Cover, 0]}>
           <boxGeometry args={[BW - wallT * 2, pWallT, BD - wallT * 2]} />
           <primitive object={mPlastic} />
         </mesh>
         {/* Front pane */}
-        <mesh position={[0, BH_Cover / 2, BD / 2 - wallT - pWallT / 2]}>
+        <mesh scale={0.999} position={[0, BH_Cover / 2, BD / 2 - wallT - pWallT / 2]}>
           <boxGeometry args={[BW - wallT * 2, BH_Cover, pWallT]} />
           <primitive object={mPlastic} />
         </mesh>
         {/* Back pane */}
-        <mesh position={[0, BH_Cover / 2, -BD / 2 + wallT + pWallT / 2]}>
+        <mesh scale={0.999} position={[0, BH_Cover / 2, -BD / 2 + wallT + pWallT / 2]}>
           <boxGeometry args={[BW - wallT * 2, BH_Cover, pWallT]} />
           <primitive object={mPlastic} />
         </mesh>
         {/* Left pane */}
-        <mesh position={[-BW / 2 + wallT + pWallT / 2, BH_Cover / 2, 0]}>
+        <mesh scale={0.999} position={[-BW / 2 + wallT + pWallT / 2, BH_Cover / 2, 0]}>
           <boxGeometry args={[pWallT, BH_Cover, BD - wallT * 2 - pWallT * 2]} />
           <primitive object={mPlastic} />
         </mesh>
         {/* Right pane */}
-        <mesh position={[BW / 2 - wallT - pWallT / 2, BH_Cover / 2, 0]}>
+        <mesh scale={0.999} position={[BW / 2 - wallT - pWallT / 2, BH_Cover / 2, 0]}>
           <boxGeometry args={[pWallT, BH_Cover, BD - wallT * 2 - pWallT * 2]} />
           <primitive object={mPlastic} />
         </mesh>
 
         {/* Visual fold lines (corners of the plastic box) */}
-        <mesh position={[-BW / 2 + wallT + pWallT / 2, BH_Cover / 2, BD / 2 - wallT - pWallT / 2]}>
+        <mesh scale={0.999} position={[-BW / 2 + wallT + pWallT / 2, BH_Cover / 2, BD / 2 - wallT - pWallT / 2]}>
           <cylinderGeometry args={[0.005, 0.005, BH_Cover, 8]} />
           <meshBasicMaterial color="#ffffff" opacity={0.3} transparent />
         </mesh>
-        <mesh position={[BW / 2 - wallT - pWallT / 2, BH_Cover / 2, BD / 2 - wallT - pWallT / 2]}>
+        <mesh scale={0.999} position={[BW / 2 - wallT - pWallT / 2, BH_Cover / 2, BD / 2 - wallT - pWallT / 2]}>
           <cylinderGeometry args={[0.005, 0.005, BH_Cover, 8]} />
           <meshBasicMaterial color="#ffffff" opacity={0.3} transparent />
         </mesh>
-        <mesh position={[-BW / 2 + wallT + pWallT / 2, BH_Cover / 2, -BD / 2 + wallT + pWallT / 2]}>
+        <mesh scale={0.999} position={[-BW / 2 + wallT + pWallT / 2, BH_Cover / 2, -BD / 2 + wallT + pWallT / 2]}>
           <cylinderGeometry args={[0.005, 0.005, BH_Cover, 8]} />
           <meshBasicMaterial color="#ffffff" opacity={0.3} transparent />
         </mesh>
-        <mesh position={[BW / 2 - wallT - pWallT / 2, BH_Cover / 2, -BD / 2 + wallT + pWallT / 2]}>
+        <mesh scale={0.999} position={[BW / 2 - wallT - pWallT / 2, BH_Cover / 2, -BD / 2 + wallT + pWallT / 2]}>
           <cylinderGeometry args={[0.005, 0.005, BH_Cover, 8]} />
           <meshBasicMaterial color="#ffffff" opacity={0.3} transparent />
         </mesh>

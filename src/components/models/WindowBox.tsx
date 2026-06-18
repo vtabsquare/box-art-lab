@@ -49,27 +49,27 @@ export const WindowBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeF
     <group ref={groupRef} position={[0, BH / 2, 0]} scale={[0.8, 0.8, 0.8]}>
       {/* ── BASE TRAY ─────────────────────────────────────────────────────────── */}
       {/* Floor */}
-      <mesh position={[0, -BH / 2 + wallT / 2, 0]} castShadow>
+      <mesh scale={0.999} position={[0, -BH / 2 + wallT / 2, 0]} castShadow>
         <boxGeometry args={[BW, wallT, BD]} />
         <primitive object={mInner} />
       </mesh>
       {/* Front Wall */}
-      <mesh position={[0, 0, BD / 2 - wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, 0, BD / 2 - wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Back Wall */}
-      <mesh position={[0, 0, -BD / 2 + wallT / 2]} castShadow>
+      <mesh scale={0.999} position={[0, 0, -BD / 2 + wallT / 2]} castShadow>
         <boxGeometry args={[BW, BH, wallT]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Left Wall */}
-      <mesh position={[-BW / 2 + wallT / 2, 0, 0]} castShadow>
+      <mesh scale={0.999} position={[-BW / 2 + wallT / 2, 0, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
       {/* Right Wall */}
-      <mesh position={[BW / 2 - wallT / 2, 0, 0]} castShadow>
+      <mesh scale={0.999} position={[BW / 2 - wallT / 2, 0, 0]} castShadow>
         <boxGeometry args={[wallT, BH, BD]} />
         <primitive object={mOuter} />
       </mesh>
@@ -79,51 +79,51 @@ export const WindowBox = ({ color, autoRotate, textureUrl, bgTextureUrl, activeF
         
         {/* Lid Top Frame (Window cutout) */}
         {/* Top edge */}
-        <mesh position={[0, wallT / 2, BD / 2 + BD / 2 - FW / 2]} castShadow>
+        <mesh scale={0.999} position={[0, wallT / 2, BD / 2 + BD / 2 - FW / 2]} castShadow>
           <boxGeometry args={[BW, wallT, FW]} />
           <primitive object={mOuter} />
         </mesh>
         {/* Bottom edge (hinge side) */}
-        <mesh position={[0, wallT / 2, FW / 2]} castShadow>
+        <mesh scale={0.999} position={[0, wallT / 2, FW / 2]} castShadow>
           <boxGeometry args={[BW, wallT, FW]} />
           <primitive object={mOuter} />
         </mesh>
         {/* Left edge */}
-        <mesh position={[-BW / 2 + FW / 2, wallT / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[-BW / 2 + FW / 2, wallT / 2, BD / 2]} castShadow>
           <boxGeometry args={[FW, wallT, BD - FW * 2]} />
           <primitive object={mOuter} />
         </mesh>
         {/* Right edge */}
-        <mesh position={[BW / 2 - FW / 2, wallT / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[BW / 2 - FW / 2, wallT / 2, BD / 2]} castShadow>
           <boxGeometry args={[FW, wallT, BD - FW * 2]} />
           <primitive object={mOuter} />
         </mesh>
 
         {/* Transparent Window Pane */}
-        <mesh position={[0, wallT / 2 - 0.005, BD / 2]}>
+        <mesh scale={0.999} position={[0, wallT / 2 - 0.005, BD / 2]}>
           <boxGeometry args={[BW - FW * 2, 0.005, BD - FW * 2]} />
           <primitive object={mWindow} />
         </mesh>
 
         {/* Logo / Print on the window frame (front lip of the lid) */}
         {topTex && (
-          <mesh position={[0, wallT + 0.005, BD - FW / 2]} rotation={[-Math.PI / 2, 0, Math.PI]}>
+          <mesh scale={0.999} position={[0, wallT + 0.005, BD - FW / 2]} rotation={[-Math.PI / 2, 0, Math.PI]}>
             <planeGeometry args={[BW * 0.8, FW * 0.8]} />
             <meshPhysicalMaterial color="#fff" map={topTex} roughness={0.9} transparent />
           </mesh>
         )}
 
         {/* Mailer Tuck Flaps (Side flaps on the lid) */}
-        <mesh position={[-BW / 2 + wallT / 2, BH / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[-BW / 2 + wallT / 2, BH / 2, BD / 2]} castShadow>
           <boxGeometry args={[wallT, BH, BD - 0.1]} />
           <primitive object={mOuter} />
         </mesh>
-        <mesh position={[BW / 2 - wallT / 2, BH / 2, BD / 2]} castShadow>
+        <mesh scale={0.999} position={[BW / 2 - wallT / 2, BH / 2, BD / 2]} castShadow>
           <boxGeometry args={[wallT, BH, BD - 0.1]} />
           <primitive object={mOuter} />
         </mesh>
         {/* Front tuck flap */}
-        <mesh position={[0, BH / 2, BD - wallT / 2]} castShadow>
+        <mesh scale={0.999} position={[0, BH / 2, BD - wallT / 2]} castShadow>
           <boxGeometry args={[BW - 0.1, BH, wallT]} />
           <primitive object={mOuter} />
         </mesh>

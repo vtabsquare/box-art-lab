@@ -70,28 +70,28 @@ export const FancyCakeBox = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef} position={[0, -(baseH + domeRadius)/2, 0]}>
       {/* Base Box */}
-      <mesh castShadow receiveShadow position={[0, baseH/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, baseH/2, 0]}>
         <boxGeometry args={[W, baseH, D]} />
         {mat}
       </mesh>
 
       {/* Arched Dome Roof */}
-      <mesh castShadow receiveShadow geometry={domeGeo} position={[0, baseH, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={domeGeo} position={[0, baseH, 0]}>
         {mat}
       </mesh>
       
       {/* Semi-circular side covers for the dome (to seal it) */}
-      <mesh castShadow receiveShadow position={[-W/2, baseH, 0]} rotation={[0, -Math.PI/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[-W/2, baseH, 0]} rotation={[0, -Math.PI/2, 0]}>
         <circleGeometry args={[domeRadius, 32, 0, Math.PI]} />
         {mat}
       </mesh>
-      <mesh castShadow receiveShadow position={[W/2, baseH, 0]} rotation={[0, Math.PI/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[W/2, baseH, 0]} rotation={[0, Math.PI/2, 0]}>
         <circleGeometry args={[domeRadius, 32, 0, Math.PI]} />
         {mat}
       </mesh>
 
       {/* Handle */}
-      <mesh castShadow receiveShadow geometry={handleGeo} position={[0, baseH + domeRadius, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={handleGeo} position={[0, baseH + domeRadius, 0]}>
         {mat}
       </mesh>
     </group>

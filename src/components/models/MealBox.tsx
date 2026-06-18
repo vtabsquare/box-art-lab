@@ -78,33 +78,33 @@ export const MealBox = ({ color, autoRotate, textureUrl }: Props) => {
     <group ref={groupRef} position={[0, -H/2, 0]}>
       {/* ════════ BOX BASE ════════ */}
       <group>
-        <mesh castShadow receiveShadow position={[0, bt/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, bt/2, 0]}>
           <boxGeometry args={[W, bt, D]} />
           {mat}
         </mesh>
-        <mesh castShadow receiveShadow position={[0, H/2, -D/2 + bt/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, -D/2 + bt/2]}>
           <boxGeometry args={[W, H, bt]} />
           {mat}
         </mesh>
-        <mesh castShadow receiveShadow position={[0, H/2, D/2 - bt/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, D/2 - bt/2]}>
           <boxGeometry args={[W, H, bt]} />
           {mat}
         </mesh>
-        <mesh castShadow receiveShadow position={[-W/2 + bt/2, H/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[-W/2 + bt/2, H/2, 0]}>
           <boxGeometry args={[bt, H, D]} />
           {mat}
         </mesh>
-        <mesh castShadow receiveShadow position={[W/2 - bt/2, H/2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[W/2 - bt/2, H/2, 0]}>
           <boxGeometry args={[bt, H, D]} />
           {mat}
         </mesh>
         
         {/* Inner Compartment Insert */}
-        <mesh castShadow receiveShadow geometry={insertGeo} position={[0, 0.05, 0]} rotation={[Math.PI/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={insertGeo} position={[0, 0.05, 0]} rotation={[Math.PI/2, 0, 0]}>
           {insertMat}
         </mesh>
         {/* Tray Floor (under holes) */}
-        <mesh receiveShadow position={[0, 0.06, 0]} rotation={[-Math.PI/2, 0, 0]}>
+        <mesh scale={0.999} receiveShadow position={[0, 0.06, 0]} rotation={[-Math.PI/2, 0, 0]}>
           <planeGeometry args={[W - bt*2, D - bt*2]} />
           <meshStandardMaterial color="#f0f0f0" />
         </mesh>
@@ -112,12 +112,12 @@ export const MealBox = ({ color, autoRotate, textureUrl }: Props) => {
 
       {/* ════════ LID (Folded open) ════════ */}
       <group position={[0, H, -D/2 + bt]} rotation={[-0.4, 0, 0]}>
-        <mesh castShadow receiveShadow position={[0, bt/2, D/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, bt/2, D/2]}>
           <boxGeometry args={[W, bt, D]} />
           {mat}
         </mesh>
         {/* Lid front tuck flap */}
-        <mesh castShadow receiveShadow position={[0, bt, D]} rotation={[-Math.PI/2 - 0.2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, bt, D]} rotation={[-Math.PI/2 - 0.2, 0, 0]}>
           <boxGeometry args={[W - 0.2, 0.15, bt]} />
           {mat}
         </mesh>

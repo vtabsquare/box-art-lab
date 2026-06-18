@@ -82,7 +82,7 @@ export async function storeVisitorData(
 
     // no-cors responses are opaque, so we assume success
     return { success: true };
-  } catch (error: any) {
+  } catch (error: any  ) {
     console.error('[GoogleSheets] Error storing data:', error);
     return { success: false, error: error.message };
   }

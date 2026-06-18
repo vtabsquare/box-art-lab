@@ -1,3 +1,4 @@
+ 
 import { Industry } from './designRules';
 
 // ─── Style keys that map to templateRenderers.ts ─────────────────────────────

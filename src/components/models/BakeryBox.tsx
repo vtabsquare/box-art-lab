@@ -93,7 +93,7 @@ export const BakeryBox = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef} position={[0, -H/2, 0]}>
       {/* ════════ BASE BOX ════════ */}
-      <mesh castShadow receiveShadow position={[0, H/2 - 0.01, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, H/2 - 0.01, 0]}>
         <boxGeometry args={[W - 0.04, H - 0.02, D - 0.04]} />
         {baseMat}
       </mesh>
@@ -101,27 +101,27 @@ export const BakeryBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ════════ LID ════════ */}
       <group position={[0, H, 0]}>
         {/* Top flat lid */}
-        <mesh castShadow receiveShadow geometry={lidTopGeo} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={lidTopGeo} rotation={[-Math.PI / 2, 0, 0]}>
           {lidMat}
         </mesh>
 
         {/* Front Scalloped Flap */}
-        <mesh castShadow receiveShadow geometry={flapGeo} position={[0, 0, D/2]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={flapGeo} position={[0, 0, D/2]}>
           {lidMat}
         </mesh>
 
         {/* Back Scalloped Flap */}
-        <mesh castShadow receiveShadow geometry={flapGeo} position={[0, 0, -D/2]} rotation={[0, Math.PI, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={flapGeo} position={[0, 0, -D/2]} rotation={[0, Math.PI, 0]}>
           {lidMat}
         </mesh>
 
         {/* Left Scalloped Flap */}
-        <mesh castShadow receiveShadow geometry={flapGeo} position={[-W/2, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={flapGeo} position={[-W/2, 0, 0]} rotation={[0, -Math.PI / 2, 0]}>
           {lidMat}
         </mesh>
 
         {/* Right Scalloped Flap */}
-        <mesh castShadow receiveShadow geometry={flapGeo} position={[W/2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow geometry={flapGeo} position={[W/2, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
           {lidMat}
         </mesh>
       </group>

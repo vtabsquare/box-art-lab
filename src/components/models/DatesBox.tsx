@@ -52,29 +52,29 @@ export const DatesBox = ({ color, autoRotate, textureUrl }: Props) => {
   return (
     <group ref={groupRef} position={[0, -H/2, 0]}>
       {/* ════════ BOX BASE & WALLS ════════ */}
-      <mesh castShadow receiveShadow position={[0, bt/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, bt/2, 0]}>
         <boxGeometry args={[W, bt, D]} />
         {mat}
       </mesh>
-      <mesh castShadow receiveShadow position={[0, H/2, -D/2 + bt/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, -D/2 + bt/2]}>
         <boxGeometry args={[W, H, bt]} />
         {mat}
       </mesh>
-      <mesh castShadow receiveShadow position={[0, H/2, D/2 - bt/2]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, D/2 - bt/2]}>
         <boxGeometry args={[W, H, bt]} />
         {mat}
       </mesh>
-      <mesh castShadow receiveShadow position={[-W/2 + bt/2, H/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[-W/2 + bt/2, H/2, 0]}>
         <boxGeometry args={[bt, H, D]} />
         {mat}
       </mesh>
-      <mesh castShadow receiveShadow position={[W/2 - bt/2, H/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[W/2 - bt/2, H/2, 0]}>
         <boxGeometry args={[bt, H, D]} />
         {mat}
       </mesh>
 
       {/* Inner tray floor for contrast */}
-      <mesh receiveShadow position={[0, bt + 0.01, 0]} rotation={[-Math.PI/2, 0, 0]}>
+      <mesh scale={0.999} receiveShadow position={[0, bt + 0.01, 0]} rotation={[-Math.PI/2, 0, 0]}>
         <planeGeometry args={[W - bt*2, D - bt*2]} />
         <meshStandardMaterial color="#f5f5f5" roughness={0.8} />
       </mesh>
@@ -84,24 +84,24 @@ export const DatesBox = ({ color, autoRotate, textureUrl }: Props) => {
       {/* ════════ TOP LID FRAME & WINDOW ════════ */}
       <group position={[0, H - bt/2, 0]}>
         {/* Frame borders */}
-        <mesh castShadow receiveShadow position={[0, 0, -D/2 + wBorder/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, 0, -D/2 + wBorder/2]}>
           <boxGeometry args={[W, bt, wBorder]} />
           {mat}
         </mesh>
-        <mesh castShadow receiveShadow position={[0, 0, D/2 - wBorder/2]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[0, 0, D/2 - wBorder/2]}>
           <boxGeometry args={[W, bt, wBorder]} />
           {mat}
         </mesh>
-        <mesh castShadow receiveShadow position={[-W/2 + wBorder/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[-W/2 + wBorder/2, 0, 0]}>
           <boxGeometry args={[wBorder, bt, D - wBorder*2]} />
           {mat}
         </mesh>
-        <mesh castShadow receiveShadow position={[W/2 - wBorder/2, 0, 0]}>
+        <mesh scale={0.999} castShadow receiveShadow position={[W/2 - wBorder/2, 0, 0]}>
           <boxGeometry args={[wBorder, bt, D - wBorder*2]} />
           {mat}
         </mesh>
         {/* Clear Plastic Window */}
-        <mesh position={[0, 0, 0]} rotation={[-Math.PI/2, 0, 0]}>
+        <mesh scale={0.999} position={[0, 0, 0]} rotation={[-Math.PI/2, 0, 0]}>
           <planeGeometry args={[W - wBorder*2 + 0.02, D - wBorder*2 + 0.02]} />
           {glassMat}
         </mesh>

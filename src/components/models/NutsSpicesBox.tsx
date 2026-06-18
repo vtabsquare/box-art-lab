@@ -35,7 +35,7 @@ export const NutsSpicesBox = ({ color, autoRotate, textureUrl }: Props) => {
 
   return (
     <group ref={groupRef} position={[0, -H/2, 0]}>
-      <mesh castShadow receiveShadow position={[0, H/2, 0]}>
+      <mesh scale={0.999} castShadow receiveShadow position={[0, H/2, 0]}>
         <boxGeometry args={[W, H, D]} />
         {mat}
       </mesh>

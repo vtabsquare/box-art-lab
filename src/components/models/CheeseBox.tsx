@@ -59,7 +59,7 @@ export const CheeseBox = ({ color, autoRotate, textureUrl }: Props) => {
 
   return (
     <group ref={groupRef} position={[0, -0.1, 0]}>
-      <mesh castShadow receiveShadow geometry={geo}>
+      <mesh scale={0.999} castShadow receiveShadow geometry={geo}>
         {mat}
       </mesh>
     </group>
