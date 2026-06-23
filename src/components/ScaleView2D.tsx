@@ -404,9 +404,6 @@ const FaceShape: React.FC<FaceProps> = ({ view, shape, x, y, w, h, fill, stroke 
         {/* Bottom tuck-end crease */}
         <line x1={x} y1={y + h - tuckH} x2={x + w} y2={y + h - tuckH}
           stroke={stroke} strokeWidth={0.8} opacity={0.40} />
-        {/* Vertical centre crease line (elegant carton fold) */}
-        <line x1={x + w / 2} y1={y + tuckH + 2} x2={x + w / 2} y2={y + h - tuckH - 2}
-          stroke={stroke} strokeWidth={0.45} opacity={0.18} strokeDasharray="5,3" />
         {/* Corner fold diamonds at top */}
         <line x1={x} y1={y} x2={x + w * 0.1} y2={y + tuckH}
           stroke={stroke} strokeWidth={0.6} opacity={0.3} />
@@ -820,6 +817,106 @@ const FaceShape: React.FC<FaceProps> = ({ view, shape, x, y, w, h, fill, stroke 
       <g>
         <rect x={x} y={y - h} width={w} height={h} fill={stroke} opacity={0.1} stroke={stroke} strokeWidth={1.5} />
         <rect x={x} y={y} width={w} height={h} fill={fill} stroke={stroke} strokeWidth={1.5} rx={1} />
+      </g>
+    );
+  }
+
+  /* ── PALETTE BOX (Eye Shadow) ──────────────────────────────────────────── */
+  if (type === 'palette-box') {
+    if (view === 'top') {
+      const cols = 4;
+      const rows = 3;
+      const paddingX = w * 0.1;
+      const paddingY = h * 0.1;
+      const panW = (w - paddingX * 2) / cols;
+      const panH = (h - paddingY * 2) / rows;
+      const r = Math.min(panW, panH) * 0.4;
+      
+      const pans = [];
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          pans.push(
+            <circle 
+              key={`pan-${i}-${j}`}
+              cx={x + paddingX + i * panW + panW/2} 
+              cy={y + paddingY + j * panH + panH/2} 
+              r={r} 
+              fill={stroke} 
+              opacity={0.15} 
+              stroke={stroke} 
+              strokeWidth={1} 
+            />
+          );
+        }
+      }
+      return (
+        <g>
+          <rect x={x} y={y} width={w} height={h} fill={fill} stroke={stroke} strokeWidth={1.5} rx={1} />
+          {pans}
+        </g>
+      );
+    }
+    if (view === 'side') {
+      return (
+        <g>
+          {/* Lid opened backwards */}
+          <line x1={x} y1={y} x2={x - w*0.8} y2={y - w*0.6} stroke={stroke} strokeWidth={1.5} opacity={0.6} />
+          <rect x={x} y={y} width={w} height={h} fill={fill} stroke={stroke} strokeWidth={1.5} rx={1} />
+        </g>
+      );
+    }
+    return (
+      <g>
+        {/* Lid opened backwards (looks like a tall rectangle behind) */}
+        <rect x={x} y={y - w} width={w} height={w} fill={stroke} opacity={0.1} stroke={stroke} strokeWidth={1.5} />
+        <rect x={x} y={y} width={w} height={h} fill={fill} stroke={stroke} strokeWidth={1.5} rx={1} />
+      </g>
+    );
+  }
+
+  /* ── FANCY TEA BOX (Decorative Flap Carton) ────────────────────────────── */
+  if (type === 'fancy-tea-box') {
+    if (view === 'top') {
+      return (
+        <g>
+          <rect x={x} y={y} width={w} height={h} fill={fill} stroke={stroke} strokeWidth={1.5} rx={1} />
+        </g>
+      );
+    }
+    if (view === 'side') {
+      return (
+        <g>
+          <rect x={x} y={y} width={w} height={h} fill={fill} stroke={stroke} strokeWidth={1.5} rx={1} />
+          {/* Lid folded open backwards */}
+          <line x1={x} y1={y} x2={x - w} y2={y - h*0.5} stroke={stroke} strokeWidth={1.5} opacity={0.6} />
+        </g>
+      );
+    }
+    // Default view: full die-line layout
+    const lidH = h * 0.7; // length of lid is about the depth of the box
+    const tuckH = Math.max(10, h * 0.2);
+    return (
+      <g>
+        {/* The main front panel */}
+        <rect x={x} y={y} width={w} height={h} fill={fill} stroke={stroke} strokeWidth={1.5} rx={1} />
+        
+        {/* Front small lip folded down */}
+        <path d={`M ${x},${y} L ${x + w*0.1},${y - tuckH*0.4} L ${x + w*0.9},${y - tuckH*0.4} L ${x + w},${y}`} fill="none" stroke={stroke} strokeWidth={1} opacity={0.5} />
+        
+        {/* Left and right dust flaps */}
+        <path d={`M ${x},${y} L ${x - w*0.3},${y - tuckH} L ${x - w*0.3},${y + h*0.5} L ${x},${y + h*0.5}`} fill="none" stroke={stroke} strokeWidth={1} opacity={0.5} />
+        <path d={`M ${x + w},${y} L ${x + w + w*0.3},${y - tuckH} L ${x + w + w*0.3},${y + h*0.5} L ${x + w},${y + h*0.5}`} fill="none" stroke={stroke} strokeWidth={1} opacity={0.5} />
+        
+        {/* The lid flipped up from the back wall (drawn as if it's attached to the bottom here for a standard layout, or just drawn floating above to represent the lid) */}
+        {/* Actually, let's draw the lid attached to the bottom edge simulating a straight tuck unfolding */}
+        <rect x={x} y={y + h} width={w} height={lidH} fill="none" stroke={stroke} strokeWidth={1} opacity={0.6} />
+        
+        {/* The cloud tuck tab at the end of the lid */}
+        <path d={`M ${x + w*0.1},${y + h + lidH} 
+                 Q ${x + w*0.2},${y + h + lidH + tuckH*0.5} ${x + w*0.35},${y + h + lidH + tuckH*0.3} 
+                 Q ${x + w*0.5},${y + h + lidH + tuckH*1.5} ${x + w*0.65},${y + h + lidH + tuckH*0.3} 
+                 Q ${x + w*0.8},${y + h + lidH + tuckH*0.5} ${x + w*0.9},${y + h + lidH} Z`} 
+              fill="none" stroke={stroke} strokeWidth={1} opacity={0.6} />
       </g>
     );
   }

@@ -2,9 +2,9 @@ import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
-interface Props { color: string; autoRotate: boolean; textureUrl?: string | null; }
+interface Props { color: string; autoRotate: boolean; textureUrl?: string | null; bgTextureUrl?: string | null; }
 
-export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
+export const BurgerBox = ({ color, autoRotate, textureUrl, bgTextureUrl }: Props) => {
   const groupRef = useRef<THREE.Group>(null!);
 
   const texture = useMemo(() => {
@@ -13,6 +13,13 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
     t.colorSpace = THREE.SRGBColorSpace;
     return t;
   }, [textureUrl]);
+
+  const bgTexture = useMemo(() => {
+    if (!bgTextureUrl) return null;
+    const t = new THREE.TextureLoader().load(bgTextureUrl);
+    t.colorSpace = THREE.SRGBColorSpace;
+    return t;
+  }, [bgTextureUrl]);
 
   useFrame((_, delta) => {
     if (groupRef.current && autoRotate) groupRef.current.rotation.y += delta * 0.35;
@@ -24,6 +31,16 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
     <meshPhysicalMaterial
       map={texture || undefined}
       color={texture ? '#ffffff' : boxColor}
+      roughness={0.85}
+      metalness={0.0}
+      side={THREE.DoubleSide}
+    />
+  );
+
+  const bgMat = (
+    <meshPhysicalMaterial
+      map={bgTexture || texture || undefined}
+      color={bgTexture || texture ? '#ffffff' : boxColor}
       roughness={0.85}
       metalness={0.0}
       side={THREE.DoubleSide}
@@ -94,7 +111,7 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
       <group position={[0, H_base/2, 0]}>
         {/* Outer Base Walls */}
         <mesh scale={0.999} castShadow receiveShadow geometry={baseGeo}>
-          {mat}
+          {bgMat}
         </mesh>
         {/* Inner Base Walls (slightly smaller to avoid z-fighting) */}
         <mesh geometry={baseGeo} scale={[0.99, 0.99, 0.99]}>
@@ -106,13 +123,13 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
           {insideMat}
         </mesh>
         <mesh scale={0.999} castShadow receiveShadow geometry={floorGeo} position={[0, -H_base/2, 0]}>
-          {mat}
+          {bgMat}
         </mesh>
         
         {/* Front locking tab (sticks out of base) */}
         <mesh scale={0.999} castShadow receiveShadow position={[0, H_base/2, W_mid/2 + 0.02]} rotation={[0.2, 0, 0]}>
           <planeGeometry args={[0.3, 0.15]} />
-          {mat}
+          {bgMat}
         </mesh>
       </group>
 
@@ -123,7 +140,7 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
         <group position={[0, H_lid/2, W_mid/2]}>
           {/* Outer Lid Walls */}
           <mesh scale={0.999} castShadow receiveShadow geometry={lidGeo}>
-            {mat}
+            {bgMat}
           </mesh>
           {/* Inner Lid Walls */}
           <mesh geometry={lidGeo} scale={[0.99, 0.99, 0.99]}>
@@ -141,7 +158,7 @@ export const BurgerBox = ({ color, autoRotate, textureUrl }: Props) => {
           {/* Front lid flap (with slit) */}
           <mesh scale={0.999} castShadow receiveShadow position={[0, -H_lid/2 + 0.02, W_mid/2 + 0.02]} rotation={[0.4, 0, 0]}>
             <planeGeometry args={[0.5, 0.2]} />
-            {mat}
+            {bgMat}
           </mesh>
         </group>
       </group>

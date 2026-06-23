@@ -68,7 +68,7 @@ const shapeMap: Record<string, ShapeConfig> = {
   'dates-box':                 { type: 'tray' },
   'fried-chicken-box':         { type: 'gable-box' },
   'fancy-cake-box':            { type: 'dome-box' },
-  'fancy-tea-box':             { type: 'slim-tall' },
+  'fancy-tea-box':             { type: 'fancy-tea-box' },
   'food-grade-box':            { type: 'box' },
   'french-fries-box':          { type: 'open-top', taperRatio: 0.20 },
   'fresh-cream-cake-box':      { type: 'box' },
@@ -85,7 +85,7 @@ const shapeMap: Record<string, ShapeConfig> = {
   'sea-foods-box':             { type: 'tray' },
   'shawarma-box':              { type: 'envelope' },       // flat wrap
   'sweet-box':                 { type: 'tray' },
-  'tea-box':                   { type: 'box' },
+  'tea-box':                   { type: 'open-flaps-box' },
   'triangular-cake-slice-box': { type: 'triangle-prism' },
   'cone-cup':                  { type: 'cone-cup' },
 
@@ -122,7 +122,7 @@ const shapeMap: Record<string, ShapeConfig> = {
   'gadget-box':                { type: 'hanger-box' },
   'laptop-box':                { type: 'pizza' },          // very wide flat
   'earbuds-box':               { type: 'box' },
-  'smartwatch-box':            { type: 'box' },
+  'smartwatch-box':            { type: 'two-piece-rigid' },
   'charger-box':               { type: 'tray' },
   'camera-box':                { type: 'box' },
   'tablet-box':                { type: 'pizza' },          // wide flat
@@ -160,7 +160,7 @@ const shapeMap: Record<string, ShapeConfig> = {
   'medicine-box':              { type: 'box' },            // standard carton
   'supplement-box':            { type: 'slim-tall' },      // tall bottle carton
   'syrup-box':                 { type: 'slim-tall' },      // tall narrow
-  'tablet-strip-box':          { type: 'tray' },           // ultra-flat blister pack
+  'tablet-strip-box':          { type: 'slim-tall' },      // standard tuck-end carton
   'injection-box':             { type: 'open-grid-box' },
   'ointment-box':              { type: 'tray' },           // short wide tube box
   'surgical-box':              { type: 'open-mailer' },
@@ -174,10 +174,10 @@ const shapeMap: Record<string, ShapeConfig> = {
   'cosmetic-box':              { type: 'box' },
   'serum-box':                 { type: 'slim-tall' },
   'foundation-box':            { type: 'slim-tall' },
-  'eye-shadow-box':            { type: 'tray' },           // ultra-flat palette
+  'eye-shadow-box':            { type: 'palette-box' },
   'nail-box':                  { type: 'slim-tall' },
-  'hair-care-box':             { type: 'slim-tall' },      // tall bottle carton
-  'skincare-set-box':          { type: 'box' },
+  'hair-care-box':             { type: 'rigid-hinged' },
+  'skincare-set-box':          { type: 'rigid-hinged' },
   'lipstick-box':              { type: 'slim-tall' },
   'body-lotion-box':           { type: 'open-flaps-box' },
 

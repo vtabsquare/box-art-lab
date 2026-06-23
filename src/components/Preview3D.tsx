@@ -61,6 +61,14 @@ import {
   MedicineBox,
 } from './models/SecondaryModels';
 import { WatchBox } from './models/WatchBox';
+import { SmartwatchBox } from './models/SmartwatchBox';
+import { FoundationBox } from './models/FoundationBox';
+import { LipstickBox } from './models/LipstickBox';
+import { SkincareSetBox } from './models/SkincareSetBox';
+import { HairCareBox } from './models/HairCareBox';
+import { EyeShadowBox } from './models/EyeShadowBox';
+import { TabletStripBox } from './models/TabletStripBox';
+import { FancyTeaBox } from './models/FancyTeaBox';
 import { JewelleryBox } from './models/JewelleryBox';
 import { RingBox } from './models/RingBox';
 import { SpiritsBox } from './models/SpiritsBox';
@@ -90,6 +98,7 @@ import { BookMailer } from './models/BookMailer';
 import { TubeMailer } from './models/TubeMailer';
 import { EasyReturnBox } from './models/EasyReturnBox';
 import { BodyLotionBox } from './models/BodyLotionBox';
+import { EarbudsBox } from './models/EarbudsBox';
 
 interface ProductModelProps {
   productId: string | null;
@@ -188,8 +197,9 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
       case 'savouries-box':
         return <SavouriesBox {...p} />;
       case 'dip-tea-box':
-      case 'fancy-tea-box':
         return <DipTeaBox {...p} />;
+      case 'fancy-tea-box':
+        return <FancyTeaBox {...p} />;
       case 'tea-box':
         return <TeaBox {...p} />;
       case 'shawarma-box':
@@ -220,6 +230,8 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
         return <PhoneBoxPremium {...p} />;
       case 'gadget-box':
         return <GadgetBoxPremium {...p} />;
+      case 'earbuds-box':
+        return <EarbudsBox {...p} />;
       case 'laptop-box':
         return <LaptopBoxPremium {...p} />;
       case 'stand-pouch':
@@ -247,11 +259,16 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
         return <TubeMailer {...p} />;
       case 'cosmetic-box':
         return <StandardBox {...p} dimensions={[0.9, 0.55, 0.75]} />;
+      case 'lipstick-box':
+        return <LipstickBox {...p} />;
+      case 'foundation-box':
+        return <FoundationBox {...p} />;
       case 'luxury-rigid':
         return <LuxuryRigidBox {...p} />;
       case 'watch-box':
-      case 'smartwatch-box':
         return <WatchBox {...p} />;
+      case 'smartwatch-box':
+        return <SmartwatchBox {...p} />;
       case 'jewellery-box':
         return <JewelleryBox {...p} />;
       case 'ring-box':
@@ -288,6 +305,14 @@ const ProductModel = ({ productId, dimensions, textureUrl, bgTextureUrl, activeF
         return <WeddingBox {...p} />;
       case 'festival-box':
         return <FestivalGiftBox {...p} />;
+      case 'skincare-set-box':
+        return <SkincareSetBox {...p} />;
+      case 'hair-care-box':
+        return <HairCareBox {...p} />;
+      case 'eye-shadow-box':
+        return <EyeShadowBox {...p} />;
+      case 'tablet-strip-box':
+        return <TabletStripBox {...p} />;
       case 'kraft-pouch':
         return <KraftPouch {...p} />;
       case 'fragile-box':
