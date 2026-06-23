@@ -140,26 +140,26 @@ export const FoundationBox = ({ color, autoRotate, textureUrl, bgTextureUrl, act
       {/* Back major flap (Main top lid) - Flipped open pointing UP and slightly BACKWARDS */}
       {/* rotation.x: 0 = closed pointing forward, Math.PI/2 = pointing straight up, Math.PI/2 + 0.2 = pointing slightly backwards */}
       <group position={[0, H, -D / 2 + wall / 2]} rotation={[Math.PI / 2 + 0.3, 0, 0]}>
-        <mesh scale={0.999} castShadow material={materials} position={[0, wall / 2, D / 2]}>
+        <mesh scale={0.999} castShadow material={materials} position={[0, wall / 2, -D / 2]}>
           <boxGeometry args={[W, wall, D]} />
         </mesh>
         {/* Inner white side of main flap */}
-        <mesh scale={0.999} receiveShadow position={[0, wall + 0.001, D / 2]} rotation={[-Math.PI / 2, 0, 0]}>
+        <mesh scale={0.999} receiveShadow position={[0, wall + 0.001, -D / 2]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[W, D]} />
           <primitive object={innerMat} attach="material" />
         </mesh>
 
         {/* Tuck tab at the end of the main flap */}
-        <group position={[0, wall / 2, D]} rotation={[-0.8, 0, 0]}>
-          <mesh scale={0.999} castShadow material={materials} position={[0, 0, 0.1 / 2]}>
+        <group position={[0, 0, -D]} rotation={[-0.8, 0, 0]}>
+          <mesh scale={0.999} castShadow material={materials} position={[0, wall / 2, 0.15 / 2]}>
             {/* The tuck tab has slightly rounded corners, but a simple box works */}
             <boxGeometry args={[W - 0.04, wall, 0.15]} />
           </mesh>
           {/* Inner white side of tuck tab */}
-          <mesh scale={0.999} receiveShadow position={[0, wall / 2 + 0.001, 0.1 / 2]} rotation={[-Math.PI / 2, 0, 0]}>
+          {/* <mesh scale={0.999} receiveShadow position={[0, wall / 2 + 0.001, 0.1 / 2]} rotation={[-Math.PI / 2, 0, 0]}>
             <planeGeometry args={[W - 0.04, 0.15]} />
             <primitive object={innerMat} attach="material" />
-          </mesh>
+          </mesh> */}
         </group>
       </group>
 
