@@ -117,7 +117,7 @@ const QRLandingPage = () => {
                 {/* Register Button */}
                 <motion.button
                   className="qr-register-btn"
-                  onClick={() => navigate('/register')}
+                  onClick={() => navigate('/register', { state: { initialMode: 'register' } })}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -128,18 +128,19 @@ const QRLandingPage = () => {
               </div>
             </motion.div>
 
-            {/* Skip Button */}
+            {/* Already Registered Login Button */}
             <motion.button
               className="qr-skip-btn"
-              onClick={() => navigate('/home')}
+              onClick={() => navigate('/register', { state: { initialMode: 'login' } })}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.2, duration: 0.6 }}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              Skip <span className="qr-skip-temp">(temporary)</span>
+              Already registered? <span className="text-amber-500 font-semibold ml-1">Login</span>
             </motion.button>
+
 
             {/* Bottom decorative text */}
             <motion.p

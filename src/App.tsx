@@ -14,6 +14,7 @@ import ProductsPage from "./pages/ProductsPage";
 import StudioPage from "./pages/StudioPage";
 import ThankYouPage from "./pages/ThankYouPage";
 import NotFound from "./pages/NotFound.tsx";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -39,10 +40,15 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<QRLandingPage />} />
                 <Route path="/register" element={<RegisterPage />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/products" element={<ProductsPage />} />
-                <Route path="/studio" element={<StudioPage />} />
-                <Route path="/thank-you" element={<ThankYouPage />} />
+                
+                {/* Protected Routes */}
+                <Route element={<ProtectedRoute />}>
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/products" element={<ProductsPage />} />
+                  <Route path="/studio" element={<StudioPage />} />
+                  <Route path="/thank-you" element={<ThankYouPage />} />
+                </Route>
+
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
@@ -52,5 +58,6 @@ const App = () => (
       </PricingProvider>
   </QueryClientProvider>
 );
+
 
 export default App;

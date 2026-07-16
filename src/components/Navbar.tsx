@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const navLinks = [
@@ -13,6 +13,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,6 +23,10 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem('userEmail'));
+  }, [location.pathname]);
 
   const toggleTheme = () => {
     const newDark = !isDark;
@@ -35,6 +40,16 @@ const Navbar = () => {
 
   const handleNav = (path: string) => {
     navigate(path);
+    setMobileOpen(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userMobile');
+    localStorage.removeItem('userLocation');
+    setIsLoggedIn(false);
+    navigate('/register', { state: { initialMode: 'login' } });
     setMobileOpen(false);
   };
 
@@ -97,6 +112,16 @@ const Navbar = () => {
               )}
             </button>
 
+            {/* Logout Button (Desktop) */}
+            {isLoggedIn && (
+              <button
+                onClick={handleLogout}
+                className="max-lg:hidden flex items-center gap-2 px-4 py-2 text-sm font-body text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-black/5 dark:hover:bg-white/5"
+              >
+                <LogOut size={16} className="text-gold" />
+                <span>Logout</span>
+              </button>
+            )}
 
             {/* Mobile Menu Toggle */}
             <button
@@ -132,6 +157,15 @@ const Navbar = () => {
                 </button>
               ))}
 
+              {isLoggedIn && (
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-3 px-4 py-3 text-sm font-body rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-muted-foreground hover:text-foreground border-t border-border/50 mt-2 pt-4"
+                >
+                  <LogOut size={18} className="text-gold" />
+                  <span>Logout</span>
+                </button>
+              )}
             </div>
           </motion.div>
         )}
