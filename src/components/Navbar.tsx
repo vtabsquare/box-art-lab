@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, LogOut } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { clearSession, isAuthenticated } from '@/lib/sessionService';
+import HelpSupportModal from './HelpSupportModal';
 
 const navLinks = [
   { label: 'Home', path: '/home' },
@@ -38,6 +40,12 @@ const Navbar = () => {
     setMobileOpen(false);
   };
 
+  const handleLogout = () => {
+    clearSession();
+    setMobileOpen(false);
+    navigate('/register');
+  };
+
   const isActive = (path: string) => {
     return location.pathname === path;
   };
@@ -70,11 +78,12 @@ const Navbar = () => {
           {/* Right Section: Nav, Toggle, CTA, Mobile Menu */}
           <div className="flex items-center gap-2 md:gap-4">
             {/* Desktop nav */}
-            <div className="flex max-lg:hidden items-center gap-1">
+            <div className="flex max-lg:hidden items-center gap-1" role="navigation" aria-label="Main navigation">
               {navLinks.map((link) => (
                 <button
                   key={link.path}
                   onClick={() => handleNav(link.path)}
+                  aria-current={isActive(link.path) ? 'page' : undefined}
                   className={`px-4 py-2 text-sm font-body transition-colors rounded-lg hover:bg-black/5 dark:hover:bg-white/5 ${
                     isActive(link.path) ? 'text-foreground font-medium' : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -83,6 +92,18 @@ const Navbar = () => {
                 </button>
               ))}
             </div>
+
+            {/* Logout button (desktop, visible when authenticated) */}
+            {isAuthenticated() && (
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm font-body text-muted-foreground hover:text-red-500 transition-colors rounded-lg hover:bg-red-500/10"
+                aria-label="Logout"
+              >
+                <LogOut size={15} />
+                <span className="max-lg:hidden">Logout</span>
+              </button>
+            )}
 
             {/* Theme Toggle (Always Visible) */}
             <button
@@ -97,12 +118,17 @@ const Navbar = () => {
               )}
             </button>
 
+            {/* Help & Support (Always Visible) */}
+            <HelpSupportModal />
+
 
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-nav-menu"
+              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
               className="lg:hidden p-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors text-foreground flex items-center justify-center flex-shrink-0"
-              aria-label="Toggle menu"
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -114,6 +140,9 @@ const Navbar = () => {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
+            id="mobile-nav-menu"
+            role="navigation"
+            aria-label="Mobile navigation"
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -124,6 +153,7 @@ const Navbar = () => {
                 <button
                   key={link.path}
                   onClick={() => handleNav(link.path)}
+                  aria-current={isActive(link.path) ? 'page' : undefined}
                   className={`w-full text-left px-4 py-3 text-sm font-body rounded-xl hover:bg-black/5 dark:hover:bg-white/5 transition-colors ${
                     isActive(link.path) ? 'text-foreground font-medium bg-black/5 dark:bg-white/5' : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -131,6 +161,17 @@ const Navbar = () => {
                   {link.label}
                 </button>
               ))}
+
+              {/* Logout in mobile menu */}
+              {isAuthenticated() && (
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-3 text-sm font-body rounded-xl hover:bg-red-500/10 transition-colors text-red-500 flex items-center gap-2"
+                >
+                  <LogOut size={15} />
+                  Logout
+                </button>
+              )}
 
             </div>
           </motion.div>

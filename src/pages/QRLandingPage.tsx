@@ -74,7 +74,11 @@ const QRLandingPage = () => {
                 </div>
 
                 {/* QR Code Container */}
-                <div className={`qr-code-container ${scanPulse ? 'qr-pulse-active' : ''}`}>
+                <div
+                  className={`qr-code-container ${scanPulse ? 'qr-pulse-active' : ''}`}
+                  role="img"
+                  aria-label="Scan this QR code with your phone to register at Box Art Lab"
+                >
                   {/* Corner decorations */}
                   <div className="qr-corner qr-corner-tl" />
                   <div className="qr-corner qr-corner-tr" />
@@ -85,6 +89,7 @@ const QRLandingPage = () => {
                   <div className="qr-scan-line" />
 
                   <QRCodeSVG
+                    aria-hidden="true"
                     value={detailsUrl}
                     size={200}
                     bgColor="transparent"
@@ -128,19 +133,7 @@ const QRLandingPage = () => {
               </div>
             </motion.div>
 
-            {/* Skip Button */}
-            <motion.button
-              className="qr-skip-btn"
-              onClick={() => navigate('/home')}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.2, duration: 0.6 }}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-            >
-              Skip <span className="qr-skip-temp">(temporary)</span>
-            </motion.button>
-
+            {/* Skip button removed — authentication is required */}
             {/* Bottom decorative text */}
             <motion.p
               className="qr-footer-text"

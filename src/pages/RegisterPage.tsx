@@ -6,8 +6,11 @@ import {
   Loader2, CheckCircle2, Box, Sparkles, ShieldCheck,
   KeyRound, RefreshCw,
 } from 'lucide-react';
-import { sendVerificationEmail, verifyOTP } from '@/lib/brevoService';
+import { sendVerificationEmail, verifyOTP, getOTPLockoutInfo, resetOTPAttempts } from '@/lib/brevoService';
 import { storeVisitorData } from '@/lib/googleSheetsService';
+import { setSession } from '@/lib/sessionService';
+import { logAuditEvent } from '@/lib/auditLogger';
+import { useGoogleLogin } from '@react-oauth/google';
 
 type Step = 'details' | 'verification' | 'success';
 
@@ -25,6 +28,9 @@ interface FieldError {
   location?: string;
 }
 
+// Google SSO is opt-in: only shown when VITE_GOOGLE_CLIENT_ID is configured
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '';
+
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState<Step>('details');
@@ -40,6 +46,11 @@ const RegisterPage = () => {
   const [demoCode, setDemoCode] = useState<string | null>(null);
   const [otpError, setOtpError] = useState('');
   const [resending, setResending] = useState(false);
+  // True when the user has exhausted OTP attempts and must wait for lockout to expire
+  const [isLocked, setIsLocked] = useState(false);
+  // User preference: extend session to 30 days
+  const [rememberDevice, setRememberDevice] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const validate = (): boolean => {
     const newErrors: FieldError = {};
@@ -118,28 +129,46 @@ const RegisterPage = () => {
     try {
       const isValid = verifyOTP(formData.email, code);
       if (isValid) {
-        // Store details in localStorage for quote flow
-        localStorage.setItem('user_name', formData.name);
-        localStorage.setItem('user_email', formData.email);
-        localStorage.setItem('user_mobile', formData.mobile);
-        localStorage.setItem('user_location', formData.location);
+        // Create an authenticated session (24-hour or 30-day depending on preference)
+        setSession(formData, { rememberDevice });
+        logAuditEvent('LOGIN_SUCCESS', formData.email, { method: 'otp' });
 
-        // Store data in Google Sheets
+        // Store data in Google Sheets CRM
         await storeVisitorData(formData);
         setStep('success');
         // Navigate to home after brief success animation
         setTimeout(() => navigate('/home'), 2500);
       } else {
-        setOtpError('Invalid or expired code. Please try again.');
+        // Check current lockout state for a precise error message
+        const lock = getOTPLockoutInfo(formData.email);
+        if (lock.locked) {
+          const mins = Math.ceil(lock.remainingMs / 60000);
+          setOtpError(
+            `Too many failed attempts. Try again in ${mins} minute${mins !== 1 ? 's' : ''}.`
+          );
+          setIsLocked(true);
+        } else {
+          const left = lock.attemptsLeft;
+          setOtpError(
+            left > 0
+              ? `Invalid or expired code. ${left} attempt${left !== 1 ? 's' : ''} remaining.`
+              : 'Invalid or expired code. Please try again.'
+          );
+          logAuditEvent('LOGIN_FAILED', formData.email, { reason: 'invalid_code', attemptsLeft: left });
+        }
       }
     } catch (err) {
       setOtpError('Verification failed. Please try again.');
+      logAuditEvent('LOGIN_FAILED', formData.email, { reason: 'error', details: err });
     } finally {
       setLoading(false);
     }
   };
 
   const handleResend = async () => {
+    // Clear lockout so the new OTP gets a fresh attempt slate
+    resetOTPAttempts(formData.email);
+    setIsLocked(false);
     setResending(true);
     setOtp(['', '', '', '', '', '']);
     setOtpError('');
@@ -157,6 +186,43 @@ const RegisterPage = () => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: undefined }));
   };
+
+  // ── Google SSO handler ───────────────────────────────────────────────────
+  const handleGoogleSignIn = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setGoogleLoading(true);
+      try {
+        // Fetch profile from Google's userinfo endpoint using the access token
+        const userInfo = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+        }).then((r) => r.json());
+
+        const googleData = {
+          name: userInfo.name || userInfo.email,
+          email: userInfo.email,
+          mobile: '',   // Not available via Google profile
+          location: '', // Not available via Google profile
+        };
+
+        setSession(googleData, { rememberDevice: false });
+        logAuditEvent('LOGIN_SUCCESS', googleData.email, { method: 'google_sso' });
+        
+        // Record the SSO lead in Google Sheets
+        await storeVisitorData(googleData);
+        navigate('/home');
+      } catch (err) {
+        console.error('[Google SSO] Failed to fetch user profile:', err);
+        logAuditEvent('LOGIN_FAILED', 'unknown', { reason: 'google_sso_fetch_error' });
+      } finally {
+        setGoogleLoading(false);
+      }
+    },
+    onError: () => {
+      console.error('[Google SSO] Authentication failed');
+      logAuditEvent('LOGIN_FAILED', 'unknown', { reason: 'google_sso_auth_error' });
+      setGoogleLoading(false);
+    },
+  });
 
   const fields = [
     { key: 'name' as const, label: 'Full Name', icon: User, type: 'text', placeholder: 'Enter your full name' },
@@ -251,19 +317,29 @@ const RegisterPage = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 + i * 0.08 }}
                       >
-                        <label className="register-label">{field.label}</label>
+                        <label
+                          htmlFor={`field-${field.key}`}
+                          className="register-label"
+                        >
+                          {field.label}
+                        </label>
                         <div className={`register-input-wrapper ${errors[field.key] ? 'register-input-error' : ''}`}>
-                          <Icon className="register-input-icon" />
+                          <Icon className="register-input-icon" aria-hidden="true" />
                           <input
+                            id={`field-${field.key}`}
                             type={field.type}
                             placeholder={field.placeholder}
                             value={formData[field.key]}
                             onChange={(e) => updateField(field.key, e.target.value)}
+                            aria-invalid={!!errors[field.key]}
+                            aria-describedby={errors[field.key] ? `error-${field.key}` : undefined}
                             className="register-input"
                           />
                         </div>
                         {errors[field.key] && (
                           <motion.p
+                            id={`error-${field.key}`}
+                            role="alert"
                             className="register-error-text"
                             initial={{ opacity: 0, y: -5 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -280,6 +356,7 @@ const RegisterPage = () => {
                   className="register-submit-btn"
                   onClick={handleSubmit}
                   disabled={loading}
+                  aria-busy={loading}
                   whileHover={{ scale: loading ? 1 : 1.02 }}
                   whileTap={{ scale: loading ? 1 : 0.98 }}
                 >
@@ -295,6 +372,37 @@ const RegisterPage = () => {
                     </>
                   )}
                 </motion.button>
+
+                {/* Google Sign-In — only rendered when VITE_GOOGLE_CLIENT_ID is configured */}
+                {GOOGLE_CLIENT_ID && (
+                  <>
+                    <div className="flex items-center gap-3 my-1">
+                      <span className="flex-1 h-px bg-border" />
+                      <span className="text-xs text-muted-foreground font-body">or sign in with</span>
+                      <span className="flex-1 h-px bg-border" />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleGoogleSignIn()}
+                      disabled={googleLoading}
+                      aria-busy={googleLoading}
+                      aria-label="Sign in with Google"
+                      className="w-full flex items-center justify-center gap-3 px-4 py-2.5 bg-white dark:bg-white/5 border border-border hover:border-amber-500/40 text-gray-700 dark:text-white font-body font-medium text-sm rounded-xl transition-all duration-300 hover:shadow-md disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {googleLoading ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                      )}
+                      <span>{googleLoading ? 'Signing in...' : 'Continue with Google'}</span>
+                    </button>
+                  </>
+                )}
 
                 <button className="register-back-link" onClick={() => navigate('/')}>
                   <ArrowLeft className="w-4 h-4" />
@@ -351,6 +459,8 @@ const RegisterPage = () => {
                         inputMode="numeric"
                         maxLength={1}
                         value={digit}
+                        aria-label={`Verification digit ${i + 1} of 6`}
+                        aria-invalid={!!otpError}
                         onChange={(e) => handleOtpChange(i, e.target.value)}
                         onKeyDown={(e) => handleOtpKeyDown(i, e)}
                         className={`register-otp-input ${digit ? 'has-value' : ''} ${otpError ? 'has-error' : ''}`}
@@ -363,6 +473,8 @@ const RegisterPage = () => {
 
                   {otpError && (
                     <motion.p
+                      role="alert"
+                      aria-live="assertive"
                       className="register-otp-error"
                       initial={{ opacity: 0, y: -5 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -381,10 +493,26 @@ const RegisterPage = () => {
                   </button>
                 </div>
 
+                {/* Remember device checkbox */}
+                <label className="flex items-center gap-2.5 cursor-pointer select-none mb-1 mt-1">
+                  <input
+                    type="checkbox"
+                    id="remember-device"
+                    checked={rememberDevice}
+                    onChange={(e) => setRememberDevice(e.target.checked)}
+                    className="w-4 h-4 rounded accent-amber-500 cursor-pointer"
+                    aria-label="Remember this device for 30 days"
+                  />
+                  <span className="text-sm text-muted-foreground font-body">
+                    Remember this device for <span className="text-foreground font-medium">30 days</span>
+                  </span>
+                </label>
+
                 <motion.button
                   className="register-submit-btn"
                   onClick={handleVerify}
-                  disabled={loading || otp.join('').length !== 6}
+                  disabled={loading || otp.join('').length !== 6 || isLocked}
+                  aria-busy={loading}
                   whileHover={{ scale: loading ? 1 : 1.02 }}
                   whileTap={{ scale: loading ? 1 : 0.98 }}
                 >
@@ -456,18 +584,7 @@ const RegisterPage = () => {
           )}
         </AnimatePresence>
 
-        {/* Skip link */}
-        {step === 'details' && (
-          <motion.button
-            className="qr-skip-btn register-skip"
-            onClick={() => navigate('/home')}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-          >
-            Skip <span className="qr-skip-temp">(temporary)</span>
-          </motion.button>
-        )}
+        {/* Skip link removed — authentication is required */}
       </div>
     </div>
   );

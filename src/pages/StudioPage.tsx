@@ -19,7 +19,10 @@ import { calculateMinimumCost } from '@/lib/utils';
 import { generatePDF, generatePDFInstance } from '@/lib/pdfGenerator';
 import { sendProposalEmail } from '@/lib/brevoService';
 import { DesignTemplate } from '@/lib/designTemplates';
+import { getSession } from '@/lib/sessionService';
+import { logAuditEvent } from '@/lib/auditLogger';
 
+import { toast } from 'sonner';
 import {
   Dialog,
   DialogContent,
@@ -83,9 +86,13 @@ const StudioPage = () => {
         textureUrl,
         logoUrl: state.logoUrl,
       });
+      const session = getSession();
+      if (session) {
+        logAuditEvent('PDF_EXPORTED', session.email, { productName: state.productName, cost });
+      }
     } catch (err) {
       console.error('PDF generation failed:', err);
-      alert('Failed to generate PDF. Please try again.');
+      toast.error('Failed to generate PDF. Please try again.');
     } finally {
       setExporting(false);
     }
@@ -142,13 +149,19 @@ const StudioPage = () => {
 
       if (response.success) {
         setShowQuoteDialog(false);
+        const session = getSession();
+        if (session) {
+          logAuditEvent('QUOTE_SENT', session.email, { quoteEmail, productName: state.productName, cost });
+        }
         navigate('/thank-you');
       } else {
-        alert('Failed to send quote: ' + response.error);
+        // Log internal error but show a generic message to the user
+        console.error('Quote send failed:', response.error);
+        toast.error('Failed to send quote. Please check your email and try again.');
       }
-    } catch (err: any  ) {
+    } catch (err: any) {
       console.error('Quote email failed:', err);
-      alert('Error sending quote email. Please try again.');
+      toast.error('Something went wrong sending your quote. Please try again.');
     } finally {
       setIsSendingQuote(false);
     }
@@ -161,6 +174,7 @@ const StudioPage = () => {
       <div className="max-w-[1700px] mx-auto px-4 sm:px-6">
         <button
           onClick={() => navigate(-1)}
+          aria-label="Go back to previous page"
           className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors font-body text-sm px-4 py-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 mb-4"
         >
           <ArrowLeft size={16} />
@@ -320,6 +334,8 @@ const StudioPage = () => {
             <button
               onClick={handleSendQuote}
               disabled={!quoteEmail || isSendingQuote}
+              aria-busy={isSendingQuote}
+              aria-label={isSendingQuote ? 'Sending proposal, please wait' : 'Send PDF proposal to email'}
               className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-body font-semibold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-amber-500/30 border border-amber-400/40"
             >
               {isSendingQuote ? (
