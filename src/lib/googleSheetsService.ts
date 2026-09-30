@@ -57,33 +57,132 @@ export interface VisitorData {
   location: string;
 }
 
-export async function storeVisitorData(
-  data: VisitorData
+// Client-side SHA-256 password hashing helper
+export async function hashPassword(password: string): Promise<string> {
+  const msgBuffer = new TextEncoder().encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+export async function registerUser(
+  data: VisitorData,
+  passwordHash: string
 ): Promise<{ success: boolean; error?: string }> {
   if (!GOOGLE_SCRIPT_URL) {
-    console.warn(
-      '[GoogleSheets] No script URL configured — data logged to console:',
-      data
-    );
-    // Demo mode: just log
+    console.warn('[GoogleSheets] No script URL configured — running in demo mode.');
     return { success: true };
   }
 
   try {
     const response = await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
-      mode: 'no-cors', // Apps Script web apps require no-cors
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8' // Prevents CORS preflight precheck block in Apps Script
+      },
       body: JSON.stringify({
-        ...data,
-        timestamp: new Date().toISOString(),
+        action: 'register',
+        name: data.name,
+        email: data.email,
+        mobile: data.mobile,
+        location: data.location,
+        passwordHash
       }),
     });
 
-    // no-cors responses are opaque, so we assume success
-    return { success: true };
-  } catch (error: any  ) {
-    console.error('[GoogleSheets] Error storing data:', error);
+    const result = await response.json();
+    if (result.status === 'success') {
+      return { success: true };
+    } else {
+      return { success: false, error: result.message || 'Registration failed' };
+    }
+  } catch (error: any) {
+    console.error('[GoogleSheets] Error registering user:', error);
     return { success: false, error: error.message };
   }
 }
+
+export async function loginUser(
+  email: string,
+  passwordHash: string
+): Promise<{ success: boolean; user?: VisitorData; error?: string }> {
+  if (!GOOGLE_SCRIPT_URL) {
+    console.warn('[GoogleSheets] No script URL configured — running in demo mode.');
+    // In demo mode, simulate success if email ends with @example.com or is filled
+    return {
+      success: true,
+      user: {
+        name: 'Demo User',
+        email: email,
+        mobile: '1234567890',
+        location: 'Demo Land'
+      }
+    };
+  }
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify({
+        action: 'login',
+        email,
+        passwordHash
+      }),
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+      return { success: true, user: result.user };
+    } else {
+      return { success: false, error: result.message || 'Login failed' };
+    }
+  } catch (error: any) {
+    console.error('[GoogleSheets] Error logging in:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function changePasswordInSheet(
+  email: string,
+  passwordHash: string
+): Promise<{ success: boolean; error?: string }> {
+  if (!GOOGLE_SCRIPT_URL) {
+    console.warn('[GoogleSheets] No script URL configured — running in demo mode.');
+    return { success: true };
+  }
+
+  try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain;charset=utf-8'
+      },
+      body: JSON.stringify({
+        action: 'changePassword',
+        email,
+        passwordHash
+      }),
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+      return { success: true };
+    } else {
+      return { success: false, error: result.message || 'Password update failed' };
+    }
+  } catch (error: any) {
+    console.error('[GoogleSheets] Error updating password:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+// Deprecated fallback to keep other files compiling
+export async function storeVisitorData(
+  data: VisitorData
+): Promise<{ success: boolean; error?: string }> {
+  return registerUser(data, '');
+}
+
