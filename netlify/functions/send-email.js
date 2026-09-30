@@ -109,7 +109,7 @@ function sanitizePayload(payload) {
 }
 
 // ── Handler ──────────────────────────────────────────────────────────────────
-exports.handler = async (event) => {
+export const handler = async (event) => {
   // Only allow POST
   if (event.httpMethod !== 'POST') {
     return {
